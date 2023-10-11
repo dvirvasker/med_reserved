@@ -28,33 +28,33 @@ import {
 function DashboardCard(props) {
 	const [collapseOpen, setcollapseOpen] = useState(false);
 	const [processedData, setProcessedData] = useState({
-		TodayPresent: 0,
-		DailSent: 0,
-		ShamapOpen: 0,
-		Present: 0,
+		todayPresent: 0,
+		dailSent: 0,
+		shamapOpen: 0,
+		present: 0,
 	});
 
 	const titles = useRef({
-		TodayPresent: 0,
-		DailSent: 0,
-		ShamapOpen: 0,
-		Present: 0,
+		todayPresent: 0,
+		dailSent: 0,
+		shamapOpen: 0,
+		present: 0,
 	});
 
 	function init() {
 		let tmp_true = {
-			Present: [],
-			TodayPresent: [],
-			DailSent: [],
-			ShamapOpen: [],
+			present: [],
+			todayPresent: [],
+			dailSent: [],
+			shamapOpen: [],
 		};
 		let tmp_false = {
-			Present: [],
-			TodayPresent: [],
-			DailSent: [],
-			ShamapOpen: [],
+			present: [],
+			todayPresent: [],
+			dailSent: [],
+			shamapOpen: [],
 		};
-		let tmp = { TodayPresent: 0, DailSent: 0, ShamapOpen: 0, Present: 0 };
+		let tmp = { todayPresent: 0, dailSent: 0, shamapOpen: 0, present: 0 };
 		function tmp_push(val, key) {
 			if (val) {
 				tmp_true[key].push(val);
@@ -63,17 +63,17 @@ function DashboardCard(props) {
 			}
 		}
 		props.data.map((dt) => {
-			tmp_push(dt.Present, "Present");
-			tmp_push(dt.TodayPresent, "TodayPresent");
-			tmp_push(dt.DailSent, "DailSent");
-			tmp_push(dt.ShamapOpen, "ShamapOpen");
+			tmp_push(dt.present, "present");
+			tmp_push(dt.todayPresent, "todayPresent");
+			tmp_push(dt.dailSent, "dailSent");
+			tmp_push(dt.shamapOpen, "shamapOpen");
 		});
 		Object.keys(tmp_true).map((key) => {
 			tmp[key] = ~~((tmp_true[key].length / props.data.length) * 100);
 			titles.current[key] = tmp_true[key].length;
 		});
 		// console.log(props.data);
-		// console.log(tmp_true.TodayPresent);
+		// console.log(tmp_true);
 		// console.log(tmp_false);
 		// console.log(tmp);
 		setProcessedData(tmp);
@@ -99,7 +99,7 @@ function DashboardCard(props) {
 					>
 						<ProgressProvider
 							valueStart={0}
-							valueEnd={props.data != 0 ? processedData.TodayPresent : 0}
+							valueEnd={props.data != 0 ? processedData.todayPresent : 0}
 						>
 							{(value) => (
 								<CircularProgressbarWithChildren
@@ -131,7 +131,7 @@ function DashboardCard(props) {
 									</div>
 									<div style={{ fontSize: 12, marginTop: -2 }}>
 										<h5 style={{ margin: "0px" }}>
-											{titles.current.TodayPresent + "/" + props.data.length}
+											{titles.current.todayPresent + "/" + props.data.length}
 										</h5>
 									</div>
 								</CircularProgressbarWithChildren>
@@ -148,31 +148,31 @@ function DashboardCard(props) {
 							}}
 						>
 							{/* //* חייגן   */}
-							<h6>נשלח חייגן: {titles.current.DailSent} </h6>
+							<h6>נשלח חייגן: {titles.current.dailSent} </h6>
 							<Progress
 								color="guyblue"
-								value={processedData.DailSent ? processedData.DailSent : 0}
+								value={processedData.dailSent ? processedData.dailSent : 0}
 								style={{ height: "10px", marginBottom: "8px" }}
 							>
-								{processedData.DailSent ? processedData.DailSent : 0}%
+								{processedData.dailSent ? processedData.dailSent : 0}%
 							</Progress>
 							{/* //* התייצבות   */}
-							<h6> התייצבות: {titles.current.Present} </h6>
+							<h6> התייצבות: {titles.current.present} </h6>
 							<Progress
 								color="guyblue"
-								value={processedData.Present ? processedData.Present : 0}
+								value={processedData.present ? processedData.present : 0}
 								style={{ height: "10px", marginBottom: "8px" }}
 							>
-								{processedData.Present ? processedData.Present : 0}%
+								{processedData.present ? processedData.present : 0}%
 							</Progress>
 							{/* //* שמפ   */}
-							<h6>נפתח שמפ: {titles.current.ShamapOpen} </h6>
+							<h6>נפתח שמפ: {titles.current.shamapOpen} </h6>
 							<Progress
 								color="guyblue"
-								value={processedData.ShamapOpen ? processedData.ShamapOpen : 0}
+								value={processedData.shamapOpen ? processedData.shamapOpen : 0}
 								style={{ height: "10px", marginBottom: "8px" }}
 							>
-								{processedData.ShamapOpen ? processedData.ShamapOpen : 0}%
+								{processedData.shamapOpen ? processedData.shamapOpen : 0}%
 							</Progress>
 						</div>
 					) : null}

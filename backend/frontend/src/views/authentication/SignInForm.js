@@ -86,8 +86,7 @@ function Signin() {
 					history.push(`/dashboard/`);
 				}
 				if (user.role === "1") {
-					//! change to table
-					history.push(`/dashboard/admin/0/magadal/0/false`);
+					history.push(`/miluimpage`);
 				}
 			} else {
 				toast.success("משתמש לא מאושר מערכת");

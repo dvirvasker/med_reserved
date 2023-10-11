@@ -44,6 +44,8 @@ import UnitTreePage from "views/general/unittreepage/UnitTreePage";
 import AboutPage from "views/general/aboutpage/AboutPage";
 import StatisticsPage from "views/general/statisticspage/StatisticsPage";
 
+import Miluimpage from "views/general/miluimpage/Miluimpage";
+
 ReactDOM.render(
 	<>
 		<Provider store={store}>
@@ -68,27 +70,28 @@ ReactDOM.render(
 							{/*///////////////////////////////////////////UnLoggedIn Routes/////////////////////////////////////////////////*/}
 
 							{/*///////////////////////////////////////////Admin Routes/////////////////////////////////////////////////*/}
-							<AdminRoute path="/manageusers" exact component={ManageUsers} />
-							<AdminRoute path="/edituser/:userid" exact component={EditUser} />
+							{/* <AdminRoute path="/manageusers" exact component={ManageUsers} />
+							<AdminRoute path="/edituser/:userid" exact component={EditUser} /> */}
 							{/*///////////////////////////////////////////Admin Routes/////////////////////////////////////////////////*/}
 
 							{/*///////////////////////////////////////////LoggedIn Routes/////////////////////////////////////////////////*/}
-							<LoggedinRoute path="/about" exact component={AboutPage} />
-							<LoggedinRoute
+							{/* <LoggedinRoute path="/about" exact component={AboutPage} /> */}
+							{/* <LoggedinRoute
 								path="/unittreepage/:unittype/:unitid"
 								exact
 								component={UnitTreePage}
-							/>
+							/> */}
 							<LoggedinRoute
 								path="/dashboard/"
 								exact
 								component={DashboardPage}
 							/>
-							<LoggedinRoute
+							{/* <LoggedinRoute
 								path="/statisticspage"
 								exact
 								component={StatisticsPage}
-							/>
+							/> */}
+							<LoggedinRoute path="/miluimpage" exact component={Miluimpage} />
 							{/*///////////////////////////////////////////LoggedIn Routes/////////////////////////////////////////////////*/}
 							<Redirect from="/" to="/signin" />
 						</Switch>

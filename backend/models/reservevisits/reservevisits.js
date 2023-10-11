@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const reservevisitSchema = new mongoose.Schema({
-	_id: { type: ObjectId },
-	Name: { type: String },
-	Present: { type: Boolean },
-	TodayPresent: { type: Boolean },
-	DailSent: { type: Boolean },
-	ShamapOpen: { type: Boolean },
+const reservevisitsSchema = new mongoose.Schema({
+	name: { type: String },
+	present: { type: Boolean },
+	todayPresent: { type: Boolean },
+	dailSent: { type: Boolean },
+	shamapOpen: { type: Boolean },
 	subject: { type: String },
-	Details: { type: String },
+	details: { type: String },
+	unit: { type: String },
 });
 
-const Reservevisit = mongoose.model("Reservevisit", reservevisitSchema);
+const Reservevisits = mongoose.model("Reservevisits", reservevisitsSchema);
 
-module.exports = Reservevisit;
+module.exports = Reservevisits;

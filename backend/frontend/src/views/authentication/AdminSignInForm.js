@@ -77,7 +77,7 @@ function AdminSignInForm() {
 				}
 				//! change to table
 				if (user.role === "1") {
-					history.push(`/dashboard/gdod/${user.gdodid}/magadal/0/false`);
+					history.push(`/miluimpage`);
 				}
 			} else {
 				toast.success("משתמש לא מאושר מערכת");

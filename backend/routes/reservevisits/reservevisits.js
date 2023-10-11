@@ -1,13 +1,22 @@
 const express = require("express");
-
+const router = express.Router();
 const {
+	create,
 	find,
-	findbyunitid,
+	read,
+	update,
+	remove,
 } = require("../../controllers/reservevisits/reservevisits.js");
 
-const router = express.Router();
+// find spec
+router.post("/reservevisits", create);
 
-router.get("/reservevisits/:id", findbyunitid);
+router.get("/reservevisits/:id", read);
+
+router.put("/reservevisits/:reservevisitsId", update);
+
+router.post("/reservevisits/remove/:id", remove);
+
 router.get("/reservevisits", find);
 
 module.exports = router;

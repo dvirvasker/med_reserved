@@ -120,7 +120,7 @@ function SidebarAdmin(props) {
 					</NavLink>
 				</li>
 				<li>
-					<NavLink
+					{/* <NavLink
 						to="/statisticspage"
 						style={{ margin: "0px" }}
 						activeClassName="sidebar_active_link"
@@ -153,10 +153,10 @@ function SidebarAdmin(props) {
 								</h4>
 							</Col>
 						</Row>
-					</NavLink>
+					</NavLink> */}
 				</li>
 				<li>
-					<NavLink
+					{/* <NavLink
 						to={`/unittreepage/admin/0`}
 						style={{ margin: "0px" }}
 						activeClassName="sidebar_active_link"
@@ -189,10 +189,47 @@ function SidebarAdmin(props) {
 								</h4>
 							</Col>
 						</Row>
-					</NavLink>
+					</NavLink> */}
 				</li>
 				<li>
 					<NavLink
+						to="/miluimpage"
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={editusers} style={{ height: "20px" }}></img>
+								) : (
+									<img src={editusers_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									טבלת מילואים
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+
+				<li>
+					{/* <NavLink
 						to="/manageusers"
 						style={{ margin: "0px" }}
 						activeClassName="sidebar_active_link"
@@ -225,10 +262,10 @@ function SidebarAdmin(props) {
 								</h4>
 							</Col>
 						</Row>
-					</NavLink>
+					</NavLink> */}
 				</li>
 				<li>
-					<NavLink
+					{/* <NavLink
 						to="/about"
 						style={{ margin: "0px" }}
 						activeClassName="sidebar_active_link"
@@ -261,7 +298,7 @@ function SidebarAdmin(props) {
 								</h4>
 							</Col>
 						</Row>
-					</NavLink>
+					</NavLink> */}
 				</li>
 			</Nav>
 		</>

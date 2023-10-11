@@ -3,17 +3,17 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 
 // reactstrap components
 import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
+	Collapse,
+	Navbar,
+	NavbarToggler,
+	NavbarBrand,
+	Nav,
+	NavItem,
 } from "reactstrap";
 
 import {
-  BackgroundColorContext,
-  backgroundColors,
+	BackgroundColorContext,
+	backgroundColors,
 } from "contexts/BackgroundColorContext";
 
 import { ThemeContext, themes } from "contexts/ThemeContext";
@@ -48,90 +48,153 @@ import { signout } from "auth/index";
 import history from "../../../history";
 
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
-  Container,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
-  Row,
-  Alert,
-  Spinner,
-  Label,
-  Col,
+	Button,
+	Card,
+	CardHeader,
+	CardBody,
+	CardTitle,
+	Container,
+	FormGroup,
+	Form,
+	Input,
+	InputGroupAddon,
+	InputGroupText,
+	InputGroup,
+	Row,
+	Alert,
+	Spinner,
+	Label,
+	Col,
 } from "reactstrap";
 
 import { isAuthenticated } from "auth/index";
 
 function SidebarHativa(props) {
-  const { user } = isAuthenticated();
+	const { user } = isAuthenticated();
 
-  const clickSubmit = (event) => {
-    event.preventDefault();
-    signout().then((response) => {
-      history.push(`/signin`);
-    });
-  };
+	const clickSubmit = (event) => {
+		event.preventDefault();
+		signout().then((response) => {
+			history.push(`/signin`);
+		});
+	};
 
-  return (
-    <>
-      <div className="logo">
-        <img src={logobazak2}></img>
-      </div>
-      <Nav style={{ textAlign: "right" }}>
-        <li>
-          <NavLink to={`/dashboard/hativa/${user.hativaid}/magadal/0/false`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
-            <Row style={{ direction: "rtl" }}>
-              <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
-                {props.theme == 'white' ? <img src={home} style={{ height: "20px" }}></img>
-                  : <img src={home_white} style={{ height: "20px" }}></img>}
-              </Col>
-              <Col xs={12} md={9} style={{ paddingRight: "0px" }}>
-                <h4 style={{ margin: "0px", paddingTop: '6px', paddingBottom: '6px' }}>
-                  דף הבית
-                </h4>
-              </Col>
-            </Row>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={`/subunitspage/hativa/${user.hativaid}/magadal/0`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
-            <Row style={{ direction: "rtl" }}>
-              <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
-                {props.theme == 'white' ? <img src={table} style={{ height: "20px" }}></img>
-                  : <img src={table_white} style={{ height: "20px" }}></img>}
-              </Col>
-              <Col xs={12} md={9} style={{ paddingRight: "0px" }}>
-                <h4 style={{ margin: "0px", paddingTop: '6px', paddingBottom: '6px' }}>
-                  זמינות תת-יחידות
-                </h4>
-              </Col>
-            </Row>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={`/statisticspage`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
-            <Row style={{ direction: "rtl" }}>
-              <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
-                {props.theme == 'white' ? <img src={graphpic} style={{ height: "20px" }}></img>
-                  : <img src={graphpic_white} style={{ height: "20px" }}></img>}
-              </Col>
-              <Col xs={12} md={9} style={{ paddingRight: "0px" }}>
-                <h4 style={{ margin: "0px", paddingTop: '6px', paddingBottom: '6px' }}>
-                  סטטיסטיקות
-                </h4>
-              </Col>
-            </Row>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={`/unittreepage/hativa/${user.hativaid}`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
+	return (
+		<>
+			<div className="logo">
+				<img src={logobazak2}></img>
+			</div>
+			<Nav style={{ textAlign: "right" }}>
+				<li>
+					<NavLink
+						to={`/dashboard/hativa/${user.hativaid}/magadal/0/false`}
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={home} style={{ height: "20px" }}></img>
+								) : (
+									<img src={home_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									דף הבית
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+				<li>
+					<NavLink
+						to={`/subunitspage/hativa/${user.hativaid}/magadal/0`}
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={table} style={{ height: "20px" }}></img>
+								) : (
+									<img src={table_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									זמינות תת-יחידות
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+				<li>
+					<NavLink
+						to={`/statisticspage`}
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={graphpic} style={{ height: "20px" }}></img>
+								) : (
+									<img src={graphpic_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									סטטיסטיקות
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+				<li>
+					{/* <NavLink to={`/unittreepage/hativa/${user.hativaid}`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
             <Row style={{ direction: "rtl" }}>
               <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
                 {props.theme == 'white' ? <img src={shortlist} style={{ height: "20px" }}></img>
@@ -143,26 +206,47 @@ function SidebarHativa(props) {
                 </h4>
               </Col>
             </Row>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/about" style={{ margin: '0px' }} activeClassName="sidebar_active_link">
-            <Row style={{ direction: "rtl" }}>
-              <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
-                {props.theme == 'white' ? <img src={info} style={{ height: "20px" }}></img>
-                  : <img src={info_white} style={{ height: "20px" }}></img>}
-              </Col>
-              <Col xs={12} md={9} style={{ paddingRight: "0px" }}>
-                <h4 style={{ margin: "0px", paddingTop: '6px', paddingBottom: '6px' }}>
-                  אודות המערכת
-                </h4>
-              </Col>
-            </Row>
-          </NavLink>
-        </li>
-      </Nav>
-    </>
-  );
+          </NavLink> */}
+				</li>
+				<li>
+					<NavLink
+						to="/about"
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={info} style={{ height: "20px" }}></img>
+								) : (
+									<img src={info_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									אודות המערכת
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+			</Nav>
+		</>
+	);
 }
 
 export default SidebarHativa;
