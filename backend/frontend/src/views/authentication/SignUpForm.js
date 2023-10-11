@@ -137,7 +137,7 @@ export default function SignUpForm() {
 			.post(`http://localhost:8000/api/signup`, user)
 			.then((res) => {
 				setData({ ...data, loading: false, error: false, successmsg: true });
-				toast.success(`הרשמתך נקלטה בהצלחה, מתן ההרשאות יתבצע תוך עד 72 שעות`);
+				toast.success(`הרשמתך נקלטה בהצלחה`);
 				history.push(`/signin`);
 				console.log(res.data);
 			})
