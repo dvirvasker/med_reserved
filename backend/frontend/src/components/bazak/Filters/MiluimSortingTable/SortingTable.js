@@ -70,9 +70,21 @@ const SortingTable = (props) => {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
 
-	function init() {
-	}
+	async function CalculateDataArr() {
+		await axios.get(`http://localhost:8000/api/reservevisits`)
+		  .then(response => {
+			setData(response.data)
+		  })
+		  .catch((error) => {
+			console.log(error);
+		  })
+	  }
+	
 
+	function init() {
+		CalculateDataArr()
+	  }
+	
 	const {
 		getTableProps,
 		getTableBodyProps,
@@ -114,16 +126,10 @@ const SortingTable = (props) => {
 		return { innerWidth, innerHeight };
 	}
 
-	// useEffect(() => {
-	// 	function handleWindowResize() {
-	// 		setWindowSize(getWindowSize());
-	// 	}
-	// 	window.addEventListener("resize", handleWindowResize);
-	// 	return () => {
-	// 		window.removeEventListener("resize", handleWindowResize);
-	// 	};
-	// }, []);
-
+	useEffect(() => {
+		init();
+	  }, []);
+	
 	return  (
 		<>
 		        <button className="btn-new-blue" value={undefined} onClick={Toggle} style={{ marginRight: '5px' }}>הוסף איש מילואים</button>
@@ -181,7 +187,101 @@ const SortingTable = (props) => {
 						))}
 					</thead>
 					<tbody {...getTableBodyProps()}>
-					</tbody>
+            {
+              page.map(row => {
+                prepareRow(row)
+                return (
+                  <tr className=""  >
+                    {
+                      row.cells.map(cell => {
+                        if (cell.column.id == "name") {
+							return (
+								<td>
+									<div
+										style={{
+											width: "100%",
+											height: "40px",
+											margin: "0",
+											padding: "0",
+											overflow: "auto",
+										}}
+									>
+										{cell.value}
+									</div>
+								</td>
+							);
+}
+                        if (cell.column.id == "present") {
+							if(row.original.present === true){
+								return <td>כן</td>
+							}else{
+								return <td>לא</td>
+							}
+                        }
+                        if (cell.column.id == "todayPresent") {
+							if(row.original.todayPresent === true){
+								return <td>כן</td>
+							}else{
+								return <td>לא</td>
+							}
+                        }
+                        if (cell.column.id == "dailSent") {
+							if(row.original.dailSent === true){
+								return <td>כן</td>
+							}else{
+								return <td>לא</td>
+							}
+                        }
+                        if (cell.column.id == "shamapOpen") {
+							if(row.original.shamapOpen === true){
+								return <td>כן</td>
+							}else{
+								return <td>לא</td>
+							}
+                        }
+						if (cell.column.id == "subject") {
+							return (
+								<td>
+									<div
+										style={{
+											width: "100%",
+											height: "40px",
+											margin: "0",
+											padding: "0",
+											overflow: "auto",
+										}}
+									>
+										{cell.value}
+									</div>
+								</td>
+							);  }
+						  if (cell.column.id == "details") {
+							return (
+								<td>
+									<div
+										style={{
+											width: "100%",
+											height: "40px",
+											margin: "0",
+											padding: "0",
+											overflow: "auto",
+										}}
+									>
+										{cell.value}
+									</div>
+								</td>
+							);
+  }
+  
+                      })
+                    }
+                    <td role="cell"> <div style={{ width: `${100 / 7}%`, minWidth: '50px', maxWidth: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><button className="btn-new-blue" value={row.original._id} onClick={Toggle}>עדכן</button></div></td>
+                    <td role="cell"> <div style={{ width: `${100 / 7}%`, minWidth: '50px', maxWidth: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><button className="btn-new-delete" value={row.original._id} onClick={ToggleDelete}>מחק</button></div></td>
+                  </tr>
+                )
+              })
+            }
+          </tbody>
 				</table>
 				<div className="pagination">
 					<button onClick={() => previousPage()} disabled={!canPreviousPage}>

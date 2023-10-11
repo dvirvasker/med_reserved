@@ -35,59 +35,25 @@ const CarDataFormModalDelete = (props) => {
   //cardata
   const [cardata, setCarData] = useState({})
 
-  const loadcardata = async () => {
-    await axios.get(`http://localhost:8000/api/cardata/${props.cardataid}`)
-      .then(async(response) => {
-        let tempcardata = response.data[0];
-        if (tempcardata.latest_recalibration_date)
-          tempcardata.latest_recalibration_date = tempcardata.latest_recalibration_date.slice(0, 10);
-        setCarData(tempcardata);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
   const clickSubmit = event => {
     DeleteCarDatasUnits();
   }
 
   async function DeleteCarDatasUnits() {
-    //create archivecardata
-    await axios.get(`http://localhost:8000/api/cardata/${props.cardataid}`)
-    .then(response => {
-      let tempcardata = response.data[0];
-      delete tempcardata._id;
-      let result = axios.post(`http://localhost:8000/api/archivecardata`, tempcardata);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
     //delete cardata units
     var tempcardataid = props.cardataid;
     let tempcardata = { ...cardata };
-    tempcardata.gdod=null;
-    tempcardata.hativa=null;
-    tempcardata.ogda=null;
-    tempcardata.pikod=null;
-    let result = await axios.put(`http://localhost:8000/api/cardata/${tempcardataid}`, tempcardata)
+    let result = await axios.put(`http://localhost:8000/api/reservevisits/remove/${tempcardataid}`)
 
-    toast.success(`צ' נמחק בהצלחה`);
+    toast.success(`איש מילואים נמחק בהצלחה`);
     props.ToggleForModal();
   }
 
   function init() {
-    if (props.cardataid != undefined) {
-      loadcardata();
-    }
   }
 
   useEffect(() => {
-    if (props.isOpen == true)
       init();
-    else {
-      setCarData({})
-    }
   }, [props.isOpen])
 
   return (
@@ -107,8 +73,7 @@ const CarDataFormModalDelete = (props) => {
           <CardBody style={{ direction: 'rtl' }}>
             <Container>
               <div style={{ textAlign: 'center', paddingTop: '20px' }}>
-                <h3>האם אתה בטוח שברצונך למחוק את הכלי מהיחידה?</h3>
-                <h3>נתוני הצ' לא ימחקו ויהיה ניתן לשייך אותו ליחידה בעתיד</h3>
+                <h3>האם אתה בטוח שברצונך למחוק את האיש מילואים?</h3>
                 <div style={{ textAlign: 'center', paddingTop: '20px' }}>
                 <button className="btn-new-delete" onClick={clickSubmit}>מחק</button>
                 </div>
