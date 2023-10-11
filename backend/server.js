@@ -44,6 +44,10 @@ app.use("/api", ogdaRoutes);
 app.use("/api", pikodRoutes);
 //general routes
 
+const reservevisitsRoutes = require("./routes/reservevisits");
+app.use('/api', reservevisitsRoutes)
+
+
 if (process.env.NODE_ENV === "production") {
 	//set static folder
 	app.use(express.static("frontend/build"));

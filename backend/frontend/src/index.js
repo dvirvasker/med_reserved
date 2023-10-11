@@ -37,6 +37,8 @@ import UnitTreePage from "views/general/unittreepage/UnitTreePage";
 import AboutPage from "views/general/aboutpage/AboutPage";
 import StatisticsPage from "views/general/statisticspage/StatisticsPage";
 
+import Miluimpage from "views/general/miluimpage/Miluimpage"
+
 ReactDOM.render(
   <>
     <Provider store={store}>
@@ -62,6 +64,7 @@ ReactDOM.render(
               <LoggedinRoute path="/unittreepage/:unittype/:unitid" exact component={UnitTreePage} />
               <LoggedinRoute path="/dashboard/:unittype/:unitid/:cartype/:carid/:isfromunittree" exact component={DashboardPage} />
               <LoggedinRoute path="/statisticspage" exact component={StatisticsPage} />
+              <LoggedinRoute path="/miluimpage" exact component={Miluimpage} />
               {/*///////////////////////////////////////////LoggedIn Routes/////////////////////////////////////////////////*/}
               <Redirect from="/" to="/signin" />
             </Switch>
