@@ -33,6 +33,18 @@ export default function SignUpForm() {
 		//
 		site_permission: "צפייה ועריכה",
 	});
+	const [units, setUnits] = useState([]);
+
+	function getUnits() {
+		axios
+			.get(`http://localhost:8000/api/units`)
+			.then((res) => {
+				setUnits(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	const passport = (event) => {
 		axios
@@ -174,6 +186,7 @@ export default function SignUpForm() {
 
 	useEffect(() => {
 		// passport();
+		getUnits();
 	}, []);
 
 	const signUpForm = () => (
@@ -232,10 +245,10 @@ export default function SignUpForm() {
 												}}
 											>
 												<Select
-													data={"check"}
+													data={units}
 													handleChange2={handleChange2}
-													name={"gdodid"}
-													val={undefined}
+													name={"unit"}
+													val={data.unit ? data.unit : undefined}
 												/>
 											</FormGroup>
 										</>

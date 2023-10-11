@@ -83,9 +83,10 @@ function Signin() {
 			console.log(user);
 			if (user && user.validated == true) {
 				if (user.role === "0") {
-					history.push(`/dashboard/admin/0/magadal/0/false`);
+					history.push(`/dashboard/`);
 				}
 				if (user.role === "1") {
+					//! change to table
 					history.push(`/dashboard/admin/0/magadal/0/false`);
 				}
 			} else {

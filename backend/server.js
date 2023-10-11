@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const CronJob = require("cron").CronJob;
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -28,6 +29,23 @@ mongoose
 	.then(() => console.log("Mongo connected"))
 	.catch((err) => console.log(err));
 
+const mongo = mongoose.connection;
+
+const updateCollections = async () => {
+	const collection = mongo.collection("reservevisits");
+	await collection.updateMany({}, { $set: { TodayPresent: false } });
+};
+
+new CronJob(
+	"0 0 * * *",
+	async () => {
+		await updateCollections();
+	},
+	null,
+	true,
+	"Asia/Jerusalem"
+);
+
 //user routes
 const authRoutes = require("./routes/authentication/auth");
 const userRoutes = require("./routes/authentication/user");
@@ -38,10 +56,15 @@ const gdodRoutes = require("./routes/units/gdod");
 const hativaRoutes = require("./routes/units/hativa");
 const ogdaRoutes = require("./routes/units/ogda");
 const pikodRoutes = require("./routes/units/pikod");
+const unitsRoutes = require("./routes/units/units");
+app.use("/api", unitsRoutes);
 app.use("/api", gdodRoutes);
 app.use("/api", hativaRoutes);
 app.use("/api", ogdaRoutes);
 app.use("/api", pikodRoutes);
+//reservevisits routes
+const reservevisitsRoutes = require("./routes/reservevisits/reservevisits");
+app.use("/api", reservevisitsRoutes);
 //general routes
 
 if (process.env.NODE_ENV === "production") {
