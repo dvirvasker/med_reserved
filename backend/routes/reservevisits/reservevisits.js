@@ -9,13 +9,11 @@ const {
 } = require("../../controllers/reservevisits/reservevisits.js");
 
 // find spec
+router.put("/reservevisits/remove/:id", remove);
+router.get("/reservevisits/:id", read);
 router.post("/reservevisits", create);
 
-router.get("/reservevisits/:id", read);
-
 router.put("/reservevisits/:reservevisitsId", update);
-
-router.post("/reservevisits/remove/:id", remove);
 
 router.get("/reservevisits", find);
 

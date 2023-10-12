@@ -36,10 +36,13 @@ const CarDataFormModal = (props) => {
 	//cardata
 	const [cardata, setCarData] = useState({});
 	const [units, setUnits] = useState([]);
-
+	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
+	// התייצב היום
 	const [isChecked2, setIsChecked2] = useState(false);
+	// חייגן
 	const [isChecked3, setIsChecked3] = useState(false);
+	// שמפ
 	const [isChecked4, setIsChecked4] = useState(false);
 
 	const loadcardata = async () => {
@@ -47,6 +50,25 @@ const CarDataFormModal = (props) => {
 			.get(`http://localhost:8000/api/reservevisits/${props.cardataid}`)
 			.then(async (response) => {
 				let tempcardata = response.data[0];
+				Object.keys(tempcardata).map((key) => {
+					switch (key) {
+						case "dailSent":
+							setIsChecked3(tempcardata[key]);
+							break;
+						case "present":
+							setIsChecked1(tempcardata[key]);
+							break;
+						case "shamapOpen":
+							setIsChecked4(tempcardata[key]);
+							break;
+						case "todayPresent":
+							setIsChecked2(tempcardata[key]);
+							break;
+
+						default:
+							break;
+					}
+				});
 				setCarData(tempcardata);
 			})
 			.catch((error) => {
@@ -61,7 +83,7 @@ const CarDataFormModal = (props) => {
 
 	function getUnits() {
 		axios
-			.get(`http://localhost:8000/api/units`)
+			.get(`http://localhost:8000/api/units/${user.unit}`)
 			.then((res) => {
 				setUnits(res.data);
 			})

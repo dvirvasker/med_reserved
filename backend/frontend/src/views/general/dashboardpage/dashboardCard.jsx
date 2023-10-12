@@ -90,6 +90,20 @@ function DashboardCard(props) {
 	return (
 		<Col xs={12} md={3}>
 			<Card style={{ boxShadow: "rgb(123 123 123 / 20%) 0px 2px 5px 5px" }}>
+				<CardHeader style={{ padding: "0px" }}>
+					<div style={{ textAlign: "right" }}>
+						<h3
+							style={{
+								textAlign: "center",
+								fontWeight: "bold",
+								marginTop: "0px",
+								marginBottom: "0px",
+							}}
+						>
+							התייצבות יומית {props.unit}
+						</h3>
+					</div>
+				</CardHeader>
 				<CardBody
 					style={{ textAlign: "center", margin: "auto", cursor: "pointer" }}
 					onClick={(e) => toggleCollapse(e)}

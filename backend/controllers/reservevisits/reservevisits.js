@@ -22,7 +22,7 @@ exports.findbyunitid = (req, res) => {
 };
 
 exports.read = async (req, res) => {
-	const reservevisits = await Reservevisits.findById(req.params.id);
+	const reservevisits = await Reservevisit.findById(req.params.id);
 	if (!reservevisits) {
 		res.status(500).json({ message: 'הרמ"מ לא נמצא' });
 	} else {
@@ -31,7 +31,7 @@ exports.read = async (req, res) => {
 };
 
 exports.create = (req, res) => {
-	const reservevisits = new Reservevisits(req.body);
+	const reservevisits = new Reservevisit(req.body);
 	reservevisits.save((err, data) => {
 		if (err) {
 			return res.status(400).json({
@@ -43,13 +43,13 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-	Reservevisits.findByIdAndUpdate(req.params.reservevisitsId, req.body)
+	Reservevisit.findByIdAndUpdate(req.params.reservevisitsId, req.body)
 		.then((candidatepreference) => res.json(candidatepreference))
 		.catch((err) => res.status(400).json("Error: " + err));
 };
 
 exports.remove = (req, res) => {
-	Reservevisits.deleteOne({ _id: req.params.id })
+	Reservevisit.deleteOne({ _id: req.params.id })
 		.then((reservevisits) => res.json(reservevisits))
 		.catch((err) => res.status(400).json("Error: " + err));
 };

@@ -31,8 +31,21 @@ function DashboardPage({ match, theme }) {
 	const [units, setUnits] = useState([]);
 	const [reservevisits, setReservevisits] = useState({});
 	//redux
-	async function init() {
-		setIsdataloaded(false);
+
+	function getUnits() {
+		axios
+			.get(`http://localhost:8000/api/units`)
+			.then((res) => {
+				console.log(res.data);
+				let tmp = {};
+				res.data.map((unit) => {
+					tmp[unit._id] = unit.name;
+				});
+				setUnits(tmp);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	function getReservevisits() {
@@ -56,14 +69,9 @@ function DashboardPage({ match, theme }) {
 	}
 
 	useEffect(() => {
-		// if (reduxcardata.length > 0) {
-		// 	init();
-		// }
-	}, [match]);
-
-	useEffect(() => {
 		//! placeholder
 		setIsdataloaded(true);
+		getUnits();
 		getReservevisits();
 	}, []);
 
@@ -75,7 +83,7 @@ function DashboardPage({ match, theme }) {
 		<>
 			<Row>
 				{Object.keys(reservevisits).map((key) => (
-					<DashboardCard data={reservevisits[key]} />
+					<DashboardCard data={reservevisits[key]} unit={units[key]} />
 				))}
 			</Row>
 		</>
