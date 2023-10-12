@@ -33,6 +33,7 @@ function DashboardCard(props) {
 		shamapOpen: 0,
 		present: 0,
 	});
+	const [color, setColor] = useState();
 
 	const titles = useRef({
 		todayPresent: 0,
@@ -76,6 +77,16 @@ function DashboardCard(props) {
 		// console.log(tmp_true);
 		// console.log(tmp_false);
 		// console.log(tmp);
+		// console.log(tmp.todayPresent);
+		if (tmp.todayPresent < 60) {
+			setColor("#ff2128");
+		}
+		if (tmp.todayPresent > 60 && tmp.todayPresent < 80) {
+			setColor("#ffca3a");
+		}
+		if (tmp.todayPresent > 80 && tmp.todayPresent <= 100) {
+			setColor("#8ac926");
+		}
 		setProcessedData(tmp);
 	}
 
@@ -121,7 +132,8 @@ function DashboardCard(props) {
 									/*text={`${value}%`}*/ styles={{
 										root: {},
 										path: {
-											stroke: `#ff2128`,
+											stroke: color,
+
 											strokeLinecap: "butt",
 											transition: "stroke-dashoffset 0.5s ease 0s",
 										},
@@ -132,7 +144,7 @@ function DashboardCard(props) {
 											transformOrigin: "center center",
 										},
 										text: {
-											fill: "#ff2128",
+											fill: color,
 											fontSize: "18px",
 										},
 										background: {

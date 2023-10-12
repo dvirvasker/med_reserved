@@ -18,7 +18,7 @@ import {
 
 import { ThemeContext, themes } from "contexts/ThemeContext";
 
-import logobazak2 from "assets/img/logobazak2.png";
+import mgm from "assets/img/mgm.png";
 
 import home from "assets/img/home3.png";
 import home_white from "assets/img/home3_white.png";
@@ -82,7 +82,7 @@ function SidebarHativa(props) {
 	return (
 		<>
 			<div className="logo">
-				<img src={logobazak2}></img>
+				<img src={mgm}></img>
 			</div>
 			<Nav style={{ textAlign: "right" }}>
 				<li>

@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
 		// hashed_password: {type: String,required: true},
 		// salt: String,
 		personalnumber: { type: String, trim: true, unique: true, require: true },
-		role: { type: String, default: "0" },
+		role: { type: String, default: "1" },
 		validated: { type: Boolean, default: true },
 		unit: { type: String },
 		//

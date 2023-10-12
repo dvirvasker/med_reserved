@@ -23,7 +23,7 @@ import Select from "components/general/Select/AnimatedSelect";
 export default function SignUpForm() {
 	const [data, setData] = useState({
 		personalnumber: "",
-		role: "",
+		role: 1,
 		unit: "",
 		errortype: "",
 		error: false,
@@ -84,7 +84,7 @@ export default function SignUpForm() {
 			flag = false;
 			ErrorReason += "שם ריק \n";
 		}
-		if (data.lastname == "") {
+		if (data.unit == "") {
 			flag = false;
 			ErrorReason += "שם משפחה ריק \n";
 		}
@@ -127,22 +127,23 @@ export default function SignUpForm() {
 		event.preventDefault();
 		setData({ ...data, loading: true, successmsg: false, error: false });
 		const user = {
-			role: data.role,
+			role: 1,
 			personalnumber: data.personalnumber,
 			unit: data.unit,
 
 			site_permission: data.site_permission,
 		};
+		console.log(user);
 		axios
 			.post(`http://localhost:8000/api/signup`, user)
 			.then((res) => {
 				setData({ ...data, loading: false, error: false, successmsg: true });
 				toast.success(`הרשמתך נקלטה בהצלחה`);
 				history.push(`/signin`);
-				console.log(res.data);
+				// console.log(res.data);
 			})
 			.catch((error) => {
-				console.log(error);
+				// console.log(error);
 				setData({
 					...data,
 					errortype: error.response.data.error,
@@ -210,53 +211,26 @@ export default function SignUpForm() {
 										/>
 									</FormGroup>
 
-									<div style={{ textAlign: "right", paddingTop: "10px" }}>
-										הרשאה
-									</div>
-									<FormGroup dir="rtl">
-										<Input
-											type="select"
-											name="role"
-											value={data.role}
-											onChange={handleChange}
+									<>
+										<div style={{ textAlign: "right", paddingTop: "10px" }}>
+											משתמש יחידה
+										</div>
+										<FormGroup
+											dir="rtl"
+											style={{
+												justifyContent: "right",
+												alignContent: "right",
+												textAlign: "right",
+											}}
 										>
-											<option value="">הרשאה</option>
-											<option value="0">מנהל מערכת</option>
-											{/* <option value="5">משתמש כלל צה"ל</option> */}
-											<option value="1">משתמש יחידה</option>
-										</Input>
-									</FormGroup>
-
-									{data.role === "0" ? (
-										<div style={{ textAlign: "right", paddingTop: "10px" }}>
-											מנהל מערכת
-										</div>
-									) : data.role === "1" ? (
-										<>
-											<div style={{ textAlign: "right", paddingTop: "10px" }}>
-												משתמש יחידה
-											</div>
-											<FormGroup
-												dir="rtl"
-												style={{
-													justifyContent: "right",
-													alignContent: "right",
-													textAlign: "right",
-												}}
-											>
-												<Select
-													data={units}
-													handleChange2={handleChange2}
-													name={"unit"}
-													val={data.unit ? data.unit : undefined}
-												/>
-											</FormGroup>
-										</>
-									) : data.role === "" ? (
-										<div style={{ textAlign: "right", paddingTop: "10px" }}>
-											נא להכניס הרשאה
-										</div>
-									) : null}
+											<Select
+												data={units}
+												handleChange2={handleChange2}
+												name={"unit"}
+												val={data.unit ? data.unit : undefined}
+											/>
+										</FormGroup>
+									</>
 
 									{/* {data.role != "" && data.role != "0" && data.role != "5" ? (
 										<>
@@ -276,7 +250,6 @@ export default function SignUpForm() {
 											</FormGroup>
 										</>
 									) : null} */}
-
 									<div className="text-center">
 										<button onClick={clickSubmit} className="btn-new-blue">
 											הרשם

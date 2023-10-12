@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
 	useTable,
 	useSortBy,
@@ -12,10 +12,12 @@ import { GlobalFilter } from "./GlobalFilter";
 import axios from "axios";
 import { signin, authenticate, isAuthenticated } from "auth/index";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import { Row, Col } from "reactstrap";
+import { Row, Col, Input } from "reactstrap";
 import CarDataFormModal from "views/general/miluimpage/CarDataFormModal";
 import CarDataFormModalDelete from "views/general/miluimpage/CarDataFormModalDelete";
 import styles from "./SortingTable.module.css";
+import ReactHTMLTableToExcel from "react-html-table-to-excel";
+
 //redux
 
 const SortingTable = (props) => {
@@ -43,6 +45,8 @@ const SortingTable = (props) => {
 	//excel download
 	const XLSX = require("xlsx");
 	//redux
+
+	const search = useRef();
 
 	function Toggle(evt) {
 		if (evt.currentTarget.value == "") {
@@ -133,6 +137,20 @@ const SortingTable = (props) => {
 
 	return (
 		<>
+			<div style={{ float: "right", paddingBottom: "5px" }}>
+				<ReactHTMLTableToExcel
+					id="test-table-xls-button"
+					className="btn-green"
+					table="table-to-xls-MiluimSortingTable"
+					filename="קובץ -  אנשי מילואים"
+					sheet="קובץ -  אנשי מילואים"
+					buttonText="הורד כקובץ אקסל"
+					style={{ float: "right" }}
+				/>
+				<div style={{ textAlign: "right", marginTop: "5%" }}>
+					<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+				</div>
+			</div>
 			<button
 				className="btn-new-blue"
 				value={undefined}
@@ -165,7 +183,7 @@ const SortingTable = (props) => {
 			>
 				{/*filter */}
 
-				<table {...getTableProps()} id="table-to-xls">
+				<table id="table-to-xls-MiluimSortingTable" {...getTableProps()}>
 					<thead>
 						{headerGroups.map((headerGroup) => (
 							<tr {...headerGroup.getHeaderGroupProps()}>
@@ -201,6 +219,57 @@ const SortingTable = (props) => {
 								<tr className="">
 									{row.cells.map((cell) => {
 										if (cell.column.id == "name") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{cell.value}
+													</div>
+												</td>
+											);
+										}
+										if (cell.column.id == "family") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{cell.value}
+													</div>
+												</td>
+											);
+										}
+										if (cell.column.id == "pesonal_number") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{cell.value}
+													</div>
+												</td>
+											);
+										}
+										if (cell.column.id == "civilian_number") {
 											return (
 												<td>
 													<div

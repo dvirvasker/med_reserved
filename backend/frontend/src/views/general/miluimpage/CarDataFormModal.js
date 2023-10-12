@@ -126,6 +126,14 @@ const CarDataFormModal = (props) => {
 			flag = false;
 			ErrorReason += " שם ריק \n";
 		}
+		if (cardata.family == "") {
+			flag = false;
+			ErrorReason += " שם משפחה ריק \n";
+		}
+		if (cardata.pesonal_number == "") {
+			flag = false;
+			ErrorReason += "  מספר אישי ריק \n";
+		}
 		if (
 			document.getElementById("seltype").options[
 				document.getElementById("seltype").selectedIndex
@@ -133,6 +141,32 @@ const CarDataFormModal = (props) => {
 		) {
 			flag = false;
 			ErrorReason += " סוג אירוע ריק \n";
+		}
+		try {
+			let c = cardata.personalnumber.charAt(0);
+			if (c >= "0" && c <= "9") {
+				// it is a number
+				let temppersonalnumber = cardata.personalnumber;
+				temppersonalnumber = "s" + temppersonalnumber;
+				cardata.personalnumber = temppersonalnumber;
+			} else {
+				// it isn't
+				if (c == c.toUpperCase()) {
+					//UpperCase Letter -Make Lowercase
+					let tempc = c.toLowerCase();
+					let temppersonalnumber = cardata.personalnumber;
+					temppersonalnumber = temppersonalnumber.substring(1);
+					temppersonalnumber = tempc + temppersonalnumber;
+					cardata.personalnumber = temppersonalnumber;
+				}
+				if (c == c.toLowerCase()) {
+					//LowerCase Letter - All Good
+				}
+			}
+		} catch (error) {
+			console.log(error);
+			flag = false;
+			ErrorReason += "  מספר אישי פגום \n";
 		}
 
 		console.log(typeof isChecked2);
@@ -280,6 +314,22 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
+										<h6 style={{}}>שם משפחה</h6>
+										<Input
+											placeholder="שם משפחה"
+											type="string"
+											name="family"
+											value={cardata.family}
+											onChange={handleChange}
+										/>
+									</Col>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
 										<h6 style={{}}>יחידה</h6>
 
 										<Select
@@ -394,6 +444,40 @@ const CarDataFormModal = (props) => {
 											type="string"
 											name="details"
 											value={cardata.details}
+											onChange={handleChange}
+										/>
+									</Col>
+								</Row>
+								<Row style={{ marginTop: "1%" }}>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>מספר אישי</h6>
+										<Input
+											placeholder="מספר אישי"
+											type="string"
+											name="pesonal_number"
+											value={cardata.pesonal_number}
+											onChange={handleChange}
+										/>
+									</Col>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>תעודת זהות</h6>
+										<Input
+											placeholder="תעודת זהות"
+											type="number"
+											name="civilian_number"
+											value={cardata.civilian_number}
 											onChange={handleChange}
 										/>
 									</Col>

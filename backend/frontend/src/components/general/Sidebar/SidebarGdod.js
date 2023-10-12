@@ -18,7 +18,7 @@ import {
 
 import { ThemeContext, themes } from "contexts/ThemeContext";
 
-import logobazak2 from "assets/img/logobazak2.png";
+import mgm from "assets/img/mgm.png";
 
 import home from "assets/img/home3.png";
 import home_white from "assets/img/home3_white.png";
@@ -82,9 +82,45 @@ function SidebarGdod(props) {
 	return (
 		<>
 			<div className="logo">
-				<img src={logobazak2}></img>
+				<img src={mgm}></img>
 			</div>
 			<Nav style={{ textAlign: "right" }}>
+				<li>
+					<NavLink
+						to={`/dashboard/`}
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={home} style={{ height: "20px" }}></img>
+								) : (
+									<img src={home_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									דף הבית
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
 				<li>
 					<NavLink
 						to="/miluimpage"
@@ -120,20 +156,8 @@ function SidebarGdod(props) {
 							</Col>
 						</Row>
 					</NavLink>
-					{/* <NavLink to={`/dashboard/gdod/${user.gdodid}/magadal/0/false`} style={{ margin: '0px' }} activeClassName="sidebar_active_link">
-            <Row style={{ direction: "rtl" }}>
-              <Col xs={12} md={3} style={{ paddingLeft: "0px", textAlign: 'center', alignSelf: 'center' }}>
-                {props.theme == 'white' ? <img src={home} style={{ height: "20px" }}></img>
-                  : <img src={home_white} style={{ height: "20px" }}></img>}
-              </Col>
-              <Col xs={12} md={9} style={{ paddingRight: "0px" }}>
-                <h4 style={{ margin: "0px", paddingTop: '6px', paddingBottom: '6px' }}>
-                  דף הבית
-                </h4>
-              </Col>
-            </Row>
-          </NavLink> */}
 				</li>
+
 				<li>
 					{/* <NavLink
 						to={`/statisticspage`}

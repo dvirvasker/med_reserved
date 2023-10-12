@@ -22,6 +22,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 //redux
 import { useSelector, useDispatch } from "react-redux";
 import DashboardCard from "./dashboardCard";
+import history from "../../../history";
 
 function DashboardPage({ match, theme }) {
 	//user
@@ -36,7 +37,7 @@ function DashboardPage({ match, theme }) {
 		axios
 			.get(`http://localhost:8000/api/units`)
 			.then((res) => {
-				console.log(res.data);
+				// console.log(res.data);
 				let tmp = {};
 				res.data.map((unit) => {
 					tmp[unit._id] = unit.name;
@@ -61,7 +62,14 @@ function DashboardPage({ match, theme }) {
 					return result;
 				}, {});
 				// console.log(groupedEntries);
-				setReservevisits(groupedEntries);
+				if (user.role == 0) {
+					setReservevisits(groupedEntries);
+				} else if (user.role == 1) {
+					// console.log(groupedEntries[user.unit]);
+					setReservevisits(groupedEntries[user.unit]);
+				} else {
+					history.push("/signin");
+				}
 			})
 			.catch((err) => {
 				console.log(err);
@@ -70,10 +78,28 @@ function DashboardPage({ match, theme }) {
 
 	useEffect(() => {
 		//! placeholder
-		setIsdataloaded(true);
+		// setIsdataloaded(true);
 		getUnits();
 		getReservevisits();
 	}, []);
+
+	useEffect(() => {
+		if (user.role == 0) {
+			if (Object.keys(reservevisits).length > 0) {
+				setIsdataloaded(true);
+			}
+		} else {
+			if (user.role == 1) {
+				if (Array.isArray(reservevisits) && reservevisits.length > 0) {
+					setIsdataloaded(true);
+				} else {
+					getReservevisits();
+				}
+			} else {
+				history.push("/signin");
+			}
+		}
+	}, [reservevisits]);
 
 	return !isdataloaded ? (
 		<div style={{ width: "50%", marginTop: "30%" }}>
@@ -82,9 +108,13 @@ function DashboardPage({ match, theme }) {
 	) : (
 		<>
 			<Row>
-				{Object.keys(reservevisits).map((key) => (
-					<DashboardCard data={reservevisits[key]} unit={units[key]} />
-				))}
+				{user.role == 0 ? (
+					Object.keys(reservevisits).map((key) => (
+						<DashboardCard data={reservevisits[key]} unit={units[key]} />
+					))
+				) : user.role == 1 ? (
+					<DashboardCard data={reservevisits} unit={units[user.unit]} />
+				) : null}
 			</Row>
 		</>
 	);
