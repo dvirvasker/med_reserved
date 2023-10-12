@@ -186,7 +186,7 @@ const SortingTable = (props) => {
 				<table id="table-to-xls-MiluimSortingTable" {...getTableProps()}>
 					<thead>
 						{headerGroups.map((headerGroup) => (
-							<tr {...headerGroup.getHeaderGroupProps()}>
+							<tr className={styles.tr} {...headerGroup.getHeaderGroupProps()}>
 								{headerGroup.headers.map((column) => (
 									<th style={{ position: "sticky", top: "-2px" }}>
 										<div
