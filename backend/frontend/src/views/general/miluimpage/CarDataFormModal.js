@@ -143,21 +143,21 @@ const CarDataFormModal = (props) => {
 			ErrorReason += " סוג אירוע ריק \n";
 		}
 		try {
-			let c = cardata.personalnumber.charAt(0);
+			let c = cardata.pesonal_number.charAt(0);
 			if (c >= "0" && c <= "9") {
 				// it is a number
-				let temppersonalnumber = cardata.personalnumber;
+				let temppersonalnumber = cardata.pesonal_number;
 				temppersonalnumber = "s" + temppersonalnumber;
-				cardata.personalnumber = temppersonalnumber;
+				cardata.pesonal_number = temppersonalnumber;
 			} else {
 				// it isn't
 				if (c == c.toUpperCase()) {
 					//UpperCase Letter -Make Lowercase
 					let tempc = c.toLowerCase();
-					let temppersonalnumber = cardata.personalnumber;
+					let temppersonalnumber = cardata.pesonal_number;
 					temppersonalnumber = temppersonalnumber.substring(1);
 					temppersonalnumber = tempc + temppersonalnumber;
-					cardata.personalnumber = temppersonalnumber;
+					cardata.pesonal_number = temppersonalnumber;
 				}
 				if (c == c.toLowerCase()) {
 					//LowerCase Letter - All Good

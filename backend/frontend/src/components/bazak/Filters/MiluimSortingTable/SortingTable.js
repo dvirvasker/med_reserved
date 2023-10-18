@@ -123,6 +123,85 @@ const SortingTable = (props) => {
 		usePagination
 	);
 
+	function FixDataAndExportToExcel() {
+		let tempdata_to_excel = [];
+		for (let i = 0; i < data.length; i++) {
+			tempdata_to_excel.push({ ...data[i] })
+		}
+	
+		for (let i = 0; i < tempdata_to_excel.length; i++) {
+
+			tempdata_to_excel[i].name ? tempdata_to_excel[i].name_m = tempdata_to_excel[i].name : tempdata_to_excel[i].name_m = " ";
+		  tempdata_to_excel[i].family ? tempdata_to_excel[i].lastname = tempdata_to_excel[i].family : tempdata_to_excel[i].lastname = " ";
+			tempdata_to_excel[i].pesonal_number?tempdata_to_excel[i].personalnumber=tempdata_to_excel[i].pesonal_number:tempdata_to_excel[i].personalnumber = " ";
+
+		  tempdata_to_excel[i].present ? tempdata_to_excel[i].present_m = "כן" : tempdata_to_excel[i].present_m = "לא";
+		  tempdata_to_excel[i].todayPresent ? tempdata_to_excel[i].todayPresent_m = "כן" : tempdata_to_excel[i].todayPresent_m = "לא";
+		  tempdata_to_excel[i].dailSent ? tempdata_to_excel[i].dailSent_m = "כן" : tempdata_to_excel[i].dailSent_m = "לא";
+		  tempdata_to_excel[i].shamapOpen ? tempdata_to_excel[i].shamapOpen_m = "כן" : tempdata_to_excel[i].shamapOpen_m = "לא";
+
+		  tempdata_to_excel[i].unit ? tempdata_to_excel[i].unit_m = tempdata_to_excel[i].unit : tempdata_to_excel[i].unit_m = " ";
+		  tempdata_to_excel[i].subject ? tempdata_to_excel[i].subject_m = tempdata_to_excel[i].subject : tempdata_to_excel[i].subject_m = " ";
+
+
+		}
+	
+		//export to excel -fix 
+		for (let i = 0; i < tempdata_to_excel.length; i++) {
+			//delete unwanted fields
+			delete tempdata_to_excel[i]._id;
+			delete tempdata_to_excel[i].present;
+			delete tempdata_to_excel[i].todayPresent;
+			delete tempdata_to_excel[i].dailSent;
+			delete tempdata_to_excel[i].shamapOpen;
+			delete tempdata_to_excel[i].name;
+			delete tempdata_to_excel[i].family;
+			delete tempdata_to_excel[i].unit;
+			delete tempdata_to_excel[i].subject;
+
+			delete tempdata_to_excel[i].pesonal_number;
+
+			delete tempdata_to_excel[i].details;
+			delete tempdata_to_excel[i].__v;
+
+			delete tempdata_to_excel[i].civilian_number;
+			delete tempdata_to_excel[i].TodayPresent;
+
+	  
+			//add non-existing fields - 8
+			if (!tempdata_to_excel[i].name_m) { tempdata_to_excel[i].name_m = " " }
+			if (!tempdata_to_excel[i].lastname) { tempdata_to_excel[i].lastname = " " }
+			if (!tempdata_to_excel[i].personalnumber) { tempdata_to_excel[i].hativa_name = " " }
+			
+			if (!tempdata_to_excel[i].unit_m) { tempdata_to_excel[i].unit_m = " " }
+			if (!tempdata_to_excel[i].subject_m) { tempdata_to_excel[i].subject_m = " " }
+			if (!tempdata_to_excel[i].details_m) { tempdata_to_excel[i].details_m = " " }
+
+		  }
+	  
+		console.log(tempdata_to_excel)
+	
+		let EXCEL_EXTENSION = '.xlsx';
+		let worksheet = XLSX.WorkSheet;
+		let sheetName = 'סיכום אנשי מילואים';
+	
+		const headers = {
+		  
+			name_m:'שם',lastname:'שם משפחה',personalnumber:'מספר אישי', present_m: 'התייצב', todayPresent_m: 'התייצב היום', dailSent_m: 'נשלח חייגן',
+			shamapOpen_m: 'נפתח שמ"פ', unit_m: 'יחידה', subject_m: 'מקצןע', 
+		};
+		tempdata_to_excel.unshift(headers); // if custom header, then make sure first row of data is custom header 
+	
+		worksheet = XLSX.utils.json_to_sheet(tempdata_to_excel, { skipHeader: true });
+	
+		const workbook = XLSX.utils.book_new();
+		const fileName = 'סיכום אנשי מילואים' + EXCEL_EXTENSION;
+		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+		XLSX.writeFile(workbook, fileName);
+	
+		window.location.reload();
+	  }
+
 	//window
 	const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -137,20 +216,13 @@ const SortingTable = (props) => {
 
 	return (
 		<>
-			<div style={{ float: "right", paddingBottom: "5px" }}>
-				<ReactHTMLTableToExcel
-					id="test-table-xls-button"
-					className="btn-green"
-					table="table-to-xls-MiluimSortingTable"
-					filename="קובץ -  אנשי מילואים"
-					sheet="קובץ -  אנשי מילואים"
-					buttonText="הורד כקובץ אקסל"
-					style={{ float: "right" }}
-				/>
+			<div style={{ float: 'right', paddingBottom: '5px' }}>
+            <button className="btn-green" onClick={FixDataAndExportToExcel}>הורד כקובץ אקסל</button>
+           </div>
+
 				<div style={{ textAlign: "right", marginTop: "5%" }}>
 					<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 				</div>
-			</div>
 			<button
 				className="btn-new-blue"
 				value={undefined}

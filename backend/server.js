@@ -33,7 +33,7 @@ const mongo = mongoose.connection;
 
 const updateCollections = async () => {
 	const collection = mongo.collection("reservevisits");
-	await collection.updateMany({}, { $set: { TodayPresent: false } });
+	await collection.updateMany({}, { $set: { todayPresent: false } });
 };
 
 new CronJob(
