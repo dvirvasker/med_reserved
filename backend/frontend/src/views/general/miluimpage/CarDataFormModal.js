@@ -200,8 +200,15 @@ const CarDataFormModal = (props) => {
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
+				if(isChecked2){
+					Createarchive();
+				}
 				Update();
+			
 			} else {
+				if(isChecked2){
+					Createarchive();
+				}
 				Create();
 			}
 		} else {
@@ -210,7 +217,6 @@ const CarDataFormModal = (props) => {
 	};
 
 	async function Create() {
-		//create ramam
 		let tempramam = { ...cardata };
 		tempramam.unitid = props.unitid;
 		tempramam.userid = user._id;
@@ -233,6 +239,21 @@ const CarDataFormModal = (props) => {
 		toast.success(`איש מילואים עודכן בהצלחה`);
 		props.ToggleForModal();
 	}
+
+	async function Createarchive() {
+		//update ramam
+		const currentDate = new Date();
+		let tempramam = { ...cardata, date: currentDate};
+		tempramam.unitid = props.unitid;
+		tempramam.userid = user._id;
+		let result = await axios.post(
+			`http://localhost:8000/api/archivedata`,
+			tempramam
+		);
+		// toast.success(`איש מילואים נוסף בהצלחה`);
+		props.ToggleForModal();
+	}
+
 
 	function init() {
 		if (props.cardataid != undefined) {

@@ -44,7 +44,10 @@ const SortingTable = (props) => {
 	const [isdataloaded, setIsdataloaded] = useState(false);
 	//excel download
 	const XLSX = require("xlsx");
-	//redux
+
+	// unit
+	const [unit, setUnit] = useState([]);
+	const [subject, setSubject] = useState([]);
 
 	const search = useRef();
 
@@ -74,6 +77,14 @@ const SortingTable = (props) => {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
 
+
+// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
+	function getname(idnum, arr) {
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i]._id == idnum) return arr[i].name;
+		}
+	}
+
 	async function CalculateDataArr() {
 		await axios
 			.get(`http://localhost:8000/api/reservevisits`)
@@ -86,6 +97,33 @@ const SortingTable = (props) => {
 				console.log(error);
 			});
 	}
+
+	const getUnit = async () => {
+		await axios
+			.get("http://localhost:8000/api/units")
+			.then((response) => {
+				setUnit(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	// ---------------------------- בארמי להוריד מהערה לוקח מידע מהקולקשיין של מקצועות -----------------------
+	// const getSubject = async () => {
+	// 	await axios
+	// 		.get("http://localhost:8000/api/subject")
+	// 		.then((response) => {
+	// 			setSubject(response.data);
+	// 			console.log(response.data);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error);
+	// 		});
+	// };
+	// ---------------------------------------------------------------------------------------------
+
 
 	function init() {
 		CalculateDataArr();
@@ -123,6 +161,7 @@ const SortingTable = (props) => {
 		usePagination
 	);
 
+	// ------------------ excel function -----------------------------------------------
 	function FixDataAndExportToExcel() {
 		let tempdata_to_excel = [];
 		for (let i = 0; i < data.length; i++) {
@@ -140,10 +179,13 @@ const SortingTable = (props) => {
 		  tempdata_to_excel[i].dailSent ? tempdata_to_excel[i].dailSent_m = "כן" : tempdata_to_excel[i].dailSent_m = "לא";
 		  tempdata_to_excel[i].shamapOpen ? tempdata_to_excel[i].shamapOpen_m = "כן" : tempdata_to_excel[i].shamapOpen_m = "לא";
 
-		  tempdata_to_excel[i].unit ? tempdata_to_excel[i].unit_m = tempdata_to_excel[i].unit : tempdata_to_excel[i].unit_m = " ";
+		  tempdata_to_excel[i].unit ? tempdata_to_excel[i].unit_m = getname(tempdata_to_excel[i].unit, unit) : tempdata_to_excel[i].unit_m = " ";
+
+// ------------------------ בארמי במקום השורה הזאת ----------------------------------------
 		  tempdata_to_excel[i].subject ? tempdata_to_excel[i].subject_m = tempdata_to_excel[i].subject : tempdata_to_excel[i].subject_m = " ";
-
-
+		//   ----------------------- לעשות את השורה הזאת ----------------------------------
+		//   tempdata_to_excel[i].subject ? tempdata_to_excel[i].subject_m = getname(tempdata_to_excel[i].subject, subject) : tempdata_to_excel[i].subject_m = " ";
+// -----------------------------------------------------------------------------------------
 		}
 	
 		//export to excel -fix 
@@ -158,15 +200,13 @@ const SortingTable = (props) => {
 			delete tempdata_to_excel[i].family;
 			delete tempdata_to_excel[i].unit;
 			delete tempdata_to_excel[i].subject;
-
 			delete tempdata_to_excel[i].pesonal_number;
-
 			delete tempdata_to_excel[i].details;
 			delete tempdata_to_excel[i].__v;
-
 			delete tempdata_to_excel[i].civilian_number;
 			delete tempdata_to_excel[i].TodayPresent;
-
+			delete tempdata_to_excel[i].createdAt;
+			delete tempdata_to_excel[i].updatedAt;
 	  
 			//add non-existing fields - 8
 			if (!tempdata_to_excel[i].name_m) { tempdata_to_excel[i].name_m = " " }
@@ -180,22 +220,26 @@ const SortingTable = (props) => {
 		  }
 	  
 		console.log(tempdata_to_excel)
+
+		const currentDate = new Date();
+		const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); 
+		const day = currentDate.getDate().toString().padStart(2, '0');
 	
 		let EXCEL_EXTENSION = '.xlsx';
 		let worksheet = XLSX.WorkSheet;
-		let sheetName = 'סיכום אנשי מילואים';
+		let sheetName = 'התייצבות מילואים ' + day +'.'+ month ;
 	
 		const headers = {
 		  
 			name_m:'שם',lastname:'שם משפחה',personalnumber:'מספר אישי', present_m: 'התייצב', todayPresent_m: 'התייצב היום', dailSent_m: 'נשלח חייגן',
-			shamapOpen_m: 'נפתח שמ"פ', unit_m: 'יחידה', subject_m: 'מקצןע', 
+			shamapOpen_m: 'נפתח שמ"פ', unit_m: 'יחידה', subject_m: 'מקצוע', 
 		};
 		tempdata_to_excel.unshift(headers); // if custom header, then make sure first row of data is custom header 
 	
 		worksheet = XLSX.utils.json_to_sheet(tempdata_to_excel, { skipHeader: true });
 	
 		const workbook = XLSX.utils.book_new();
-		const fileName = 'סיכום אנשי מילואים' + EXCEL_EXTENSION;
+		const fileName ='התייצבות מילואים ' + day +'.'+ month + EXCEL_EXTENSION;
 		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 		XLSX.writeFile(workbook, fileName);
 	
@@ -212,6 +256,11 @@ const SortingTable = (props) => {
 
 	useEffect(() => {
 		init();
+		getUnit();
+
+		// -------- באמרי להוריד מהערה -------
+		// getSubject();
+		// --------------------------------
 	}, []);
 
 	return (

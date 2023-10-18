@@ -65,6 +65,10 @@ app.use("/api", pikodRoutes);
 //reservevisits routes
 const reservevisitsRoutes = require("./routes/reservevisits/reservevisits");
 app.use("/api", reservevisitsRoutes);
+
+const archivedataRoutes = require("./routes/reservevisits/archivedata");
+app.use("/api", archivedataRoutes);
+
 //general routes
 
 if (process.env.NODE_ENV === "production") {
