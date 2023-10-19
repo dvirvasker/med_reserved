@@ -435,6 +435,7 @@ const SortingTable = (props) => {
 												return <td>לא</td>;
 											}
 										}
+//------------------ באמרי במקום הif הזה ------------------------------------------------- 
 										if (cell.column.id == "subject") {
 											return (
 												<td>
@@ -452,6 +453,43 @@ const SortingTable = (props) => {
 												</td>
 											);
 										}
+//------------------ צריך לעשות את זה ------------------------------------------------------ 
+										// if (cell.column.id == "subject") {
+										// 	return (
+										// 		<td>
+										// 			<div
+										// 				style={{
+										// 					width: "100%",
+										// 					height: "40px",
+										// 					margin: "0",
+										// 					padding: "0",
+										// 					overflow: "auto",
+										// 				}}
+										// 			>
+										// 				{getname(cell.value,subject)}
+										// 			</div>
+										// 		</td>
+										// 	);
+										// }
+// --------------------------------------------------------------------------------------------
+										if (cell.column.id == "unit") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{getname(cell.value,unit)}
+													</div>
+												</td>
+											);
+										}
+
 										if (cell.column.id == "details") {
 											return (
 												<td>

@@ -47,6 +47,11 @@ export const COLUMNS = [
 		Filter: ColumnFilter,
 	},
 	{
+		Header: "יחידה",
+		accessor: "unit",
+		Filter: ColumnFilter,
+	},
+	{
 		Header: "הערות",
 		accessor: "details",
 		Filter: ColumnFilter,

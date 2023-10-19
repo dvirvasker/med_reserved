@@ -26,6 +26,8 @@ const SortingTable = ({ match }) => {
 	const [ogdas, setOgdas] = useState([]);
 	const [pikods, setPikods] = useState([]);
 
+	const [unit, setUnit] = useState([]);
+
 	const loadPikods = async () => {
 		let response = await axios.get("http://localhost:8000/api/pikod");
 		setPikods(response.data);
@@ -45,6 +47,12 @@ const SortingTable = ({ match }) => {
 		let response = await axios.get("http://localhost:8000/api/gdod");
 		setGdods(response.data);
 	};
+
+	function getname(idnum, arr) {
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i]._id == idnum) return arr[i].name;
+		}
+	}
 
 	const UserDelete = (UserId) => {
 		axios
@@ -169,6 +177,19 @@ const SortingTable = ({ match }) => {
 		setData(myArrayFiltered6);
 	};
 
+	const getUnit = async () => {
+		await axios
+			.get("http://localhost:8000/api/units")
+			.then((response) => {
+				setUnit(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+
 	const {
 		getTableProps,
 		getTableBodyProps,
@@ -210,6 +231,12 @@ const SortingTable = ({ match }) => {
 			setOriginaldata(result.data);
 		})();
 	}, []);
+
+	useEffect(() => {
+		getUnit();
+	}, []);
+
+
 
 	useEffect(() => {
 		applyfiltersontodata();
@@ -311,61 +338,23 @@ const SortingTable = ({ match }) => {
 												if (cell.value == "1") return <td>משתמש יחידה</td>;
 											}
 											if (cell.column.id == "unit") {
-												if (
-													row.original.role == "0" ||
-													row.original.role == "5"
-												)
-													return <td></td>;
-												if (row.original.role == "1")
-													return row.original.gdodid ? (
-														<td {...cell.getCellProps()}>
-															{gdods.map((gdod, index) =>
-																gdod._id == row.original.gdodid
-																	? gdod.name
-																	: null
-															)}
-														</td>
-													) : (
-														<td {...cell.getCellProps()}></td>
-													);
-												if (row.original.role == "2")
-													return row.original.hativaid ? (
-														<td {...cell.getCellProps()}>
-															{hativas.map((hativa, index) =>
-																hativa._id == row.original.hativaid
-																	? hativa.name
-																	: null
-															)}
-														</td>
-													) : (
-														<td {...cell.getCellProps()}></td>
-													);
-												if (row.original.role == "3")
-													return row.original.ogdaid ? (
-														<td {...cell.getCellProps()}>
-															{ogdas.map((ogda, index) =>
-																ogda._id == row.original.ogdaid
-																	? ogda.name
-																	: null
-															)}
-														</td>
-													) : (
-														<td {...cell.getCellProps()}></td>
-													);
-												if (row.original.role == "4")
-													return row.original.pikodid ? (
-														<td {...cell.getCellProps()}>
-															{pikods.map((pikod, index) =>
-																pikod._id == row.original.pikodid
-																	? pikod.name
-																	: null
-															)}
-														</td>
-													) : (
-														<td {...cell.getCellProps()}></td>
-													);
+												return (
+													<td>
+														<div
+															style={{
+																width: "100%",
+																height: "40px",
+																margin: "0",
+																padding: "0",
+																overflow: "auto",
+															}}
+														>
+															{getname(cell.value,unit)}
+														</div>
+													</td>
+												);
 											}
-										}
+											}
 									})}
 									{/* {console.log(row.original._id)} */}
 									<td role="cell">
