@@ -36,6 +36,8 @@ const CarDataFormModal = (props) => {
 	//cardata
 	const [cardata, setCarData] = useState({});
 	const [units, setUnits] = useState([]);
+	const [jobs, setJobs] = useState([]);
+
 	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
 	// התייצב היום
@@ -92,6 +94,18 @@ const CarDataFormModal = (props) => {
 			});
 	}
 
+	function getJobs() {
+		axios
+			.get(`http://localhost:8000/api/job`)
+			.then((res) => {
+				setJobs(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+
 	function handleChange2(selectedOption, name) {
 		if (!(selectedOption.value == "בחר"))
 			setCarData({ ...cardata, [name]: selectedOption.value });
@@ -99,6 +113,15 @@ const CarDataFormModal = (props) => {
 			setCarData({ ...cardata, [name]: "" });
 		}
 	}
+
+	function handleChange10(selectedOption, name) {
+		if (!(selectedOption.value == "בחר"))
+			setCarData({ ...cardata, [name]: selectedOption.value });
+		else {
+			setCarData({ ...cardata, [name]: "" });
+		}
+	}
+
 
 	function handleChange3() {
 		setIsChecked1(!isChecked1);
@@ -142,6 +165,15 @@ const CarDataFormModal = (props) => {
 			flag = false;
 			ErrorReason += " סוג אירוע ריק \n";
 		}
+		if (
+			document.getElementById("selta").options[
+				document.getElementById("selta").selectedIndex
+			].value == "בחר"
+		) {
+			flag = false;
+			ErrorReason += " סוג תא ריק \n";
+		}
+
 		try {
 			let c = cardata.pesonal_number.charAt(0);
 			if (c >= "0" && c <= "9") {
@@ -263,6 +295,7 @@ const CarDataFormModal = (props) => {
 
 	useEffect(() => {
 		if (props.isOpen == true) {
+			getJobs();
 			getUnits();
 			init();
 		} else {
@@ -452,6 +485,51 @@ const CarDataFormModal = (props) => {
 											<option value={"מקצוע"}>{"מקצוע"}</option>
 										</Input>
 									</Col>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>תפקיד</h6>
+
+										<Select
+											data={jobs}
+											handleChange2={handleChange10}
+											name="job"
+											val={cardata.job}
+										/>
+									</Col>
+									</Row>
+									<Row>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>תא</h6>
+										<Input
+											placeholder="שם"
+											type="select"
+											name="ta"
+											value={cardata.ta}
+											onChange={handleChange}
+											id="selta"
+										>
+											<option value={"בחר"}>{"בחר"}</option>
+											<option value={"הפעלה"}>{"הפעלה"}</option>
+											<option value={"רפואה"}>{"רפואה"}</option>
+											<option value={"שליטה"}>{"שליטה"}</option>
+											<option value={"רישום ודיווח"}>{"רישום ודיווח"}</option>
+											<option value={"פרט ומשפחות"}>{"פרט ומשפחות"}</option>
+											<option value={"מפקד"}>{"מפקד"}</option>
+											<option value={"ללא"}>{"ללא"}</option>
+										</Input>
+									</Col>
+
 									<Col
 										style={{
 											justifyContent: "right",

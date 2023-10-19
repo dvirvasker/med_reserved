@@ -13,6 +13,8 @@ const archivedataSchema = new mongoose.Schema({
 	subject: { type: String, require: true },
 	details: { type: String },
 	unit: { type: String, require: true },
+	job: { type: String, require: true },
+	ta: { type: String, require: true },
     date:{ type: Date },
 },
 { timestamps: true }

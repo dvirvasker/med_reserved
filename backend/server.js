@@ -69,6 +69,10 @@ app.use("/api", reservevisitsRoutes);
 const archivedataRoutes = require("./routes/reservevisits/archivedata");
 app.use("/api", archivedataRoutes);
 
+const jobRoutes = require("./routes/job/job");
+app.use("/api", jobRoutes);
+
+
 //general routes
 
 if (process.env.NODE_ENV === "production") {
