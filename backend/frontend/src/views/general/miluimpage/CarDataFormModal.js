@@ -73,6 +73,7 @@ const CarDataFormModal = (props) => {
 					}
 				});
 				setCarData(tempcardata);
+				console.log(tempcardata);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -110,6 +111,7 @@ const CarDataFormModal = (props) => {
 			.get(`http://localhost:8000/api/subject`)
 			.then((res) => {
 				setSubject(res.data);
+				console.log(subject);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -475,9 +477,9 @@ const CarDataFormModal = (props) => {
 										<h6 style={{}}>מקצוע</h6>
 										<Select
 											data={subject}
-											name="subject"
-											value={cardata.subject}
 											handleChange2={handleChange10}
+											name="subject"
+											val={cardata.subject}
 										/>
 									</Col>
 									<Col
