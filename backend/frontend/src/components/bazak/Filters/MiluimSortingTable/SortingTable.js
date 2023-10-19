@@ -184,9 +184,9 @@ const SortingTable = (props) => {
 			tempdata_to_excel[i].family
 				? (tempdata_to_excel[i].lastname = tempdata_to_excel[i].family)
 				: (tempdata_to_excel[i].lastname = " ");
-			tempdata_to_excel[i].pesonal_number
+			tempdata_to_excel[i].personal_number
 				? (tempdata_to_excel[i].personalnumber =
-						tempdata_to_excel[i].pesonal_number)
+						tempdata_to_excel[i].personal_number)
 				: (tempdata_to_excel[i].personalnumber = " ");
 			tempdata_to_excel[i].ta
 				? (tempdata_to_excel[i].ta_m = tempdata_to_excel[i].ta)
@@ -236,7 +236,7 @@ const SortingTable = (props) => {
 			delete tempdata_to_excel[i].family;
 			delete tempdata_to_excel[i].unit;
 			delete tempdata_to_excel[i].subject;
-			delete tempdata_to_excel[i].pesonal_number;
+			delete tempdata_to_excel[i].personal_number;
 			delete tempdata_to_excel[i].details;
 			delete tempdata_to_excel[i].__v;
 			delete tempdata_to_excel[i].civilian_number;
@@ -328,6 +328,12 @@ const SortingTable = (props) => {
 		getSubject();
 		// --------------------------------
 	}, []);
+
+	useEffect(() => {
+		if (!iscardataformopen) {
+			CalculateDataArr();
+		}
+	}, [iscardataformopen]);
 
 	return (
 		<>
@@ -441,7 +447,7 @@ const SortingTable = (props) => {
 												</td>
 											);
 										}
-										if (cell.column.id == "pesonal_number") {
+										if (cell.column.id == "personal_number") {
 											return (
 												<td>
 													<div

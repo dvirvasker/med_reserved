@@ -18,7 +18,7 @@ export const COLUMNS = [
 	},
 	{
 		Header: "מספר אישי",
-		accessor: "pesonal_number",
+		accessor: "personal_number",
 		Filter: ColumnFilter,
 	},
 	{

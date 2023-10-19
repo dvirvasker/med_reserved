@@ -162,7 +162,7 @@ const CarDataFormModal = (props) => {
 			flag = false;
 			ErrorReason += " שם משפחה ריק \n";
 		}
-		if (cardata.pesonal_number == "") {
+		if (cardata.personal_number == "") {
 			flag = false;
 			ErrorReason += "  מספר אישי ריק \n";
 		}
@@ -176,21 +176,21 @@ const CarDataFormModal = (props) => {
 		}
 
 		try {
-			let c = cardata.pesonal_number.charAt(0);
+			let c = cardata.personal_number.charAt(0);
 			if (c >= "0" && c <= "9") {
 				// it is a number
-				let temppersonalnumber = cardata.pesonal_number;
+				let temppersonalnumber = cardata.personal_number;
 				temppersonalnumber = "s" + temppersonalnumber;
-				cardata.pesonal_number = temppersonalnumber;
+				cardata.personal_number = temppersonalnumber;
 			} else {
 				// it isn't
 				if (c == c.toUpperCase()) {
 					//UpperCase Letter -Make Lowercase
 					let tempc = c.toLowerCase();
-					let temppersonalnumber = cardata.pesonal_number;
+					let temppersonalnumber = cardata.personal_number;
 					temppersonalnumber = temppersonalnumber.substring(1);
 					temppersonalnumber = tempc + temppersonalnumber;
-					cardata.pesonal_number = temppersonalnumber;
+					cardata.personal_number = temppersonalnumber;
 				}
 				if (c == c.toLowerCase()) {
 					//LowerCase Letter - All Good
@@ -554,8 +554,8 @@ const CarDataFormModal = (props) => {
 										<Input
 											placeholder="מספר אישי"
 											type="string"
-											name="pesonal_number"
-											value={cardata.pesonal_number}
+											name="personal_number"
+											value={cardata.personal_number}
 											onChange={handleChange}
 										/>
 									</Col>
