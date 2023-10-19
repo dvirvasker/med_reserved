@@ -71,7 +71,9 @@ app.use("/api", archivedataRoutes);
 
 const jobRoutes = require("./routes/job/job");
 app.use("/api", jobRoutes);
+const SubjectRoutes = require("./routes/subject/subject");
 
+app.use("/api", SubjectRoutes);
 
 //general routes
 

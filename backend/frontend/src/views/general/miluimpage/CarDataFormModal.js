@@ -37,6 +37,7 @@ const CarDataFormModal = (props) => {
 	const [cardata, setCarData] = useState({});
 	const [units, setUnits] = useState([]);
 	const [jobs, setJobs] = useState([]);
+	const [subject, setSubject] = useState([]);
 
 	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
@@ -104,7 +105,16 @@ const CarDataFormModal = (props) => {
 				console.log(err);
 			});
 	}
-
+	function getSubject() {
+		axios
+			.get(`http://localhost:8000/api/subject`)
+			.then((res) => {
+				setSubject(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
 
 	function handleChange2(selectedOption, name) {
 		if (!(selectedOption.value == "בחר"))
@@ -121,7 +131,6 @@ const CarDataFormModal = (props) => {
 			setCarData({ ...cardata, [name]: "" });
 		}
 	}
-
 
 	function handleChange3() {
 		setIsChecked1(!isChecked1);
@@ -156,14 +165,6 @@ const CarDataFormModal = (props) => {
 		if (cardata.pesonal_number == "") {
 			flag = false;
 			ErrorReason += "  מספר אישי ריק \n";
-		}
-		if (
-			document.getElementById("seltype").options[
-				document.getElementById("seltype").selectedIndex
-			].value == "בחר"
-		) {
-			flag = false;
-			ErrorReason += " סוג אירוע ריק \n";
 		}
 		if (
 			document.getElementById("selta").options[
@@ -232,13 +233,12 @@ const CarDataFormModal = (props) => {
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
-				if(isChecked2){
+				if (isChecked2) {
 					Createarchive();
 				}
 				Update();
-			
 			} else {
-				if(isChecked2){
+				if (isChecked2) {
 					Createarchive();
 				}
 				Create();
@@ -275,7 +275,7 @@ const CarDataFormModal = (props) => {
 	async function Createarchive() {
 		//update ramam
 		const currentDate = new Date();
-		let tempramam = { ...cardata, date: currentDate};
+		let tempramam = { ...cardata, date: currentDate };
 		tempramam.unitid = props.unitid;
 		tempramam.userid = user._id;
 		let result = await axios.post(
@@ -286,7 +286,6 @@ const CarDataFormModal = (props) => {
 		props.ToggleForModal();
 	}
 
-
 	function init() {
 		if (props.cardataid != undefined) {
 			loadcardata();
@@ -295,6 +294,7 @@ const CarDataFormModal = (props) => {
 
 	useEffect(() => {
 		if (props.isOpen == true) {
+			getSubject();
 			getJobs();
 			getUnits();
 			init();
@@ -473,17 +473,12 @@ const CarDataFormModal = (props) => {
 										}}
 									>
 										<h6 style={{}}>מקצוע</h6>
-										<Input
-											placeholder="שם"
-											type="select"
+										<Select
+											data={subject}
 											name="subject"
 											value={cardata.subject}
-											onChange={handleChange}
-											id="seltype"
-										>
-											<option value={"בחר"}>{"בחר"}</option>
-											<option value={"מקצוע"}>{"מקצוע"}</option>
-										</Input>
+											handleChange2={handleChange10}
+										/>
 									</Col>
 									<Col
 										style={{
@@ -501,8 +496,8 @@ const CarDataFormModal = (props) => {
 											val={cardata.job}
 										/>
 									</Col>
-									</Row>
-									<Row>
+								</Row>
+								<Row>
 									<Col
 										style={{
 											justifyContent: "right",
