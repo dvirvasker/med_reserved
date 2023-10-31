@@ -33,7 +33,7 @@ const mongo = mongoose.connection;
 
 const updateCollections = async () => {
 	const collection = mongo.collection("reservevisits");
-	await collection.updateMany({}, { $set: { TodayPresent: false } });
+	await collection.updateMany({}, { $set: { todayPresent: false } });
 };
 
 new CronJob(
@@ -65,6 +65,16 @@ app.use("/api", pikodRoutes);
 //reservevisits routes
 const reservevisitsRoutes = require("./routes/reservevisits/reservevisits");
 app.use("/api", reservevisitsRoutes);
+
+const archivedataRoutes = require("./routes/reservevisits/archivedata");
+app.use("/api", archivedataRoutes);
+
+const jobRoutes = require("./routes/job/job");
+app.use("/api", jobRoutes);
+const SubjectRoutes = require("./routes/subject/subject");
+
+app.use("/api", SubjectRoutes);
+
 //general routes
 
 if (process.env.NODE_ENV === "production") {

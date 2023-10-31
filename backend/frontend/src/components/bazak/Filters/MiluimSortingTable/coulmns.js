@@ -18,7 +18,7 @@ export const COLUMNS = [
 	},
 	{
 		Header: "מספר אישי",
-		accessor: "pesonal_number",
+		accessor: "personal_number",
 		Filter: ColumnFilter,
 	},
 	{
@@ -46,6 +46,22 @@ export const COLUMNS = [
 		accessor: "subject",
 		Filter: ColumnFilter,
 	},
+	{
+		Header: "תפקיד",
+		accessor: "job",
+		Filter: ColumnFilter,
+	},
+	{
+		Header: "יחידה",
+		accessor: "unit",
+		Filter: ColumnFilter,
+	},
+	{
+		Header: "תא",
+		accessor: "ta",
+		Filter: ColumnFilter,
+	},
+
 	{
 		Header: "הערות",
 		accessor: "details",

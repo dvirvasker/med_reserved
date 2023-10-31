@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const reservevisitsSchema = new mongoose.Schema(
+const archivedataSchema = new mongoose.Schema(
 	{
 		name: { type: String, require: true },
 		family: { type: String, require: true },
@@ -16,10 +16,11 @@ const reservevisitsSchema = new mongoose.Schema(
 		unit: { type: String, require: true },
 		job: { type: String, require: true },
 		ta: { type: String, require: true },
+		date: { type: Date },
 	},
 	{ timestamps: true }
 );
 
-const Reservevisits = mongoose.model("Reservevisits", reservevisitsSchema);
+const Archivedata = mongoose.model("Archivedata", archivedataSchema);
 
-module.exports = Reservevisits;
+module.exports = Archivedata;

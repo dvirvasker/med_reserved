@@ -44,9 +44,11 @@ const SortingTable = (props) => {
 	const [isdataloaded, setIsdataloaded] = useState(false);
 	//excel download
 	const XLSX = require("xlsx");
-	//redux
 
-	const search = useRef();
+	// unit
+	const [unit, setUnit] = useState([]);
+	const [job, setJob] = useState([]);
+	const [subject, setSubject] = useState([]);
 
 	function Toggle(evt) {
 		if (evt.currentTarget.value == "") {
@@ -74,6 +76,13 @@ const SortingTable = (props) => {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
 
+	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
+	function getname(idnum, arr) {
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i]._id == idnum) return arr[i].name;
+		}
+	}
+
 	async function CalculateDataArr() {
 		await axios
 			.get(`http://localhost:8000/api/reservevisits`)
@@ -86,6 +95,44 @@ const SortingTable = (props) => {
 				console.log(error);
 			});
 	}
+
+	const getUnit = async () => {
+		await axios
+			.get("http://localhost:8000/api/units")
+			.then((response) => {
+				setUnit(response.data);
+				// console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const getJob = async () => {
+		await axios
+			.get("http://localhost:8000/api/job")
+			.then((response) => {
+				setJob(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	// ---------------------------- בארמי להוריד מהערה לוקח מידע מהקולקשיין של מקצועות -----------------------
+	const getSubject = async () => {
+		await axios
+			.get("http://localhost:8000/api/subject")
+			.then((response) => {
+				setSubject(response.data);
+				// console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+	// ---------------------------------------------------------------------------------------------
 
 	function init() {
 		CalculateDataArr();
@@ -123,6 +170,147 @@ const SortingTable = (props) => {
 		usePagination
 	);
 
+	// ------------------ excel function -----------------------------------------------
+	function FixDataAndExportToExcel() {
+		let tempdata_to_excel = [];
+		for (let i = 0; i < data.length; i++) {
+			tempdata_to_excel.push({ ...data[i] });
+		}
+
+		for (let i = 0; i < tempdata_to_excel.length; i++) {
+			tempdata_to_excel[i].name
+				? (tempdata_to_excel[i].name_m = tempdata_to_excel[i].name)
+				: (tempdata_to_excel[i].name_m = " ");
+			tempdata_to_excel[i].family
+				? (tempdata_to_excel[i].lastname = tempdata_to_excel[i].family)
+				: (tempdata_to_excel[i].lastname = " ");
+			tempdata_to_excel[i].personal_number
+				? (tempdata_to_excel[i].personalnumber =
+						tempdata_to_excel[i].personal_number)
+				: (tempdata_to_excel[i].personalnumber = " ");
+			tempdata_to_excel[i].ta
+				? (tempdata_to_excel[i].ta_m = tempdata_to_excel[i].ta)
+				: (tempdata_to_excel[i].ta_m = " ");
+
+			tempdata_to_excel[i].present
+				? (tempdata_to_excel[i].present_m = "כן")
+				: (tempdata_to_excel[i].present_m = "לא");
+			tempdata_to_excel[i].todayPresent
+				? (tempdata_to_excel[i].todayPresent_m = "כן")
+				: (tempdata_to_excel[i].todayPresent_m = "לא");
+			tempdata_to_excel[i].dailSent
+				? (tempdata_to_excel[i].dailSent_m = "כן")
+				: (tempdata_to_excel[i].dailSent_m = "לא");
+			tempdata_to_excel[i].shamapOpen
+				? (tempdata_to_excel[i].shamapOpen_m = "כן")
+				: (tempdata_to_excel[i].shamapOpen_m = "לא");
+
+			tempdata_to_excel[i].unit
+				? (tempdata_to_excel[i].unit_m = getname(
+						tempdata_to_excel[i].unit,
+						unit
+				  ))
+				: (tempdata_to_excel[i].unit_m = " ");
+			tempdata_to_excel[i].job
+				? (tempdata_to_excel[i].job_m = getname(tempdata_to_excel[i].job, job))
+				: (tempdata_to_excel[i].job_m = " ");
+
+			// ------------------------ בארמי במקום השורה הזאת ----------------------------------------
+			tempdata_to_excel[i].subject
+				? (tempdata_to_excel[i].subject_m = tempdata_to_excel[i].subject)
+				: (tempdata_to_excel[i].subject_m = " ");
+			//   ----------------------- לעשות את השורה הזאת ----------------------------------
+			//   tempdata_to_excel[i].subject ? tempdata_to_excel[i].subject_m = getname(tempdata_to_excel[i].subject, subject) : tempdata_to_excel[i].subject_m = " ";
+			// -----------------------------------------------------------------------------------------
+		}
+
+		//export to excel -fix
+		for (let i = 0; i < tempdata_to_excel.length; i++) {
+			//delete unwanted fields
+			delete tempdata_to_excel[i]._id;
+			delete tempdata_to_excel[i].present;
+			delete tempdata_to_excel[i].todayPresent;
+			delete tempdata_to_excel[i].dailSent;
+			delete tempdata_to_excel[i].shamapOpen;
+			delete tempdata_to_excel[i].name;
+			delete tempdata_to_excel[i].family;
+			delete tempdata_to_excel[i].unit;
+			delete tempdata_to_excel[i].subject;
+			delete tempdata_to_excel[i].personal_number;
+			delete tempdata_to_excel[i].details;
+			delete tempdata_to_excel[i].__v;
+			delete tempdata_to_excel[i].civilian_number;
+			delete tempdata_to_excel[i].TodayPresent;
+			delete tempdata_to_excel[i].createdAt;
+			delete tempdata_to_excel[i].updatedAt;
+			delete tempdata_to_excel[i].ta;
+			delete tempdata_to_excel[i].job;
+
+			//add non-existing fields - 8
+			if (!tempdata_to_excel[i].name_m) {
+				tempdata_to_excel[i].name_m = " ";
+			}
+			if (!tempdata_to_excel[i].lastname) {
+				tempdata_to_excel[i].lastname = " ";
+			}
+			if (!tempdata_to_excel[i].personalnumber) {
+				tempdata_to_excel[i].hativa_name = " ";
+			}
+
+			if (!tempdata_to_excel[i].unit_m) {
+				tempdata_to_excel[i].unit_m = " ";
+			}
+			if (!tempdata_to_excel[i].subject_m) {
+				tempdata_to_excel[i].subject_m = " ";
+			}
+			if (!tempdata_to_excel[i].details_m) {
+				tempdata_to_excel[i].details_m = " ";
+			}
+			if (!tempdata_to_excel[i].job_m) {
+				tempdata_to_excel[i].job_m = " ";
+			}
+			if (!tempdata_to_excel[i].ta_m) {
+				tempdata_to_excel[i].ta_m = " ";
+			}
+		}
+
+		console.log(tempdata_to_excel);
+
+		const currentDate = new Date();
+		const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+		const day = currentDate.getDate().toString().padStart(2, "0");
+
+		let EXCEL_EXTENSION = ".xlsx";
+		let worksheet = XLSX.WorkSheet;
+		let sheetName = "התייצבות מילואים " + day + "." + month;
+
+		const headers = {
+			name_m: "שם",
+			lastname: "שם משפחה",
+			personalnumber: "מספר אישי",
+			present_m: "התייצב",
+			todayPresent_m: "התייצב היום",
+			dailSent_m: "נשלח חייגן",
+			shamapOpen_m: 'נפתח שמ"פ',
+			unit_m: "יחידה",
+			subject_m: "מקצוע",
+			job_m: "תפקיד",
+			ta_m: "תא",
+		};
+		tempdata_to_excel.unshift(headers); // if custom header, then make sure first row of data is custom header
+
+		worksheet = XLSX.utils.json_to_sheet(tempdata_to_excel, {
+			skipHeader: true,
+		});
+
+		const workbook = XLSX.utils.book_new();
+		const fileName = "התייצבות מילואים " + day + "." + month + EXCEL_EXTENSION;
+		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+		XLSX.writeFile(workbook, fileName);
+
+		window.location.reload();
+	}
+
 	//window
 	const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -133,23 +321,30 @@ const SortingTable = (props) => {
 
 	useEffect(() => {
 		init();
+		getUnit();
+		getJob();
+
+		// -------- באמרי להוריד מהערה -------
+		getSubject();
+		// --------------------------------
 	}, []);
+
+	useEffect(() => {
+		if (!iscardataformopen) {
+			CalculateDataArr();
+		}
+	}, [iscardataformopen]);
 
 	return (
 		<>
 			<div style={{ float: "right", paddingBottom: "5px" }}>
-				<ReactHTMLTableToExcel
-					id="test-table-xls-button"
-					className="btn-green"
-					table="table-to-xls-MiluimSortingTable"
-					filename="קובץ -  אנשי מילואים"
-					sheet="קובץ -  אנשי מילואים"
-					buttonText="הורד כקובץ אקסל"
-					style={{ float: "right" }}
-				/>
-				<div style={{ textAlign: "right", marginTop: "5%" }}>
-					<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-				</div>
+				<button className="btn-green" onClick={FixDataAndExportToExcel}>
+					הורד כקובץ אקסל
+				</button>
+			</div>
+
+			<div style={{ textAlign: "right", marginTop: "5%" }}>
+				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 			</div>
 			<button
 				className="btn-new-blue"
@@ -252,7 +447,7 @@ const SortingTable = (props) => {
 												</td>
 											);
 										}
-										if (cell.column.id == "pesonal_number") {
+										if (cell.column.id == "personal_number") {
 											return (
 												<td>
 													<div
@@ -314,7 +509,82 @@ const SortingTable = (props) => {
 												return <td>לא</td>;
 											}
 										}
+										//------------------ באמרי במקום הif הזה -------------------------------------------------
+										{
+											/* if (cell.column.id == "subject") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{cell.value}
+													</div>
+												</td>
+											);
+										} */
+										}
+										//------------------ צריך לעשות את זה ------------------------------------------------------
+
 										if (cell.column.id == "subject") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{getname(cell.value, subject)}
+													</div>
+												</td>
+											);
+										}
+
+										// --------------------------------------------------------------------------------------------
+										if (cell.column.id == "unit") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{getname(cell.value, unit)}
+													</div>
+												</td>
+											);
+										}
+										if (cell.column.id == "job") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{getname(cell.value, job)}
+													</div>
+												</td>
+											);
+										}
+										if (cell.column.id == "ta") {
 											return (
 												<td>
 													<div
@@ -331,6 +601,7 @@ const SortingTable = (props) => {
 												</td>
 											);
 										}
+
 										if (cell.column.id == "details") {
 											return (
 												<td>

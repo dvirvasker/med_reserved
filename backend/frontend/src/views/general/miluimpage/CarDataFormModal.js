@@ -36,6 +36,9 @@ const CarDataFormModal = (props) => {
 	//cardata
 	const [cardata, setCarData] = useState({});
 	const [units, setUnits] = useState([]);
+	const [jobs, setJobs] = useState([]);
+	const [subject, setSubject] = useState([]);
+
 	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
 	// התייצב היום
@@ -70,6 +73,7 @@ const CarDataFormModal = (props) => {
 					}
 				});
 				setCarData(tempcardata);
+				console.log(tempcardata);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -92,7 +96,37 @@ const CarDataFormModal = (props) => {
 			});
 	}
 
+	function getJobs() {
+		axios
+			.get(`http://localhost:8000/api/job`)
+			.then((res) => {
+				setJobs(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+	function getSubject() {
+		axios
+			.get(`http://localhost:8000/api/subject`)
+			.then((res) => {
+				setSubject(res.data);
+				console.log(subject);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
 	function handleChange2(selectedOption, name) {
+		if (!(selectedOption.value == "בחר"))
+			setCarData({ ...cardata, [name]: selectedOption.value });
+		else {
+			setCarData({ ...cardata, [name]: "" });
+		}
+	}
+
+	function handleChange10(selectedOption, name) {
 		if (!(selectedOption.value == "בחר"))
 			setCarData({ ...cardata, [name]: selectedOption.value });
 		else {
@@ -130,34 +164,35 @@ const CarDataFormModal = (props) => {
 			flag = false;
 			ErrorReason += " שם משפחה ריק \n";
 		}
-		if (cardata.pesonal_number == "") {
+		if (cardata.personal_number == "") {
 			flag = false;
 			ErrorReason += "  מספר אישי ריק \n";
 		}
 		if (
-			document.getElementById("seltype").options[
-				document.getElementById("seltype").selectedIndex
+			document.getElementById("selta").options[
+				document.getElementById("selta").selectedIndex
 			].value == "בחר"
 		) {
 			flag = false;
-			ErrorReason += " סוג אירוע ריק \n";
+			ErrorReason += " סוג תא ריק \n";
 		}
+
 		try {
-			let c = cardata.personalnumber.charAt(0);
+			let c = cardata.personal_number.charAt(0);
 			if (c >= "0" && c <= "9") {
 				// it is a number
-				let temppersonalnumber = cardata.personalnumber;
+				let temppersonalnumber = cardata.personal_number;
 				temppersonalnumber = "s" + temppersonalnumber;
-				cardata.personalnumber = temppersonalnumber;
+				cardata.personal_number = temppersonalnumber;
 			} else {
 				// it isn't
 				if (c == c.toUpperCase()) {
 					//UpperCase Letter -Make Lowercase
 					let tempc = c.toLowerCase();
-					let temppersonalnumber = cardata.personalnumber;
+					let temppersonalnumber = cardata.personal_number;
 					temppersonalnumber = temppersonalnumber.substring(1);
 					temppersonalnumber = tempc + temppersonalnumber;
-					cardata.personalnumber = temppersonalnumber;
+					cardata.personal_number = temppersonalnumber;
 				}
 				if (c == c.toLowerCase()) {
 					//LowerCase Letter - All Good
@@ -200,8 +235,14 @@ const CarDataFormModal = (props) => {
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
+				if (isChecked2) {
+					Createarchive();
+				}
 				Update();
 			} else {
+				if (isChecked2) {
+					Createarchive();
+				}
 				Create();
 			}
 		} else {
@@ -210,7 +251,6 @@ const CarDataFormModal = (props) => {
 	};
 
 	async function Create() {
-		//create ramam
 		let tempramam = { ...cardata };
 		tempramam.unitid = props.unitid;
 		tempramam.userid = user._id;
@@ -234,6 +274,20 @@ const CarDataFormModal = (props) => {
 		props.ToggleForModal();
 	}
 
+	async function Createarchive() {
+		//update ramam
+		const currentDate = new Date();
+		let tempramam = { ...cardata, date: currentDate };
+		tempramam.unitid = props.unitid;
+		tempramam.userid = user._id;
+		let result = await axios.post(
+			`http://localhost:8000/api/archivedata`,
+			tempramam
+		);
+		// toast.success(`איש מילואים נוסף בהצלחה`);
+		props.ToggleForModal();
+	}
+
 	function init() {
 		if (props.cardataid != undefined) {
 			loadcardata();
@@ -242,6 +296,8 @@ const CarDataFormModal = (props) => {
 
 	useEffect(() => {
 		if (props.isOpen == true) {
+			getSubject();
+			getJobs();
 			getUnits();
 			init();
 		} else {
@@ -419,18 +475,58 @@ const CarDataFormModal = (props) => {
 										}}
 									>
 										<h6 style={{}}>מקצוע</h6>
+										<Select
+											data={subject}
+											handleChange2={handleChange10}
+											name="subject"
+											val={cardata.subject}
+										/>
+									</Col>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>תפקיד</h6>
+
+										<Select
+											data={jobs}
+											handleChange2={handleChange10}
+											name="job"
+											val={cardata.job}
+										/>
+									</Col>
+								</Row>
+								<Row>
+									<Col
+										style={{
+											justifyContent: "right",
+											alignContent: "right",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>תא</h6>
 										<Input
 											placeholder="שם"
 											type="select"
-											name="subject"
-											value={cardata.subject}
+											name="ta"
+											value={cardata.ta}
 											onChange={handleChange}
-											id="seltype"
+											id="selta"
 										>
 											<option value={"בחר"}>{"בחר"}</option>
-											<option value={"מקצוע"}>{"מקצוע"}</option>
+											<option value={"הפעלה"}>{"הפעלה"}</option>
+											<option value={"רפואה"}>{"רפואה"}</option>
+											<option value={"שליטה"}>{"שליטה"}</option>
+											<option value={"רישום ודיווח"}>{"רישום ודיווח"}</option>
+											<option value={"פרט ומשפחות"}>{"פרט ומשפחות"}</option>
+											<option value={"מפקד"}>{"מפקד"}</option>
+											<option value={"ללא"}>{"ללא"}</option>
 										</Input>
 									</Col>
+
 									<Col
 										style={{
 											justifyContent: "right",
@@ -460,8 +556,8 @@ const CarDataFormModal = (props) => {
 										<Input
 											placeholder="מספר אישי"
 											type="string"
-											name="pesonal_number"
-											value={cardata.pesonal_number}
+											name="personal_number"
+											value={cardata.personal_number}
 											onChange={handleChange}
 										/>
 									</Col>

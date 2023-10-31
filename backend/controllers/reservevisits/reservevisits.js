@@ -44,7 +44,7 @@ exports.create = (req, res) => {
 
 exports.update = (req, res) => {
 	Reservevisit.findByIdAndUpdate(req.params.reservevisitsId, req.body)
-		.then((candidatepreference) => res.json(candidatepreference))
+		.then((reservevisits) => res.json(reservevisits))
 		.catch((err) => res.status(400).json("Error: " + err));
 };
 
