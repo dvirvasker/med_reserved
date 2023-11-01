@@ -12,9 +12,12 @@ import { GlobalFilter } from "./GlobalFilter";
 import axios from "axios";
 import { signin, authenticate, isAuthenticated } from "auth/index";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import { Row, Col, Input } from "reactstrap";
+import { Button, Row, Col, Input, Collapse, Card } from "reactstrap";
+import Select from "react-select";
 import CarDataFormModal from "views/general/miluimpage/CarDataFormModal";
 import CarDataFormModalDelete from "views/general/miluimpage/CarDataFormModalDelete";
+import MiluimTableFilter from "components/bazak/Filters/MiluimSortingTable/MiluimTableFilter";
+import MultiSelect from 'components/general/Select/AnimatedMultiSelect';
 import styles from "./SortingTable.module.css";
 import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
@@ -44,12 +47,76 @@ const SortingTable = (props) => {
 	const [isdataloaded, setIsdataloaded] = useState(false);
 	//excel download
 	const XLSX = require("xlsx");
-
+	const [tyevent, setTyevent] = useState([]);
+	const [dataunit, setDataunit] = useState([]);
 	// unit
 	const [unit, setUnit] = useState([]);
 	const [job, setJob] = useState([]);
 	const [subject, setSubject] = useState([]);
+	const [ta, setTa] = useState([]);
+	const [collapseOpen, setcollapseOpen] = React.useState(false);
 
+	async function CalculateDataArr() {
+		await axios
+			.get(`http://localhost:8000/api/reservevisits`)
+			.then((response) => {
+
+				if(user.role == 0){
+					setData(response.data)
+					setOriginaldata(response.data);
+				} else{
+					setData(response.data.filter((item) => item.unit == user.unit));
+					setOriginaldata(response.data.filter((item) => item.unit == user.unit));
+				}
+				// user.role == 0
+				// 	? 
+						
+				// 	: 
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	}
+
+	const getUnit = async () => {
+		await axios
+			.get("http://localhost:8000/api/units")
+			.then((response) => {
+				setUnit(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const getJob = async () => {
+		await axios
+			.get("http://localhost:8000/api/job")
+			.then((response) => {
+				setJob(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	// ---------------------------- בארמי להוריד מהערה לוקח מידע מהקולקשיין של מקצועות -----------------------
+	const getSubject = async () => {
+		await axios
+			.get("http://localhost:8000/api/subject")
+			.then((response) => {
+				setSubject(response.data);
+				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+	const toggleCollapse = () => {
+		setcollapseOpen(!collapseOpen);
+	};
 	function Toggle(evt) {
 		if (evt.currentTarget.value == "") {
 			setCardataidformodal(undefined);
@@ -75,7 +142,105 @@ const SortingTable = (props) => {
 	function ToggleForModalDelete(evt) {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
+	function handleChange2(evt) {
+		const value = evt.target.value;
+		console.log(evt.target.value);
+		console.log(evt.target.name);
+		setTa(value);
+		console.log(ta)
+		setTyevent({ ...tyevent, [evt.target.name]: value });
+		// console.log(tyevent.typevent);
+		console.log(isNaN(tyevent.ta));
+	}
+	const filteruse=()=>{
+		console.log(tyevent);
+		let beforfilter=originaldata;
+		// let filter1=[]; //date filterwev                                                                                                                                                                               
+	// 	if(date.fromdate && date.todate){
+	// 		filter1=beforfilter.filter((el)=> new Date(el.datevent).setHours(0, 0, 0, 0) >=
+	// 		new Date(date.fromdate).setHours(0, 0, 0, 0) &&
+	// 	    new Date(el.datevent).setHours(0, 0, 0, 0) <=
+	// 		new Date(date.todate).setHours(0, 0, 0, 0));
+	// 	}else{
+	// 		filter1=beforfilter;
+	// 	}
 
+		let filter2=[]; //type event filter
+		if(tyevent.ta == "בחר" || tyevent.ta == undefined){
+		  filter2=originaldata;
+		}else{
+			filter2=beforfilter.filter((el)=>el.ta === tyevent.ta);
+		}
+
+	// 	let filter3=[]; //pikod filter
+	// 	if(dataunit.pikod=="0" || !dataunit.pikod){
+	// 		filter3=filter2;
+	// 	}else{
+	// 		filter3=filter2.filter((el)=>el.pikodrep === dataunit.pikod);
+	// 	}
+
+	// 	let filter4=[]; //ogda filter
+	// 	if(dataunit.ogda=="0" || !dataunit.ogda){
+	// 		filter4=filter3;
+	// 	}else{
+	// 		filter4=filter3.filter((el)=>el.ogdarep === dataunit.ogda);
+	// 	}
+
+	// 	let filter5=[]; //hativa filter
+	// 	if(dataunit.hativa=="0" || !dataunit.hativa){
+	// 		filter5=filter4;
+	// 	}else{
+	// 		filter5=filter4.filter((el)=>el.hativarep === dataunit.hativa);
+	// 	}
+
+	// 	let filter6=[]; //gdod filter
+	// 	if(dataunit.gdod=="0" || !dataunit.gdod){
+	// 		filter6=filter5;
+	// 	}else{
+	// 		filter6=filter5.filter((el)=>el.gdodrep === dataunit.gdod);
+	// 	}
+
+	// 	let filter7=[];//sinono filter
+	// 	if(sinono.typesinono=="בחר" || !sinono.typesinono){
+	// 		filter7=filter6;
+	// 	}else{
+	// 		if(sinono.typesinono=="1"){
+	// 			filter7=filter6.filter((el)=>el.resevent === "4")
+	// 		}
+	// 		if(sinono.typesinono=="2"){
+	// 			filter7=filter6.filter((el)=>el.datevent.substr(11, 5) === "00:00")
+	// 		}
+	// 		if(sinono.typesinono=="3"){
+	// 			filter7=filter6.filter((el)=>el.nifga === 2)
+	// 		}
+	// 		if(sinono.typesinono=="4"){
+	// 			for(let i=0;i<filter6.length;i++)
+	// 			{
+	// 				if(filter6[i].typevent ==="1" ||filter6[i].typevent ==="2" || filter6[i].typevent ==="3" ||filter6[i].typevent ==="4" || filter6[i].typevent ==="רקם" ){
+	// 					let a=0;
+	// 					let sum=0;
+	// 					while(a<filter6[i].arraymkabaz.length)
+	// 					{
+	// 						if(filter6[i].arraymkabaz[a].zadik == undefined){
+	// 							sum++;
+	// 						}
+	// 						a++;
+	// 					}
+	// 					if(sum>0){
+	// 						filter7.push(filter6[i]);
+	// 					}	
+	// 				}else if(filter6[i].typevent ==="7" ||filter6[i].typevent ==="9"){
+	// 					if(filter6[i].zadik === ""){
+	// 						filter7.push(filter6[i]);
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+		// console.log(filter7)
+		setData(filter2);
+		console.log(data);
+	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
 	function getname(idnum, arr) {
 		for (let i = 0; i < arr.length; i++) {
@@ -83,60 +248,44 @@ const SortingTable = (props) => {
 		}
 	}
 
-	async function CalculateDataArr() {
-		await axios
-			.get(`http://localhost:8000/api/reservevisits`)
-			.then((response) => {
-				user.role == 0
-					? setData(response.data)
-					: setData(response.data.filter((item) => item.unit == user.unit));
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	}
-
-	const getUnit = async () => {
-		await axios
-			.get("http://localhost:8000/api/units")
-			.then((response) => {
-				setUnit(response.data);
-				// console.log(response.data);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
-
-	const getJob = async () => {
-		await axios
-			.get("http://localhost:8000/api/job")
-			.then((response) => {
-				setJob(response.data);
-				console.log(response.data);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
-
-	// ---------------------------- בארמי להוריד מהערה לוקח מידע מהקולקשיין של מקצועות -----------------------
-	const getSubject = async () => {
-		await axios
-			.get("http://localhost:8000/api/subject")
-			.then((response) => {
-				setSubject(response.data);
-				// console.log(response.data);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
+	
 	// ---------------------------------------------------------------------------------------------
 
 	function init() {
 		CalculateDataArr();
 	}
+	function handleChange8(selectedOption, name) {
+		if (!(selectedOption.value == "בחר")) {
+		  let tempvalues = [];
+		  for (let i = 0; i < selectedOption.length; i++) {
+			tempvalues.push(selectedOption[i].value);
+		  }
+		  setFilter({ ...filter, [name]: tempvalues });
+		}
+		else {
+		  let tempfilter = { ...filter };
+		  delete tempfilter[name];
+		  setFilter(tempfilter);
+		}
+	  }
+	//   const setfilterfunction = (evt) => {
+	// 	if (evt.currentTarget.name == 'role') {
+	// 	  if (filter.rolefilter) {
+	// 		let temprolefilter = [...filter.rolefilter]
+	// 		const index = temprolefilter.indexOf(evt.currentTarget.value);
+	// 		if (index > -1) {
+	// 		  temprolefilter.splice(index, 1);
+	// 		}
+	// 		else {
+	// 		  temprolefilter.push(evt.currentTarget.value)
+	// 		}
+	// 		setFilter({ ...filter, rolefilter: temprolefilter })
+	// 	  }
+	// 	  else {
+	// 		setFilter({ ...filter, rolefilter: [evt.currentTarget.value] })
+	// 	  }
+	// 	}
+	//   }
 
 	const {
 		getTableProps,
@@ -310,7 +459,29 @@ const SortingTable = (props) => {
 
 		window.location.reload();
 	}
-
+	
+	function handleChange3(selectedOption, name) {
+		console.log(selectedOption);
+		console.log(name);
+		if (!(selectedOption.value == "בחר")) {
+			setDataunit({ ...dataunit, [selectedOption.name]: selectedOption.name });
+		console.log(dataunit);
+		} 
+		else {
+			if (name == "unit") {
+				// addSelect(gdodsop)
+				delete dataunit.unit;
+				setDataunit({ ...dataunit });
+			}
+			if (name == "job") {
+				// addSelect(gdodsop)
+				delete dataunit.job;
+				setDataunit({ ...dataunit });
+			}
+		}
+				
+		
+	}
 	//window
 	const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -335,6 +506,11 @@ const SortingTable = (props) => {
 		}
 	}, [iscardataformopen]);
 
+	useEffect(() => {
+		// loadReports();
+		filteruse();
+			}, [dataunit, subject, ta]);
+
 	return (
 		<>
 			<div style={{ float: "right", paddingBottom: "5px" }}>
@@ -346,6 +522,99 @@ const SortingTable = (props) => {
 			<div style={{ textAlign: "right", marginTop: "5%" }}>
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 			</div>
+			<Row>
+				<div style={{ width: "100%", margin: "auto", textAlign: "right" }}>
+					<Button
+						onClick={toggleCollapse}
+						style={{}}
+					>
+						סינון
+					</Button>
+					<Collapse isOpen={collapseOpen}>
+						<Card style={{ background: "rgb(255, 255, 255)" }}>
+						<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+                                               
+												
+												{/* <MultiSelect data={unit} handleChange2={handleChange3} name={'unit'} /> */}
+											</Col>
+							<Row style={{ margin: "0px" }}>
+								<Col
+									xs={12}
+									md={8}
+									style={{ textAlign: "right" }}
+								>
+									{/* <h6>יחידה</h6>
+									<Input
+                // placeholder={textPlaceHolderInputs[5]}
+                id="unit"
+                name="unit"
+                type="select"
+                value={unit ? unit : dataunit.unit}
+                onChange={handleChange3}
+                // required
+              >
+                <option defult value="">
+                  בחר
+                </option>
+                {unit.map((mahlaka, index) => (
+                  <option key={`unit-${index}`} id={index} value={mahlaka._id}>
+                    {mahlaka.name}
+                  </option>
+                ))}
+              </Input> */}
+									{/* <h6>תפקיד</h6>
+									<Input
+                // placeholder={textPlaceHolderInputs[5]}
+                id="job"
+                name="job"
+                type="select"
+                value={job}
+                onChange={handleChange3}
+                // required
+              >
+                <option defult value="">
+                  בחר
+                </option>
+                {job.map((mahlaka, index) => (
+                  <option key={`job-${index}`} id={index} value={mahlaka._id}>
+                    {mahlaka.name}
+                  </option>
+                ))}
+              </Input> */}
+									<Col
+                                            style={{
+                                                justifyContent: "right",
+                                                alignContent: "right",
+                                                textAlign: "right",
+                                            }}
+                                        >
+                                            <h6 style={{}}>תא</h6>
+                                            <Input
+                                                placeholder="ta"
+                                                type="select"
+                                                name="ta"
+                                                value={tyevent.ta}
+                                                onChange={handleChange2}
+                                                id="ta"
+                                            >
+                                                <option value={"בחר"}>{"בחר"}</option>
+                                                <option value={"הפעלה"}>{"הפעלה"}</option>
+                                                <option value={"רפואה"}>{"רפואה"}</option>
+                                                <option value={"שליטה"}>{"שליטה"}</option>
+                                                <option value={"רישום ודיווח"}>{"רישום ודיווח"}</option>
+                                                <option value={"פרט ומשפחות"}>{"פרט ומשפחות"}</option>
+                                                <option value={"מפקד"}>{"מפקד"}</option>
+                                                <option value={"ללא"}>{"ללא"}</option>
+                                            </Input>
+                                        </Col>
+								</Col>
+							</Row>
+
+						</Card>
+					</Collapse>
+				</div>
+			</Row>
+			{/* <MiluimTableFilter originaldata={originaldata} filter={filter} unittype={'admin'} handleChange8={handleChange8} /> */}
 			<button
 				className="btn-new-blue"
 				value={undefined}

@@ -235,9 +235,9 @@ const CarDataFormModal = (props) => {
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
-				if (isChecked2) {
-					Createarchive();
-				}
+				// if (isChecked2) {
+				// 	Createarchive();
+				// }
 				Update();
 			} else {
 				if (isChecked2) {
