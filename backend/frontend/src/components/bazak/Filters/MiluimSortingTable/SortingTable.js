@@ -118,6 +118,18 @@ const SortingTable = (props) => {
 	const unitDataId = unit.map((unitid) =>(
 		{value: unitid._id, label: unitid.name})
 	)
+	const subjectDataId = subject.map((subjectid) =>(
+		{value: subjectid._id, label: subjectid.name})
+	)
+	const optionsTa = [
+		{ value: 'הפעלה', label: 'הפעלה' },
+		{ value: 'רפואה', label: 'רפואה' },
+		{ value: 'שליטה', label: 'שליטה' },
+		{ value: 'רישום ודיווח', label: 'רישום ודיווח' },
+		{ value: 'פרט ומשפחות', label: 'פרט ומשפחות' },
+		{ value: 'מפקד', label: 'מפקד' },
+		{ value: 'ללא', label: 'ללא' },
+	]
 	const toggleCollapse = () => {
 		setcollapseOpen(!collapseOpen);
 		console.log(unitDataId);
@@ -147,20 +159,8 @@ const SortingTable = (props) => {
 	function ToggleForModalDelete(evt) {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
-	function handleChange2(evt) {
-		const value = evt.target.value;
-		console.log(evt.target.value);
-		console.log(evt.target.name);
-		setTa(value);
-		console.log(ta)
-		setTyevent({ ...tyevent, [evt.target.name]: value });
-		// console.log(tyevent.typevent);
-		console.log(isNaN(tyevent.ta));
-	}
 
 	function handleChange1(evt) {
-		// console.log("evt")
-		// if(evt.length === 0 || evt.length === 0)
 		let tempvalues = [];
 		for (let i = 0; i < evt.length; i++) {
 			tempvalues.push(evt[i].value);
@@ -169,47 +169,101 @@ const SortingTable = (props) => {
 		setDataunit(tempvalues)
 	}
 
+	function handleChange2(evt) {
+		let tempvalues = [];
+		for (let i = 0; i < evt.length; i++) {
+			tempvalues.push(evt[i].value);
+			console.log(evt[i].value);
+		}
+		setTyevent({ ...tyevent, ta: tempvalues });
+		setTa(tempvalues)
+	}
+
+	function handleChange3(evt) {
+		let tempvalues = [];
+		for (let i = 0; i < evt.length; i++) {
+			tempvalues.push(evt[i].value);
+		}
+		setTyevent({ ...tyevent, subject: tempvalues });
+		setDataSubject(tempvalues)
+
+	}
+
 	const filteruse=()=>{
 		console.log("filteruse");
 		console.log(tyevent);
 		let beforfilter=originaldata;
 
-		let filter1=[]; //type event filter
+		let filter1=[]; //unit filter
 		if(tyevent.unit){
-			if(tyevent.unit.length == 0 || tyevent.unit == undefined){
-		  filter1=beforfilter;
+			if(tyevent.unit.length === 0 || tyevent.unit === undefined){
+		  		filter1=beforfilter;
 		}else{
 			for(let i=0;i<tyevent.unit.length;i++){
 				for(let j=0;j<beforfilter.length;j++){
 					if(beforfilter[j].unit === tyevent.unit[i]){
-					filter1.push(beforfilter[j])
+						filter1.push(beforfilter[j]);
 				}
-				}
-				
-				// filter1=beforfilter.filter((el)=>el.unit === tyevent.unit[i]);
-			}
-			// console.log(filter1)
-			
+				}}
 		}
 		  }
+		  else{
+			filter1=beforfilter;
+		}
 		
 
-		let filter2=[]; //type event filter
-		if(tyevent.ta == "בחר" || tyevent.ta == undefined){
-		  filter2=filter1;
-		}else{
-			filter2=filter1.filter((el)=>el.ta === tyevent.ta);
+		let filter2=[]; //subject filter
+		if(tyevent.subject){
+			if(tyevent.subject.length === 0 || tyevent.subject === undefined){
+				filter2=filter1;
+			  }else{
+				for(let i=0;i<tyevent.subject.length;i++){
+					for(let j=0;j<filter1.length;j++){
+						if(filter1[j].subject === tyevent.subject[i]){
+						filter2.push(filter1[j]);
+					}
+					}
+				}
+			  }
+		}
+		else{
+			filter2=filter1;
+		}
+		
+		let filter3=[]; //ta filter
+		if(tyevent.ta){
+			if(tyevent.ta.length == 0 || tyevent.ta == undefined){
+				filter3=filter2;
+			  }else{
+				for(let i=0;i<tyevent.ta.length;i++){
+					for(let j=0;j<filter2.length;j++){
+						if(filter2[j].ta === tyevent.ta[i]){
+							filter3.push(filter2[j]);
+					}
+					}
+				}
+			  }
+		}
+		else{
+			filter3=filter2;
 		}
 
-		let filter3=[]; //type event filter
-		if(tyevent.subject == "בחר" || tyevent.subject == undefined){
-		  filter3=filter2;
-		}else{
-			filter3=filter2.filter((el)=>el.subject === tyevent.subject);
-		}
+		// let filter2=[]; //ta filter
+		// if(tyevent.ta == "בחר" || tyevent.ta == undefined){
+		//   filter2=filter1;
+		// }else{
+		// 	filter2=filter1.filter((el)=>el.ta === tyevent.ta);
+		// }
+
+		// let filter3=[]; //subject filter
+		// if(tyevent.subject == "בחר" || tyevent.subject == undefined){
+		//   filter3=filter2;
+		// }else{
+		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
+		// }
 
 		setData(filter3);
-		// console.log(data);
+		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
 	function getname(idnum, arr) {
@@ -430,16 +484,6 @@ const SortingTable = (props) => {
 		window.location.reload();
 	}
 	
-	function handleChange3(evt) {
-		const value = evt.target.value;
-		console.log("+++++")
-		console.log(evt.target.value);
-		console.log(evt.target.name);
-		console.log("+++++")
-		setDataSubject(value);
-		setTyevent({ ...tyevent, [evt.target.name]: value });
-		// console.log(isNaN(tyevent.ta));
-	}
 	//window
 	const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -519,7 +563,8 @@ const SortingTable = (props) => {
 									  </Col>
 									  <Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>מקצוע</h6>
-									<Input
+									<Select isMulti options={subjectDataId} onChange={handleChange3} name={'subject'} />
+									{/* <Input
                 						id="subject"
                 						name="subject"
                 						type="select"
@@ -533,11 +578,12 @@ const SortingTable = (props) => {
                     					{subjectId.name}
                   					</option>
                 					))}
-              						</Input>
+              						</Input> */}
 									</Col>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
                                             <h6 style={{}}>תא</h6>
-                                            <Input
+											<Select isMulti options={optionsTa} onChange={handleChange2} name={'ta'} />
+                                            {/* <Input
                                                 placeholder="ta"
                                                 type="select"
                                                 name="ta"
@@ -553,7 +599,7 @@ const SortingTable = (props) => {
                                                 <option value={"פרט ומשפחות"}>{"פרט ומשפחות"}</option>
                                                 <option value={"מפקד"}>{"מפקד"}</option>
                                                 <option value={"ללא"}>{"ללא"}</option>
-                                            </Input>
+                                            </Input> */}
 											
                                         </Col>
 									</Row>
@@ -569,7 +615,7 @@ const SortingTable = (props) => {
 				className="btn-new-blue"
 				value={undefined}
 				onClick={Toggle}
-				style={{ marginRight: "5px" }}
+				style={{ marginRight: "5px" , marginBottom: "5px" }}
 			>
 				הוסף איש מילואים
 			</button>
