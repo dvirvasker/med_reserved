@@ -49,6 +49,7 @@ const SortingTable = (props) => {
 	const XLSX = require("xlsx");
 	const [tyevent, setTyevent] = useState([]);
 	const [dataunit, setDataunit] = useState([]);
+	const [datasubject, setDataSubject] = useState([]);
 	// unit
 	const [unit, setUnit] = useState([]);
 	const [job, setJob] = useState([]);
@@ -114,8 +115,12 @@ const SortingTable = (props) => {
 				console.log(error);
 			});
 	};
+	const unitDataId = unit.map((unitid) =>(
+		{value: unitid._id, label: unitid.name})
+	)
 	const toggleCollapse = () => {
 		setcollapseOpen(!collapseOpen);
+		console.log(unitDataId);
 	};
 	function Toggle(evt) {
 		if (evt.currentTarget.value == "") {
@@ -152,94 +157,59 @@ const SortingTable = (props) => {
 		// console.log(tyevent.typevent);
 		console.log(isNaN(tyevent.ta));
 	}
+
+	function handleChange1(evt) {
+		// console.log("evt")
+		// if(evt.length === 0 || evt.length === 0)
+		let tempvalues = [];
+		for (let i = 0; i < evt.length; i++) {
+			tempvalues.push(evt[i].value);
+		}
+		setTyevent({ ...tyevent, unit: tempvalues });
+		setDataunit(tempvalues)
+	}
+
 	const filteruse=()=>{
+		console.log("filteruse");
 		console.log(tyevent);
 		let beforfilter=originaldata;
-		// let filter1=[]; //date filterwev                                                                                                                                                                               
-	// 	if(date.fromdate && date.todate){
-	// 		filter1=beforfilter.filter((el)=> new Date(el.datevent).setHours(0, 0, 0, 0) >=
-	// 		new Date(date.fromdate).setHours(0, 0, 0, 0) &&
-	// 	    new Date(el.datevent).setHours(0, 0, 0, 0) <=
-	// 		new Date(date.todate).setHours(0, 0, 0, 0));
-	// 	}else{
-	// 		filter1=beforfilter;
-	// 	}
+
+		let filter1=[]; //type event filter
+		if(tyevent.unit){
+			if(tyevent.unit.length == 0 || tyevent.unit == undefined){
+		  filter1=beforfilter;
+		}else{
+			for(let i=0;i<tyevent.unit.length;i++){
+				for(let j=0;j<beforfilter.length;j++){
+					if(beforfilter[j].unit === tyevent.unit[i]){
+					filter1.push(beforfilter[j])
+				}
+				}
+				
+				// filter1=beforfilter.filter((el)=>el.unit === tyevent.unit[i]);
+			}
+			// console.log(filter1)
+			
+		}
+		  }
+		
 
 		let filter2=[]; //type event filter
 		if(tyevent.ta == "בחר" || tyevent.ta == undefined){
-		  filter2=originaldata;
+		  filter2=filter1;
 		}else{
-			filter2=beforfilter.filter((el)=>el.ta === tyevent.ta);
+			filter2=filter1.filter((el)=>el.ta === tyevent.ta);
 		}
 
-	// 	let filter3=[]; //pikod filter
-	// 	if(dataunit.pikod=="0" || !dataunit.pikod){
-	// 		filter3=filter2;
-	// 	}else{
-	// 		filter3=filter2.filter((el)=>el.pikodrep === dataunit.pikod);
-	// 	}
+		let filter3=[]; //type event filter
+		if(tyevent.subject == "בחר" || tyevent.subject == undefined){
+		  filter3=filter2;
+		}else{
+			filter3=filter2.filter((el)=>el.subject === tyevent.subject);
+		}
 
-	// 	let filter4=[]; //ogda filter
-	// 	if(dataunit.ogda=="0" || !dataunit.ogda){
-	// 		filter4=filter3;
-	// 	}else{
-	// 		filter4=filter3.filter((el)=>el.ogdarep === dataunit.ogda);
-	// 	}
-
-	// 	let filter5=[]; //hativa filter
-	// 	if(dataunit.hativa=="0" || !dataunit.hativa){
-	// 		filter5=filter4;
-	// 	}else{
-	// 		filter5=filter4.filter((el)=>el.hativarep === dataunit.hativa);
-	// 	}
-
-	// 	let filter6=[]; //gdod filter
-	// 	if(dataunit.gdod=="0" || !dataunit.gdod){
-	// 		filter6=filter5;
-	// 	}else{
-	// 		filter6=filter5.filter((el)=>el.gdodrep === dataunit.gdod);
-	// 	}
-
-	// 	let filter7=[];//sinono filter
-	// 	if(sinono.typesinono=="בחר" || !sinono.typesinono){
-	// 		filter7=filter6;
-	// 	}else{
-	// 		if(sinono.typesinono=="1"){
-	// 			filter7=filter6.filter((el)=>el.resevent === "4")
-	// 		}
-	// 		if(sinono.typesinono=="2"){
-	// 			filter7=filter6.filter((el)=>el.datevent.substr(11, 5) === "00:00")
-	// 		}
-	// 		if(sinono.typesinono=="3"){
-	// 			filter7=filter6.filter((el)=>el.nifga === 2)
-	// 		}
-	// 		if(sinono.typesinono=="4"){
-	// 			for(let i=0;i<filter6.length;i++)
-	// 			{
-	// 				if(filter6[i].typevent ==="1" ||filter6[i].typevent ==="2" || filter6[i].typevent ==="3" ||filter6[i].typevent ==="4" || filter6[i].typevent ==="רקם" ){
-	// 					let a=0;
-	// 					let sum=0;
-	// 					while(a<filter6[i].arraymkabaz.length)
-	// 					{
-	// 						if(filter6[i].arraymkabaz[a].zadik == undefined){
-	// 							sum++;
-	// 						}
-	// 						a++;
-	// 					}
-	// 					if(sum>0){
-	// 						filter7.push(filter6[i]);
-	// 					}	
-	// 				}else if(filter6[i].typevent ==="7" ||filter6[i].typevent ==="9"){
-	// 					if(filter6[i].zadik === ""){
-	// 						filter7.push(filter6[i]);
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-		// console.log(filter7)
-		setData(filter2);
-		console.log(data);
+		setData(filter3);
+		// console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
 	function getname(idnum, arr) {
@@ -460,27 +430,15 @@ const SortingTable = (props) => {
 		window.location.reload();
 	}
 	
-	function handleChange3(selectedOption, name) {
-		console.log(selectedOption);
-		console.log(name);
-		if (!(selectedOption.value == "בחר")) {
-			setDataunit({ ...dataunit, [selectedOption.name]: selectedOption.name });
-		console.log(dataunit);
-		} 
-		else {
-			if (name == "unit") {
-				// addSelect(gdodsop)
-				delete dataunit.unit;
-				setDataunit({ ...dataunit });
-			}
-			if (name == "job") {
-				// addSelect(gdodsop)
-				delete dataunit.job;
-				setDataunit({ ...dataunit });
-			}
-		}
-				
-		
+	function handleChange3(evt) {
+		const value = evt.target.value;
+		console.log("+++++")
+		console.log(evt.target.value);
+		console.log(evt.target.name);
+		console.log("+++++")
+		setDataSubject(value);
+		setTyevent({ ...tyevent, [evt.target.name]: value });
+		// console.log(isNaN(tyevent.ta));
 	}
 	//window
 	const [windowSize, setWindowSize] = useState(getWindowSize());
@@ -509,7 +467,7 @@ const SortingTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [dataunit, subject, ta]);
+			}, [datasubject, ta, dataunit, tyevent]);
 
 	return (
 		<>
@@ -531,63 +489,53 @@ const SortingTable = (props) => {
 						סינון
 					</Button>
 					<Collapse isOpen={collapseOpen}>
-						<Card style={{ background: "rgb(255, 255, 255)" }}>
-						<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
-                                               
-												
-												{/* <MultiSelect data={unit} handleChange2={handleChange3} name={'unit'} /> */}
-											</Col>
+						<Card style={{ background: 'rgb(228,228,228,0.2)' }}>
+
 							<Row style={{ margin: "0px" }}>
 								<Col
 									xs={12}
 									md={8}
 									style={{ textAlign: "right" }}
 								>
-									{/* <h6>יחידה</h6>
+									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
+									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+									<h6>יחידה</h6>
+									<Select isMulti options={unitDataId} onChange={handleChange1} name={'unit'} />
+									{/* <Input
+                						id="unit"
+                						name="unit"
+                						type="select"
+                						onChange={handleChange1}
+              						>
+										<option defult value="בחר">
+                 					 בחר
+                						</option>
+                					{unit.map((unitId, index) => (
+                  						<option key={`unit-${index}`} id={index} value={unitId._id}>
+                    						{unitId.name}
+                  						</option>
+                					))}
+              						</Input> */}
+									  </Col>
+									  <Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+									<h6>מקצוע</h6>
 									<Input
-                // placeholder={textPlaceHolderInputs[5]}
-                id="unit"
-                name="unit"
-                type="select"
-                value={unit ? unit : dataunit.unit}
-                onChange={handleChange3}
-                // required
-              >
-                <option defult value="">
-                  בחר
-                </option>
-                {unit.map((mahlaka, index) => (
-                  <option key={`unit-${index}`} id={index} value={mahlaka._id}>
-                    {mahlaka.name}
-                  </option>
-                ))}
-              </Input> */}
-									{/* <h6>תפקיד</h6>
-									<Input
-                // placeholder={textPlaceHolderInputs[5]}
-                id="job"
-                name="job"
-                type="select"
-                value={job}
-                onChange={handleChange3}
-                // required
-              >
-                <option defult value="">
-                  בחר
-                </option>
-                {job.map((mahlaka, index) => (
-                  <option key={`job-${index}`} id={index} value={mahlaka._id}>
-                    {mahlaka.name}
-                  </option>
-                ))}
-              </Input> */}
-									<Col
-                                            style={{
-                                                justifyContent: "right",
-                                                alignContent: "right",
-                                                textAlign: "right",
-                                            }}
-                                        >
+                						id="subject"
+                						name="subject"
+                						type="select"
+                						onChange={handleChange3}
+              						>
+                					<option defult value="בחר">
+                					  בחר
+                					</option>
+                					{subject.map((subjectId, index) => (
+                  					<option key={`job-${index}`} id={index} value={subjectId._id}>
+                    					{subjectId.name}
+                  					</option>
+                					))}
+              						</Input>
+									</Col>
+									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
                                             <h6 style={{}}>תא</h6>
                                             <Input
                                                 placeholder="ta"
@@ -606,7 +554,9 @@ const SortingTable = (props) => {
                                                 <option value={"מפקד"}>{"מפקד"}</option>
                                                 <option value={"ללא"}>{"ללא"}</option>
                                             </Input>
+											
                                         </Col>
+									</Row>
 								</Col>
 							</Row>
 
