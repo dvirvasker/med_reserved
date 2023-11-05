@@ -49,6 +49,7 @@ const CarDataFormModal = (props) => {
 	const [isChecked4, setIsChecked4] = useState(false);
 
 	const loadcardata = async () => {
+		console.log(props);
 		await axios
 			.get(`http://localhost:8000/api/reservevisits/${props.cardataid}`)
 			.then(async (response) => {
@@ -149,6 +150,10 @@ const CarDataFormModal = (props) => {
 
 	const clickSubmit = (event) => {
 		CheckFormData();
+	};
+
+	const viewArchive = () => {
+		return <Redirect to="/MiluimArchivepage" />;
 	};
 
 	const CheckFormData = () => {
@@ -578,11 +583,27 @@ const CarDataFormModal = (props) => {
 										/>
 									</Col>
 								</Row>
+								{props.cardataid != undefined ?
 								<div style={{ textAlign: "center", paddingTop: "20px" }}>
 									<button className="btn" onClick={clickSubmit}>
 										עדכן
 									</button>
-								</div>
+								</div> :
+								<div style={{ textAlign: "center", paddingTop: "20px" }}>
+								<button className="btn" onClick={clickSubmit}>
+									הוסף
+								</button>
+							</div> 
+								}
+								{props.cardataid != undefined ?
+								 <div style={{ textAlign: "center", paddingTop: "20px" }}>
+									{/* <button className="btn" onClick={viewArchive}>
+										צפייה בהיסטוריית דיווחים
+									</button> */}
+									<Link to={`/MiluimArchivepage/${cardata.personal_number}`}>צפייה בהיסטוריית דיווחים</Link>
+								</div> : null
+								}
+								
 							</Container>
 						</CardBody>
 					</Card>
