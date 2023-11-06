@@ -88,6 +88,9 @@ function Signin() {
 				if (user.role === "1") {
 					history.push(`/miluimpage`);
 				}
+				if (user.role === "2") {
+					history.push(`/dashboard/`);
+				}
 			} else {
 				toast.success("משתמש לא מאושר מערכת");
 				setValues({ ...values, redirectToReferrer: false });

@@ -18,13 +18,15 @@ import {
 import axios from "axios";
 import history from "history.js";
 import { toast } from "react-toastify";
-import Select from "components/general/Select/AnimatedSelect";
+import AnimatedSelect from "components/general/Select/AnimatedSelect";
+import Select from "react-select";
 
 export default function SignUpForm() {
 	const [data, setData] = useState({
 		personalnumber: "",
-		role: 1,
+		role: "",
 		unit: "",
+		region:"",
 		errortype: "",
 		error: false,
 		successmsg: false,
@@ -34,12 +36,29 @@ export default function SignUpForm() {
 		site_permission: "צפייה ועריכה",
 	});
 	const [units, setUnits] = useState([]);
+	const [regions, setRegions] = useState([]);
 
+	const options = [
+		{ value: 'בחר', label: 'בחר' },
+		{ value: '1', label: 'משתמש יחידה' },
+		{ value: '2', label: 'משתמש מרחב' }
+	  ]
+	  
 	function getUnits() {
 		axios
 			.get(`http://localhost:8000/api/units`)
 			.then((res) => {
 				setUnits(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+	function getRegions() {
+		axios
+			.get(`http://localhost:8000/api/region`)
+			.then((res) => {
+				setRegions(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -65,11 +84,23 @@ export default function SignUpForm() {
 	}
 
 	function handleChange2(selectedOption, name) {
-		if (!(selectedOption.value == "בחר"))
+		console.log(selectedOption.value);
+		console.log(name);
+		 if (!(selectedOption.value == "בחר"))
 			setData({ ...data, [name]: selectedOption.value });
 		else {
 			setData({ ...data, [name]: "" });
 		}
+	}
+
+	function handleChange3(selectedOption, name) {
+		console.log(selectedOption.value);
+		console.log(name.name);
+		//  if (!(selectedOption.value == "בחר"))
+			setData({ ...data, [name.name]: selectedOption.value });
+		// else {
+		// 	setData({ ...data, [name]: "" });
+		// }
 	}
 
 	const clickSubmit = (event) => {
@@ -77,6 +108,7 @@ export default function SignUpForm() {
 	};
 
 	const CheckSignUpForm = (event) => {
+		console.log(data);
 		event.preventDefault();
 		var flag = true;
 		var ErrorReason = "";
@@ -98,6 +130,10 @@ export default function SignUpForm() {
 		} else {
 			if (data.role === "0") {
 			}
+		}
+		if (data.region == "") {
+			flag = false;
+			ErrorReason += "סוג מרחב ריק\n";
 		}
 		let c = data.personalnumber.charAt(0);
 		if (c >= "0" && c <= "9") {
@@ -127,9 +163,10 @@ export default function SignUpForm() {
 		event.preventDefault();
 		setData({ ...data, loading: true, successmsg: false, error: false });
 		const user = {
-			role: 1,
+			role: data.role,
 			personalnumber: data.personalnumber,
 			unit: data.unit,
+			region: data.region,
 
 			site_permission: data.site_permission,
 		};
@@ -188,6 +225,7 @@ export default function SignUpForm() {
 	useEffect(() => {
 		// passport();
 		getUnits();
+		getRegions();
 	}, []);
 
 	const signUpForm = () => (
@@ -213,7 +251,7 @@ export default function SignUpForm() {
 
 									<>
 										<div style={{ textAlign: "right", paddingTop: "10px" }}>
-											משתמש יחידה
+											בחר סוג משתמש
 										</div>
 										<FormGroup
 											dir="rtl"
@@ -224,13 +262,54 @@ export default function SignUpForm() {
 											}}
 										>
 											<Select
+												onChange={handleChange3}
+												name={"role"}
+												options={options}
+											/>
+											
+										</FormGroup>
+									</>
+										{data.role==="2"? <>
+										<div style={{ textAlign: "right", paddingTop: "10px" }}>
+											 בחר מרחב
+										</div>
+										<FormGroup
+											dir="rtl"
+											style={{
+												justifyContent: "right",
+												alignContent: "right",
+												textAlign: "right",
+											}}
+										>
+											<AnimatedSelect
+												data={regions}
+												handleChange2={handleChange2}
+												name={"region"}
+												val={data.region ? data.region : undefined}
+											/>
+										</FormGroup>
+									</>:data.role === "1"?
+									<>
+										<div style={{ textAlign: "right", paddingTop: "10px" }}>
+											משתמש יחידה
+										</div>
+										<FormGroup
+											dir="rtl"
+											style={{
+												justifyContent: "right",
+												alignContent: "right",
+												textAlign: "right",
+											}}
+										>
+											<AnimatedSelect
 												data={units}
 												handleChange2={handleChange2}
 												name={"unit"}
 												val={data.unit ? data.unit : undefined}
 											/>
 										</FormGroup>
-									</>
+									</>: null}
+
 
 									{/* {data.role != "" && data.role != "0" && data.role != "5" ? (
 										<>

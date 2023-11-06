@@ -12,6 +12,15 @@ exports.findByUnit = (req, res) => {
 		.then((units) => res.json(units))
 		.catch((err) => res.status(400).json("Error: " + err));
 };
+
+
+// exports.findUnitByRegion = (req, res) => {
+// 	Unit.find({ region: req.body.region })
+// 	  .sort({ index: 1 })
+// 	  .then((orders) => res.json(orders))
+// 	  .catch((err) => res.status(400).json("Error: " + err));
+//   };
+
 //! expremental
 exports.UnitLength = (req, res) => {
 	Unit.countDocuments({})
