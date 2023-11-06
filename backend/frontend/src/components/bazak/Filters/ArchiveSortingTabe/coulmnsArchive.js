@@ -1,4 +1,4 @@
-import { ColumnFilter } from "./ColumnFilter";
+import { ColumnFilter } from "../MiluimSortingTable/ColumnFilter";
 
 export const COLUMNS = [
 	{

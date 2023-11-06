@@ -18,7 +18,7 @@ import {
 import axios from 'axios';
 import { signin, authenticate, isAuthenticated } from 'auth/index';
 
-import MiluimArchiveTable from 'components/bazak/Filters/MiluimSortingTable/ArchiveTable.js';
+import MiluimArchiveTable from 'components/bazak/Filters/ArchiveSortingTabe/ArchiveTable.js';
 
 function Miluimpage({ match }) {
 

@@ -8,7 +8,7 @@ import {
 } from "react-table";
 import { withRouter, Redirect, Link } from "react-router-dom";
 import { COLUMNS } from "./coulmnsArchive";
-import { GlobalFilter } from "./GlobalFilter";
+import { GlobalFilter } from "../MiluimSortingTable/GlobalFilter";
 import axios from "axios";
 import { signin, authenticate, isAuthenticated } from "auth/index";
 import PropagateLoader from "react-spinners/PropagateLoader";
