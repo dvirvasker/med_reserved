@@ -7,8 +7,8 @@ import {
 	usePagination,
 } from "react-table";
 import { withRouter, Redirect, Link } from "react-router-dom";
-import { COLUMNS } from "./coulmns";
-import { GlobalFilter } from "./GlobalFilter";
+import { COLUMNS } from "./coulmnsSingleArchive";
+import { GlobalFilter } from "../MiluimSortingTable/GlobalFilter";
 import axios from "axios";
 import { signin, authenticate, isAuthenticated } from "auth/index";
 import PropagateLoader from "react-spinners/PropagateLoader";
@@ -23,13 +23,14 @@ import ReactHTMLTableToExcel from "react-html-table-to-excel";
 
 //redux
 
-const SortingTable = (props) => {
+const SingleMiluimArchiveTable = (props) => {
 	//user
 	const { user } = isAuthenticated();
 	//table
 	const columns = useMemo(() => COLUMNS, []);
 	//data
 	const [data, setData] = useState([]);
+	const [date, setDate] = useState([]);
 	const [originaldata, setOriginaldata] = useState([]);
 	// sysytems //! might cange the way we save this kind of data later depends if we want to fillter with the main fillter
 	const [systemsonZ, setSystemonsonZ] = useState({});
@@ -58,16 +59,18 @@ const SortingTable = (props) => {
 	const [collapseOpen, setcollapseOpen] = React.useState(false);
 
 	async function CalculateDataArr() {
+		let personalnumber = props.match.params.personalnumber;
+		let userUnit = user.unit;
 		await axios
-			.get(`http://localhost:8000/api/reservevisits`)
+			.get(`http://localhost:8000/api/archivedata/`)
 			.then((response) => {
-
+				console.log(response.data)
 				if(user.role == 0){
-					setData(response.data)
-					setOriginaldata(response.data);
+					setData(response.data.filter((item) => item.personal_number == personalnumber))
+					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber));
 				} else{
-					setData(response.data.filter((item) => item.unit == user.unit));
-					setOriginaldata(response.data.filter((item) => item.unit == user.unit));
+					setData(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit));
+					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit));
 				}
 				// user.role == 0
 				// 	? 
@@ -160,6 +163,16 @@ const SortingTable = (props) => {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
 
+	function handleChange(evt) {
+		const value = evt.target.value;
+		console.log(evt.target.value);
+		console.log(evt.target.name);
+		setDate({ ...date, [evt.target.name]: value });
+		console.log(date);
+		console.log(new Date(date.fromdate).setHours(0, 0, 0, 0));
+		console.log(date.todate);
+	}
+
 	function handleChange1(evt) {
 		let tempvalues = [];
 		for (let i = 0; i < evt.length; i++) {
@@ -194,75 +207,18 @@ const SortingTable = (props) => {
 		console.log(tyevent);
 		let beforfilter=originaldata;
 
-		let filter1=[]; //unit filter
-		if(tyevent.unit){
-			if(tyevent.unit.length === 0 || tyevent.unit === undefined){
-		  		filter1=beforfilter;
+		let filter1=[]; //date filterwev                                                                                                                                                                               
+		if(date.fromdate && date.todate){
+			console.log(beforfilter);
+			filter1=beforfilter.filter((el)=> new Date(el.updatedAt).setHours(0, 0, 0, 0) >=
+			new Date(date.fromdate).setHours(0, 0, 0, 0) &&
+		    new Date(el.updatedAt).setHours(0, 0, 0, 0) <=
+			new Date(date.todate).setHours(0, 0, 0, 0));
 		}else{
-			for(let i=0;i<tyevent.unit.length;i++){
-				for(let j=0;j<beforfilter.length;j++){
-					if(beforfilter[j].unit === tyevent.unit[i]){
-						filter1.push(beforfilter[j]);
-				}
-				}}
-		}
-		  }
-		  else{
 			filter1=beforfilter;
 		}
-		
 
-		let filter2=[]; //subject filter
-		if(tyevent.subject){
-			if(tyevent.subject.length === 0 || tyevent.subject === undefined){
-				filter2=filter1;
-			  }else{
-				for(let i=0;i<tyevent.subject.length;i++){
-					for(let j=0;j<filter1.length;j++){
-						if(filter1[j].subject === tyevent.subject[i]){
-						filter2.push(filter1[j]);
-					}
-					}
-				}
-			  }
-		}
-		else{
-			filter2=filter1;
-		}
-		
-		let filter3=[]; //ta filter
-		if(tyevent.ta){
-			if(tyevent.ta.length == 0 || tyevent.ta == undefined){
-				filter3=filter2;
-			  }else{
-				for(let i=0;i<tyevent.ta.length;i++){
-					for(let j=0;j<filter2.length;j++){
-						if(filter2[j].ta === tyevent.ta[i]){
-							filter3.push(filter2[j]);
-					}
-					}
-				}
-			  }
-		}
-		else{
-			filter3=filter2;
-		}
-
-		// let filter2=[]; //ta filter
-		// if(tyevent.ta == "בחר" || tyevent.ta == undefined){
-		//   filter2=filter1;
-		// }else{
-		// 	filter2=filter1.filter((el)=>el.ta === tyevent.ta);
-		// }
-
-		// let filter3=[]; //subject filter
-		// if(tyevent.subject == "בחר" || tyevent.subject == undefined){
-		//   filter3=filter2;
-		// }else{
-		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
-		// }
-
-		setData(filter3);
+		setData(filter1);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -361,9 +317,16 @@ const SortingTable = (props) => {
 				? (tempdata_to_excel[i].personalnumber =
 						tempdata_to_excel[i].personal_number)
 				: (tempdata_to_excel[i].personalnumber = " ");
-			tempdata_to_excel[i].ta
-				? (tempdata_to_excel[i].ta_m = tempdata_to_excel[i].ta)
-				: (tempdata_to_excel[i].ta_m = " ");
+
+			tempdata_to_excel[i].civilian_number
+				? (tempdata_to_excel[i].civiliannumber =
+						tempdata_to_excel[i].civilian_number)
+				: (tempdata_to_excel[i].civiliannumber = " ");
+
+			tempdata_to_excel[i].updatedAt
+				? (tempdata_to_excel[i].updated =
+						tempdata_to_excel[i].updatedAt.split("T")[0].split("-").reverse().join("/"))
+				: (tempdata_to_excel[i].updated = " ");
 
 			tempdata_to_excel[i].present
 				? (tempdata_to_excel[i].present_m = "כן")
@@ -371,27 +334,11 @@ const SortingTable = (props) => {
 			tempdata_to_excel[i].todayPresent
 				? (tempdata_to_excel[i].todayPresent_m = "כן")
 				: (tempdata_to_excel[i].todayPresent_m = "לא");
-			tempdata_to_excel[i].dailSent
-				? (tempdata_to_excel[i].dailSent_m = "כן")
-				: (tempdata_to_excel[i].dailSent_m = "לא");
-			tempdata_to_excel[i].shamapOpen
-				? (tempdata_to_excel[i].shamapOpen_m = "כן")
-				: (tempdata_to_excel[i].shamapOpen_m = "לא");
-
-			tempdata_to_excel[i].unit
-				? (tempdata_to_excel[i].unit_m = getname(
-						tempdata_to_excel[i].unit,
-						unit
-				  ))
-				: (tempdata_to_excel[i].unit_m = " ");
-			tempdata_to_excel[i].job
-				? (tempdata_to_excel[i].job_m = getname(tempdata_to_excel[i].job, job))
-				: (tempdata_to_excel[i].job_m = " ");
 
 			// ------------------------ בארמי במקום השורה הזאת ----------------------------------------
-			tempdata_to_excel[i].subject
-				? (tempdata_to_excel[i].subject_m = tempdata_to_excel[i].subject)
-				: (tempdata_to_excel[i].subject_m = " ");
+			// tempdata_to_excel[i].subject
+			// 	? (tempdata_to_excel[i].subject_m = tempdata_to_excel[i].subject)
+			// 	: (tempdata_to_excel[i].subject_m = " ");
 			//   ----------------------- לעשות את השורה הזאת ----------------------------------
 			//   tempdata_to_excel[i].subject ? tempdata_to_excel[i].subject_m = getname(tempdata_to_excel[i].subject, subject) : tempdata_to_excel[i].subject_m = " ";
 			// -----------------------------------------------------------------------------------------
@@ -400,6 +347,7 @@ const SortingTable = (props) => {
 		//export to excel -fix
 		for (let i = 0; i < tempdata_to_excel.length; i++) {
 			//delete unwanted fields
+			
 			delete tempdata_to_excel[i]._id;
 			delete tempdata_to_excel[i].present;
 			delete tempdata_to_excel[i].todayPresent;
@@ -416,6 +364,7 @@ const SortingTable = (props) => {
 			delete tempdata_to_excel[i].TodayPresent;
 			delete tempdata_to_excel[i].createdAt;
 			delete tempdata_to_excel[i].updatedAt;
+			delete tempdata_to_excel[i].date;
 			delete tempdata_to_excel[i].ta;
 			delete tempdata_to_excel[i].job;
 
@@ -427,24 +376,15 @@ const SortingTable = (props) => {
 				tempdata_to_excel[i].lastname = " ";
 			}
 			if (!tempdata_to_excel[i].personalnumber) {
-				tempdata_to_excel[i].hativa_name = " ";
+				tempdata_to_excel[i].personalnumber = " ";
+			}
+			if (!tempdata_to_excel[i].updatedAt) {
+				tempdata_to_excel[i].updatedAt = " ";
+			}
+			if (!tempdata_to_excel[i].civilian_number) {
+				tempdata_to_excel[i].civilian_number = " ";
 			}
 
-			if (!tempdata_to_excel[i].unit_m) {
-				tempdata_to_excel[i].unit_m = " ";
-			}
-			if (!tempdata_to_excel[i].subject_m) {
-				tempdata_to_excel[i].subject_m = " ";
-			}
-			if (!tempdata_to_excel[i].details_m) {
-				tempdata_to_excel[i].details_m = " ";
-			}
-			if (!tempdata_to_excel[i].job_m) {
-				tempdata_to_excel[i].job_m = " ";
-			}
-			if (!tempdata_to_excel[i].ta_m) {
-				tempdata_to_excel[i].ta_m = " ";
-			}
 		}
 
 		console.log(tempdata_to_excel);
@@ -455,20 +395,22 @@ const SortingTable = (props) => {
 
 		let EXCEL_EXTENSION = ".xlsx";
 		let worksheet = XLSX.WorkSheet;
-		let sheetName = "התייצבות מילואים " + day + "." + month;
+		let sheetName = "ארכיון דיוחים של " + data[0].name + " " + data[0].family;
 
 		const headers = {
+			updated: "תאריך",
 			name_m: "שם",
 			lastname: "שם משפחה",
 			personalnumber: "מספר אישי",
+			civiliannumber: "תעודת זהות",
 			present_m: "התייצב",
 			todayPresent_m: "התייצב היום",
-			dailSent_m: "נשלח חייגן",
-			shamapOpen_m: 'נפתח שמ"פ',
-			unit_m: "יחידה",
-			subject_m: "מקצוע",
-			job_m: "תפקיד",
-			ta_m: "תא",
+			// dailSent_m: "נשלח חייגן",
+			// shamapOpen_m: 'נפתח שמ"פ',
+			// unit_m: "יחידה",
+			// subject_m: "מקצוע",
+			// job_m: "תפקיד",
+			// ta_m: "תא",
 		};
 		tempdata_to_excel.unshift(headers); // if custom header, then make sure first row of data is custom header
 
@@ -477,7 +419,7 @@ const SortingTable = (props) => {
 		});
 
 		const workbook = XLSX.utils.book_new();
-		const fileName = "התייצבות מילואים " + day + "." + month + EXCEL_EXTENSION;
+		const fileName = "ארכיון דיווחים של " + data[0].name + " " + data[0].family + day + "." + month + EXCEL_EXTENSION;
 		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 		XLSX.writeFile(workbook, fileName);
 
@@ -511,21 +453,46 @@ const SortingTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent]);
+			}, [datasubject, ta, dataunit, tyevent, date]);
 
 	return (
 		<>
-			<div style={{ float: "right", paddingBottom: "5px" }}>
+			<div style={{ float: "right", paddingBottom: "5px", marginBottom: "1%" }}>
 				<button className="btn-green" onClick={FixDataAndExportToExcel}>
 					הורד כקובץ אקסל
 				</button>
 			</div>
-
-			<div style={{ textAlign: "right", marginTop: "5%" }}>
+			{data.length > 0 ? <Card style={{outline: "#5FD0CA solid 3px" }}>
+							<Row style={{ margin: "0px" }}>
+								<Col
+									xs={12}
+									md={8}
+									style={{ textAlign: "right" }}
+								>
+									<h3 style={{marginBottom: "0.5%"}}>היסטוריית דיווחים</h3>
+									<h4 style={{marginBottom: "0.5%"}}>שם: {data[0].name}</h4>
+									<h4 style={{marginBottom: "0.5%"}}>שם משפחה: {data[0].family}</h4>
+									<h4 style={{marginBottom: "0.5%"}}>מספר אישי: {data[0].personal_number}</h4>
+								</Col>
+							</Row>
+				</Card> :
+				<Card style={{outline: "#5FD0CA solid 3px" }}>
+				<Row style={{ margin: "0px" }}>
+					<Col
+						xs={12}
+						md={8}
+						style={{ textAlign: "right" }}
+					>
+						<h3 style={{marginBottom: "0.5%"}}>אין היסטוריית דיווחים</h3>
+						</Col>
+				</Row>
+	</Card>
+				}
+				
+			<div style={{ textAlign: "right", marginTop: "1%" }}>
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
 			</div>
-			<Row>
-				<div style={{ width: "100%", margin: "auto", textAlign: "right" }}>
+			<div style={{ width: "100%", margin: "auto", marginBottom: "1%", textAlign: "right" }}>
 					<Button
 						onClick={toggleCollapse}
 						style={{}}
@@ -534,27 +501,40 @@ const SortingTable = (props) => {
 					</Button>
 					<Collapse isOpen={collapseOpen}>
 						<Card style={{ background: 'rgb(228,228,228,0.2)' }}>
-
+							
 							<Row style={{ margin: "0px" }}>
 								<Col
 									xs={12}
 									md={8}
 									style={{ textAlign: "right" }}
 								>
-									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
-									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
-									<h6>יחידה</h6>
-									<Select isMulti options={unitDataId} onChange={handleChange1} name={'unit'} />
-									  </Col>
-									  <Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
-									<h6>מקצוע</h6>
-									<Select isMulti options={subjectDataId} onChange={handleChange3} name={'subject'} />
-									
-									</Col>
-									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
-                                            <h6 style={{}}>תא</h6>
-											<Select isMulti options={optionsTa} onChange={handleChange2} name={'ta'} />
-                                        </Col>
+									<Row>
+										<Col
+											xs={12}
+											md={6}
+										>
+											<div style={{ textAlign: "right" }}>ארכיון מתאריך</div>
+											<Input
+												placeholder="תאריך התחלה"
+												type="date"
+												name="fromdate"
+												value={date.fromdate}
+												onChange={handleChange}
+											/>
+										</Col>
+										<Col
+											xs={12}
+											md={6}
+										>
+											<div style={{ textAlign: "right" }}>עד ארכיון מתאריך</div>
+											<Input
+												placeholder="תאריך סיום"
+												type="date"
+												name="todate"
+												value={date.todate}
+												onChange={handleChange}
+											/>
+										</Col>
 									</Row>
 								</Col>
 							</Row>
@@ -562,16 +542,9 @@ const SortingTable = (props) => {
 						</Card>
 					</Collapse>
 				</div>
-			</Row>
+			
 			{/* <MiluimTableFilter originaldata={originaldata} filter={filter} unittype={'admin'} handleChange8={handleChange8} /> */}
-			<button
-				className="btn-new-blue"
-				value={undefined}
-				onClick={Toggle}
-				style={{ marginRight: "5px" , marginBottom: "5px" }}
-			>
-				הוסף איש מילואים
-			</button>
+			
 			{/*modals */}
 			<CarDataFormModal
 				isOpen={iscardataformopen}
@@ -620,8 +593,7 @@ const SortingTable = (props) => {
 										</div>
 									</th>
 								))}
-								<th>עדכן</th>
-								<th>מחק</th>
+								
 							</tr>
 						))}
 					</thead>
@@ -630,7 +602,25 @@ const SortingTable = (props) => {
 							prepareRow(row);
 							return (
 								<tr className="">
+									
 									{row.cells.map((cell) => {
+										if (cell.column.id == "updatedAt") {
+											return (
+												<td>
+													<div
+														style={{
+															width: "100%",
+															height: "40px",
+															margin: "0",
+															padding: "0",
+															overflow: "auto",
+														}}
+													>
+														{cell.value.split("T")[0].split("-").reverse().join("/")}
+													</div>
+												</td>
+											);
+										}
 										if (cell.column.id == "name") {
 											return (
 												<td>
@@ -713,20 +703,6 @@ const SortingTable = (props) => {
 												return <td>לא</td>;
 											}
 										}
-										if (cell.column.id == "dailSent") {
-											if (row.original.dailSent === true) {
-												return <td>כן</td>;
-											} else {
-												return <td>לא</td>;
-											}
-										}
-										if (cell.column.id == "shamapOpen") {
-											if (row.original.shamapOpen === true) {
-												return <td>כן</td>;
-											} else {
-												return <td>לא</td>;
-											}
-										}
 										//------------------ באמרי במקום הif הזה -------------------------------------------------
 										{
 											/* if (cell.column.id == "subject") {
@@ -748,138 +724,8 @@ const SortingTable = (props) => {
 										} */
 										}
 										//------------------ צריך לעשות את זה ------------------------------------------------------
-
-										if (cell.column.id == "subject") {
-											return (
-												<td>
-													<div
-														style={{
-															width: "100%",
-															height: "40px",
-															margin: "0",
-															padding: "0",
-															overflow: "auto",
-														}}
-													>
-														{getname(cell.value, subject)}
-													</div>
-												</td>
-											);
-										}
-
-										// --------------------------------------------------------------------------------------------
-										if (cell.column.id == "unit") {
-											return (
-												<td>
-													<div
-														style={{
-															width: "100%",
-															height: "40px",
-															margin: "0",
-															padding: "0",
-															overflow: "auto",
-														}}
-													>
-														{getname(cell.value, unit)}
-													</div>
-												</td>
-											);
-										}
-										if (cell.column.id == "job") {
-											return (
-												<td>
-													<div
-														style={{
-															width: "100%",
-															height: "40px",
-															margin: "0",
-															padding: "0",
-															overflow: "auto",
-														}}
-													>
-														{getname(cell.value, job)}
-													</div>
-												</td>
-											);
-										}
-										if (cell.column.id == "ta") {
-											return (
-												<td>
-													<div
-														style={{
-															width: "100%",
-															height: "40px",
-															margin: "0",
-															padding: "0",
-															overflow: "auto",
-														}}
-													>
-														{cell.value}
-													</div>
-												</td>
-											);
-										}
-
-										if (cell.column.id == "details") {
-											return (
-												<td>
-													<div
-														style={{
-															width: "100%",
-															height: "40px",
-															margin: "0",
-															padding: "0",
-															overflow: "auto",
-														}}
-													>
-														{cell.value}
-													</div>
-												</td>
-											);
-										}
 									})}
-									<td role="cell">
-										{" "}
-										<div
-											style={{
-												width: `${100 / 7}%`,
-												minWidth: "50px",
-												maxWidth: "100px",
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
-											}}
-										>
-											<button
-												className="btn-new-blue"
-												value={row.original._id}
-												onClick={Toggle}
-											>
-												עדכן
-											</button>
-										</div>
-									</td>
-									<td role="cell">
-										{" "}
-										<div
-											style={{
-												width: `${100 / 7}%`,
-												minWidth: "50px",
-												maxWidth: "100px",
-												display: "flex",
-												alignItems: "center",
-												justifyContent: "center",
-											}}
-										>
-											<button
-												className="btn-new-delete"
-												value={row.original._id}
-												onClick={ToggleDelete}
-											>
-												מחק
-											</button>
-										</div>
-									</td>
+									
 								</tr>
 							);
 						})}
@@ -931,4 +777,4 @@ const SortingTable = (props) => {
 		</>
 	);
 };
-export default withRouter(SortingTable);
+export default withRouter(SingleMiluimArchiveTable);

@@ -18,15 +18,15 @@ import {
 import axios from 'axios';
 import { signin, authenticate, isAuthenticated } from 'auth/index';
 
-import MiluimArchiveTable from 'components/bazak/Filters/ArchiveSortingTabe/ArchiveTable.js';
+import SingleMiluimArchiveTable from 'components/bazak/Filters/ArchiveSortingTabe/SingleMiluimArchiveTable.js';
 
-function Miluimpage({ match }) {
+function SingleMiluimArchivepage({ match }) {
 
   return (
     <>
-      <MiluimArchiveTable />     {/*spinner in table*/}
+      <SingleMiluimArchiveTable />     {/*spinner in table*/}
     </>
   );
 }
 
-export default withRouter(Miluimpage);
+export default withRouter(SingleMiluimArchivepage);

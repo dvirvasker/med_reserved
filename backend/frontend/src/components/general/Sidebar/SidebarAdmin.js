@@ -44,6 +44,9 @@ import graphpic_white from "assets/img/graphpic_white.png";
 import screensicon from "assets/img/screensicon.png";
 import screensicon_white from "assets/img/screensicon_white.png";
 
+import Archive from "assets/img/Archive.png";
+import Archive_white from "assets/img/Archive_white.png";
+
 import { signout } from "auth/index";
 import history from "../../../history";
 
@@ -222,6 +225,43 @@ function SidebarAdmin(props) {
 									}}
 								>
 									טבלת מילואים
+								</h4>
+							</Col>
+						</Row>
+					</NavLink>
+				</li>
+
+				<li>
+					<NavLink
+						to="/MiluimArchivepage"
+						style={{ margin: "0px" }}
+						activeClassName="sidebar_active_link"
+					>
+						<Row style={{ direction: "rtl" }}>
+							<Col
+								xs={12}
+								md={3}
+								style={{
+									paddingLeft: "0px",
+									textAlign: "center",
+									alignSelf: "center",
+								}}
+							>
+								{props.theme == "white" ? (
+									<img src={Archive} style={{ height: "20px" }}></img>
+								) : (
+									<img src={Archive_white} style={{ height: "20px" }}></img>
+								)}
+							</Col>
+							<Col xs={12} md={9} style={{ paddingRight: "0px" }}>
+								<h4
+									style={{
+										margin: "0px",
+										paddingTop: "6px",
+										paddingBottom: "6px",
+									}}
+								>
+									ארכיון מילואים
 								</h4>
 							</Col>
 						</Row>

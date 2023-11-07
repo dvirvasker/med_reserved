@@ -45,7 +45,8 @@ import AboutPage from "views/general/aboutpage/AboutPage";
 import StatisticsPage from "views/general/statisticspage/StatisticsPage";
 
 import Miluimpage from "views/general/miluimpage/Miluimpage";
-import MiluimArchivepage from "views/general/miluimpage/MiluimArchivepage";
+import AllMiluimArchivepage from "views/general/miluimpage/AllMiluimArchivepage";
+import SingleMiluimArchivepage from "views/general/miluimpage/SingleMiluimArchivepage";
 
 ReactDOM.render(
 	<>
@@ -93,7 +94,8 @@ ReactDOM.render(
 								component={StatisticsPage}
 							/> */}
 							<LoggedinRoute path="/miluimpage" exact component={Miluimpage} />
-							<LoggedinRoute path="/MiluimArchivepage/:personalnumber" exact component={MiluimArchivepage} />
+							<LoggedinRoute path="/MiluimArchivepage" exact component={AllMiluimArchivepage} />
+							<LoggedinRoute path="/MiluimArchivepage/:personalnumber" exact component={SingleMiluimArchivepage} />
 							{/*///////////////////////////////////////////LoggedIn Routes/////////////////////////////////////////////////*/}
 							<Redirect from="/" to="/signin" />
 						</Switch>
