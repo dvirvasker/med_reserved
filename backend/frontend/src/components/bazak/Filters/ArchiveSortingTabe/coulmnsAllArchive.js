@@ -3,7 +3,7 @@ import { ColumnFilter } from "../MiluimSortingTable/ColumnFilter";
 export const COLUMNS = [
 	{
 		Header: "תאריך דיווח",
-		accessor: "updatedAt",
+		accessor: "date",
 		Filter: ColumnFilter,
 	},
 	{

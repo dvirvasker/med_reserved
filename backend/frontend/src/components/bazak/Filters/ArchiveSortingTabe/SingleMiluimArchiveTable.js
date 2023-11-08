@@ -66,11 +66,15 @@ const SingleMiluimArchiveTable = (props) => {
 			.then((response) => {
 				console.log(response.data)
 				if(user.role == 0){
-					setData(response.data.filter((item) => item.personal_number == personalnumber))
-					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber));
+					setData(response.data.filter((item) => item.personal_number == personalnumber).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0))
+					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
 				} else{
-					setData(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit));
-					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit));
+					setData(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
+					setOriginaldata(response.data.filter((item) => item.personal_number == personalnumber && item.unit == userUnit).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
 				}
 				// user.role == 0
 				// 	? 
@@ -210,9 +214,9 @@ const SingleMiluimArchiveTable = (props) => {
 		let filter1=[]; //date filterwev                                                                                                                                                                               
 		if(date.fromdate && date.todate){
 			console.log(beforfilter);
-			filter1=beforfilter.filter((el)=> new Date(el.updatedAt).setHours(0, 0, 0, 0) >=
+			filter1=beforfilter.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
 			new Date(date.fromdate).setHours(0, 0, 0, 0) &&
-		    new Date(el.updatedAt).setHours(0, 0, 0, 0) <=
+		    new Date(el.date).setHours(0, 0, 0, 0) <=
 			new Date(date.todate).setHours(0, 0, 0, 0));
 		}else{
 			filter1=beforfilter;
@@ -323,9 +327,9 @@ const SingleMiluimArchiveTable = (props) => {
 						tempdata_to_excel[i].civilian_number)
 				: (tempdata_to_excel[i].civiliannumber = " ");
 
-			tempdata_to_excel[i].updatedAt
+			tempdata_to_excel[i].date
 				? (tempdata_to_excel[i].updated =
-						tempdata_to_excel[i].updatedAt.split("T")[0].split("-").reverse().join("/"))
+						tempdata_to_excel[i].date.split("T")[0].split("-").reverse().join("/"))
 				: (tempdata_to_excel[i].updated = " ");
 
 			tempdata_to_excel[i].present
@@ -378,8 +382,8 @@ const SingleMiluimArchiveTable = (props) => {
 			if (!tempdata_to_excel[i].personalnumber) {
 				tempdata_to_excel[i].personalnumber = " ";
 			}
-			if (!tempdata_to_excel[i].updatedAt) {
-				tempdata_to_excel[i].updatedAt = " ";
+			if (!tempdata_to_excel[i].date) {
+				tempdata_to_excel[i].date = " ";
 			}
 			if (!tempdata_to_excel[i].civilian_number) {
 				tempdata_to_excel[i].civilian_number = " ";
@@ -395,7 +399,7 @@ const SingleMiluimArchiveTable = (props) => {
 
 		let EXCEL_EXTENSION = ".xlsx";
 		let worksheet = XLSX.WorkSheet;
-		let sheetName = "ארכיון דיוחים של " + data[0].name + " " + data[0].family;
+		let sheetName = "ארכיון התייצבות של " + data[0].name + " " + data[0].family;
 
 		const headers = {
 			updated: "תאריך",
@@ -419,7 +423,7 @@ const SingleMiluimArchiveTable = (props) => {
 		});
 
 		const workbook = XLSX.utils.book_new();
-		const fileName = "ארכיון דיווחים של " + data[0].name + " " + data[0].family + day + "." + month + EXCEL_EXTENSION;
+		const fileName = "ארכיון התייצבות של " + data[0].name + " " + data[0].family + day + "." + month + EXCEL_EXTENSION;
 		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 		XLSX.writeFile(workbook, fileName);
 
@@ -604,7 +608,7 @@ const SingleMiluimArchiveTable = (props) => {
 								<tr className="">
 									
 									{row.cells.map((cell) => {
-										if (cell.column.id == "updatedAt") {
+										if (cell.column.id == "date") {
 											return (
 												<td>
 													<div

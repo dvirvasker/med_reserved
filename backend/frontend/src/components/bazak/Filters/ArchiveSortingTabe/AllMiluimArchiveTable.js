@@ -65,11 +65,15 @@ const AllMiluimArchiveTable = (props) => {
 			.then((response) => {
 				// console.log(response.data)
 				if(user.role == 0){
-					setData(response.data);
-					setOriginaldata(response.data);
+					setData(response.data.sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
+					setOriginaldata(response.data.sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
 				} else{
-					setData(response.data.filter((item) => item.unit == userUnit))
-					setOriginaldata(response.data.filter((item) => item.unit == userUnit));
+					setData(response.data.filter((item) => item.unit == userUnit).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0))
+					setOriginaldata(response.data.filter((item) => item.unit == userUnit).sort(
+						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
 				}
 				// user.role == 0
 				// 	? 
@@ -264,9 +268,9 @@ const AllMiluimArchiveTable = (props) => {
 		let filter4=[]; //date filterwev                                                                                                                                                                               
 		if(date.fromdate && date.todate){
 			console.log(filter3);
-			filter4=filter3.filter((el)=> new Date(el.updatedAt).setHours(0, 0, 0, 0) >=
+			filter4=filter3.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
 			new Date(date.fromdate).setHours(0, 0, 0, 0) &&
-		    new Date(el.updatedAt).setHours(0, 0, 0, 0) <=
+		    new Date(el.date).setHours(0, 0, 0, 0) <=
 			new Date(date.todate).setHours(0, 0, 0, 0));
 		}else{
 			filter4=filter3;
@@ -389,9 +393,9 @@ const AllMiluimArchiveTable = (props) => {
 				? (tempdata_to_excel[i].ta_m = tempdata_to_excel[i].ta)
 				: (tempdata_to_excel[i].ta_m = " ");
 
-				tempdata_to_excel[i].updatedAt
+				tempdata_to_excel[i].date
 				? (tempdata_to_excel[i].updated =
-						tempdata_to_excel[i].updatedAt.split("T")[0].split("-").reverse().join("/"))
+						tempdata_to_excel[i].date.split("T")[0].split("-").reverse().join("/"))
 				: (tempdata_to_excel[i].updated = " ");
 			
 			tempdata_to_excel[i].present
@@ -472,8 +476,8 @@ const AllMiluimArchiveTable = (props) => {
 			if (!tempdata_to_excel[i].job_m) {
 				tempdata_to_excel[i].job_m = " ";
 			}
-			if (!tempdata_to_excel[i].updatedAt) {
-				tempdata_to_excel[i].updatedAt = " ";
+			if (!tempdata_to_excel[i].date) {
+				tempdata_to_excel[i].date = " ";
 			}
 			if (!tempdata_to_excel[i].ta_m) {
 				tempdata_to_excel[i].ta_m = " ";
@@ -488,7 +492,7 @@ const AllMiluimArchiveTable = (props) => {
 
 		let EXCEL_EXTENSION = ".xlsx";
 		let worksheet = XLSX.WorkSheet;
-		let sheetName = "ארכיון מילואים: " + day + "." + month;
+		let sheetName = "ארכיון התייצבות: " + day + "." + month;
 
 		const headers = {
 			updated: "תאריך",
@@ -511,7 +515,7 @@ const AllMiluimArchiveTable = (props) => {
 		});
 
 		const workbook = XLSX.utils.book_new();
-		const fileName = "ארכיון מילואים " + day + "." + month + EXCEL_EXTENSION;
+		const fileName = "ארכיון התייצבות " + day + "." + month + EXCEL_EXTENSION;
 		XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 		XLSX.writeFile(workbook, fileName);
 
@@ -561,7 +565,7 @@ const AllMiluimArchiveTable = (props) => {
 									md={8}
 									style={{ textAlign: "right" }}
 								>
-									<h3 style={{marginBottom: "0.5%"}}>ארכיון מילואים</h3>
+									<h3 style={{marginBottom: "0.5%"}}>ארכיון התייצבות</h3>
 								</Col>
 							</Row>
 				</Card> :
@@ -572,7 +576,7 @@ const AllMiluimArchiveTable = (props) => {
 						md={8}
 						style={{ textAlign: "right" }}
 					>
-						<h3 style={{marginBottom: "0.5%"}}>אין היסטוריית דיווחים</h3>
+						<h3 style={{marginBottom: "0.5%"}}>אין ארכיון התייצבות</h3>
 						</Col>
 				</Row>
 	</Card>
@@ -710,7 +714,7 @@ const AllMiluimArchiveTable = (props) => {
 								<tr className="">
 									
 									{row.cells.map((cell) => {
-										if (cell.column.id == "updatedAt") {
+										if (cell.column.id == "date") {
 											return (
 												<td>
 													<div

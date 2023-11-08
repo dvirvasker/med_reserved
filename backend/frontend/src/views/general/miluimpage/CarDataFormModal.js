@@ -87,8 +87,14 @@ const CarDataFormModal = (props) => {
 	}
 
 	function getUnits() {
+		let userUnit = "";
+		if(user.role == "0"){
+			userUnit = "";
+		} else if(user.role == "1"){
+			userUnit = user.unit;
+		}
 		axios
-			.get(`http://localhost:8000/api/units/${user.unit}`)
+			.get(`http://localhost:8000/api/units/${userUnit}`)
 			.then((res) => {
 				setUnits(res.data);
 			})

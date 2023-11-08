@@ -191,7 +191,7 @@ function SidebarGdod(props) {
 										paddingBottom: "6px",
 									}}
 								>
-									ארכיון מילואים
+									ארכיון התייצבות
 								</h4>
 							</Col>
 						</Row>
