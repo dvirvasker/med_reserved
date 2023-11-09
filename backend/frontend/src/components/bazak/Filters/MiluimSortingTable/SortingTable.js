@@ -50,6 +50,7 @@ const SortingTable = (props) => {
 	const [tyevent, setTyevent] = useState([]);
 	const [dataunit, setDataunit] = useState([]);
 	const [datasubject, setDataSubject] = useState([]);
+	const [datajob, setDataJob] = useState([]);
 	// unit
 	const [unit, setUnit] = useState([]);
 	const [job, setJob] = useState([]);
@@ -121,6 +122,9 @@ const SortingTable = (props) => {
 	const subjectDataId = subject.map((subjectid) =>(
 		{value: subjectid._id, label: subjectid.name})
 	)
+	const jobDataId = job.map((jobid) =>(
+		{value: jobid._id, label: jobid.name})
+	)
 	const optionsTa = [
 		{ value: 'הפעלה', label: 'הפעלה' },
 		{ value: 'רפואה', label: 'רפואה' },
@@ -188,10 +192,18 @@ const SortingTable = (props) => {
 		setDataSubject(tempvalues)
 
 	}
+	function handleChange4(evt) {
+		let tempvalues = [];
+		for (let i = 0; i < evt.length; i++) {
+			tempvalues.push(evt[i].value);
+		}
+		setTyevent({ ...tyevent, job: tempvalues });
+		setDataJob(tempvalues)
+
+	}
 
 	const filteruse=()=>{
 		console.log("filteruse");
-		console.log(tyevent);
 		let beforfilter=originaldata;
 
 		let filter1=[]; //unit filter
@@ -248,6 +260,24 @@ const SortingTable = (props) => {
 			filter3=filter2;
 		}
 
+		let filter4=[]; //job filter
+		if(tyevent.job){
+			if(tyevent.job.length == 0 || tyevent.job == undefined){
+				filter4=filter3;
+			  }else{
+				for(let i=0;i<tyevent.job.length;i++){
+					for(let j=0;j<filter3.length;j++){
+						if(filter3[j].job === tyevent.job[i]){
+							filter4.push(filter3[j]);
+					}
+					}
+				}
+			  }
+		}
+		else{
+			filter4=filter3;
+		}
+
 		// let filter2=[]; //ta filter
 		// if(tyevent.ta == "בחר" || tyevent.ta == undefined){
 		//   filter2=filter1;
@@ -262,7 +292,7 @@ const SortingTable = (props) => {
 		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
 		// }
 
-		setData(filter3);
+		setData(filter4);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -511,7 +541,7 @@ const SortingTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent]);
+			}, [datasubject, ta, dataunit, tyevent, datajob]);
 
 	return (
 		<>
@@ -549,7 +579,10 @@ const SortingTable = (props) => {
 									  <Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>מקצוע</h6>
 									<Select isMulti options={subjectDataId} onChange={handleChange3} name={'subject'} />
-									
+									</Col>
+									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+									<h6>תפקיד</h6>
+									<Select isMulti options={jobDataId} onChange={handleChange4} name={'job'} />
 									</Col>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
                                             <h6 style={{}}>תא</h6>

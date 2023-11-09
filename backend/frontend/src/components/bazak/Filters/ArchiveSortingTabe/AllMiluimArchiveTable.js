@@ -51,6 +51,7 @@ const AllMiluimArchiveTable = (props) => {
 	const [tyevent, setTyevent] = useState([]);
 	const [dataunit, setDataunit] = useState([]);
 	const [datasubject, setDataSubject] = useState([]);
+	const [datajob, setDataJob] = useState([]);
 	// unit
 	const [unit, setUnit] = useState([]);
 	const [job, setJob] = useState([]);
@@ -126,6 +127,9 @@ const AllMiluimArchiveTable = (props) => {
 	)
 	const subjectDataId = subject.map((subjectid) =>(
 		{value: subjectid._id, label: subjectid.name})
+	)
+	const jobDataId = job.map((jobid) =>(
+		{value: jobid._id, label: jobid.name})
 	)
 	const optionsTa = [
 		{ value: 'הפעלה', label: 'הפעלה' },
@@ -204,6 +208,15 @@ const AllMiluimArchiveTable = (props) => {
 		setDataSubject(tempvalues)
 
 	}
+	function handleChange4(evt) {
+		let tempvalues = [];
+		for (let i = 0; i < evt.length; i++) {
+			tempvalues.push(evt[i].value);
+		}
+		setTyevent({ ...tyevent, job: tempvalues });
+		setDataJob(tempvalues)
+
+	}
 
 	const filteruse=()=>{
 		console.log("filteruse");
@@ -265,15 +278,34 @@ const AllMiluimArchiveTable = (props) => {
 			filter3=filter2;
 		}
 
-		let filter4=[]; //date filterwev                                                                                                                                                                               
+		let filter4=[]; //job filter
+		if(tyevent.job){
+			if(tyevent.job.length == 0 || tyevent.job == undefined){
+				filter4=filter3;
+			  }else{
+				for(let i=0;i<tyevent.job.length;i++){
+					for(let j=0;j<filter3.length;j++){
+						if(filter3[j].job === tyevent.job[i]){
+							filter4.push(filter3[j]);
+					}
+					}
+				}
+			  }
+		}
+		else{
+			filter4=filter3;
+		}
+		
+
+		let filter5=[]; //date filterwev                                                                                                                                                                               
 		if(date.fromdate && date.todate){
-			console.log(filter3);
-			filter4=filter3.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
+			console.log(filter4);
+			filter5=filter4.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
 			new Date(date.fromdate).setHours(0, 0, 0, 0) &&
 		    new Date(el.date).setHours(0, 0, 0, 0) <=
 			new Date(date.todate).setHours(0, 0, 0, 0));
 		}else{
-			filter4=filter3;
+			filter5=filter4;
 		}
 
 		// let filter2=[]; //ta filter
@@ -290,7 +322,7 @@ const AllMiluimArchiveTable = (props) => {
 		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
 		// }
 
-		setData(filter4);
+		setData(filter5);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -549,7 +581,7 @@ const AllMiluimArchiveTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent, date]);
+			}, [datasubject, ta, dataunit, tyevent, date, datajob]);
 
 	return (
 		<>
@@ -635,10 +667,13 @@ const AllMiluimArchiveTable = (props) => {
 									<h6>יחידה</h6>
 									<Select isMulti options={unitDataId} onChange={handleChange1} name={'unit'} />
 									  </Col>
-									  <Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>מקצוע</h6>
 									<Select isMulti options={subjectDataId} onChange={handleChange3} name={'subject'} />
-									
+									</Col>
+									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
+									<h6>תפקיד</h6>
+									<Select isMulti options={jobDataId} onChange={handleChange4} name={'job'} />
 									</Col>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
                                             <h6 style={{}}>תא</h6>
