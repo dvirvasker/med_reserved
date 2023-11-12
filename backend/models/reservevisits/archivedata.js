@@ -16,7 +16,7 @@ const archivedataSchema = new mongoose.Schema(
 		unit: { type: String, require: true },
 		job: { type: String, require: true },
 		ta: { type: String, require: true },
-		date: { type: Date },
+		date: { type: Date, default: new Date() },
 	},
 	{ timestamps: true }
 );

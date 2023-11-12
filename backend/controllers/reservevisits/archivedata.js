@@ -4,7 +4,7 @@ exports.find = (req, res) => {
 	Archivedata.find((err, archivedata) => {
 		if (err) res.send(err);
 		res.json(archivedata);
-	});
+	}).sort({ date: -1});
 };
 
 exports.findById = (req, res) => {
@@ -13,6 +13,15 @@ exports.findById = (req, res) => {
 		res.json(archivedata);
 	});
 };
+
+exports.findbypersonalnumber = (req, res) => {
+	Archivedata.find({ personal_number: req.params.personalnumber })
+		.sort({ date: -1})
+		.then((archivedata) => 
+			res.json(archivedata))
+		.catch((err) => res.status(400).json("Error: " + err));
+};
+
 
 exports.findbyunitid = (req, res) => {
 	Archivedata.findbyunitid(req.params.id, (err, archivedata) => {

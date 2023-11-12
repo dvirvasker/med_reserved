@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {
 	create,
+	findbypersonalnumber,
 	find,
 	read,
 	update,
@@ -15,6 +16,7 @@ router.post("/archivedata", create);
 
 router.put("/archivedata/:archivedataId", update);
 
+router.get("/archivedatafindbyPN/:personalnumber", findbypersonalnumber);
 router.get("/archivedata", find);
 
 module.exports = router;

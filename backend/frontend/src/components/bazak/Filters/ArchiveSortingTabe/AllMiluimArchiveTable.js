@@ -66,15 +66,11 @@ const AllMiluimArchiveTable = (props) => {
 			.then((response) => {
 				// console.log(response.data)
 				if(user.role == 0){
-					setData(response.data.sort(
-						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
-					setOriginaldata(response.data.sort(
-						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
+					setData(response.data);
+					setOriginaldata(response.data);
 				} else{
-					setData(response.data.filter((item) => item.unit == userUnit).sort(
-						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0))
-					setOriginaldata(response.data.filter((item) => item.unit == userUnit).sort(
-						(p1, p2) => (p1.date < p2.date) ? 1 : (p1.date > p2.date) ? -1 : 0));
+					setData(response.data.filter((item) => item.unit == userUnit));
+					setOriginaldata(response.data.filter((item) => item.unit == userUnit));
 				}
 				// user.role == 0
 				// 	? 

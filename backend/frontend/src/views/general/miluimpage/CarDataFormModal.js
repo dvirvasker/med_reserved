@@ -30,14 +30,22 @@ import { produce } from "immer";
 import { generate } from "shortid";
 import { toast } from "react-toastify";
 import Select from "components/general/Select/AnimatedSelect";
+import { DtPicker } from "react-calendar-datetime-picker";
+import "react-calendar-datetime-picker/dist/style.css";
+import "views/general/miluimpage/datePicker.css";
 
 const CarDataFormModal = (props) => {
 	const { user } = isAuthenticated();
 	//cardata
 	const [cardata, setCarData] = useState({});
+	const [archiveDate, setArchiveDate] = useState({});
 	const [units, setUnits] = useState([]);
 	const [jobs, setJobs] = useState([]);
 	const [subject, setSubject] = useState([]);
+	const [newDate, setNewDate] = useState([]);
+	const [newDateFormat, setNewDateFormat] = useState([]);
+
+	const [date, setDate] = useState([])
 
 	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
@@ -47,8 +55,15 @@ const CarDataFormModal = (props) => {
 	const [isChecked3, setIsChecked3] = useState(false);
 	// שמפ
 	const [isChecked4, setIsChecked4] = useState(false);
+	const currDate  = new Date();
 
+	const dateFormat = {
+		"year": currDate.getFullYear(),
+		"month": currDate.getMonth()+1,
+  		"day": currDate.getDate(),
+	}
 	const loadcardata = async () => {
+		console.log("props");
 		console.log(props);
 		await axios
 			.get(`http://localhost:8000/api/reservevisits/${props.cardataid}`)
@@ -74,17 +89,56 @@ const CarDataFormModal = (props) => {
 					}
 				});
 				setCarData(tempcardata);
-				console.log(tempcardata);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+				await axios
+					.get(`http://localhost:8000/api/archivedatafindbyPN/${tempcardata.personal_number}`)
+					.then((res) => {
+						setArchiveDate(res.data.map(archObj => { 
+							return archObj.date.split("T")[0]
+						}));
+						setNewDateFormat(res.data.map(archObj => { 
+							return {
+								year: archObj.date.split("T")[0].split("-")[0],
+		  						month: archObj.date.split("T")[0].split("-")[1],
+		  						day: archObj.date.split("T")[0].split("-")[2],
+							}
+						}));
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+	
 	};
 
+	// const disabledDatesList = archiveDate.map((archDateId) =>[
+	// 	{
+	// 	  	year: archDateId.split("-")[0],
+	// 	  	month: archDateId.split("-")[1],
+	// 	  	day: archDateId.split("-")[2],
+	// 	},
+	//   ]
+	// ) 
+	
 	function handleChange(evt) {
 		const value = evt.target.value;
 		setCarData({ ...cardata, [evt.target.name]: value });
 	}
+
+	// function handleChangeDates(evt) {
+	// 	const newDate = evt.target.value;
+	// 	// console.log(archiveDate)
+	// 	for(let i=0;i<archiveDate.length;i++){
+	// 		if(archiveDate[i] === newDate){
+	// 			console.log("equal")
+	// 		}else{
+	// 			setCarData({ ...cardata, [evt.target.name]: newDate });
+	// 		}
+	// 	}
+	// 	// setCarData({ ...cardata, [evt.target.name]: newDate });
+	// }
 
 	function getUnits() {
 		let userUnit = "";
@@ -161,6 +215,23 @@ const CarDataFormModal = (props) => {
 	const viewArchive = () => {
 		return <Redirect to="/MiluimArchivepage" />;
 	};
+
+	const setDateFormat = async () => {
+		console.log("date");
+		console.log(date);
+		console.log(date === undefined);
+		if(date === undefined){
+			console.log("qwe");
+		} else if(date !== undefined){
+			for(let i=0;i<date.length;i++){
+				setNewDate(new Date(date[i].year, date[i].month, date[i].day).toJSON())
+				console.log(date[i]);
+			}
+			// setNewDate(date.map(formatdate => {
+			// 	return new Date(formatdate.year, formatdate.month, formatdate.day).toJSON()
+			// }))
+		}
+	}
 
 	const CheckFormData = () => {
 		//check for stuff isnt empty
@@ -243,6 +314,8 @@ const CarDataFormModal = (props) => {
 		} else {
 			setCarData({ ...cardata, shamapOpen: cardata.shamapOpen });
 		}
+		
+		setDateFormat();
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
@@ -260,6 +333,12 @@ const CarDataFormModal = (props) => {
 			toast.error(ErrorReason);
 		}
 	};
+
+	// const addNewDates = () => {
+	// 	const newfield = "";
+	// 	setNewDate([...newDate, newfield]);
+	// 	console.log(newDate);
+	//   };
 
 	async function Create() {
 		let tempramam = { ...cardata };
@@ -289,13 +368,33 @@ const CarDataFormModal = (props) => {
 		//update ramam
 		const currentDate = new Date();
 		let tempramam = { ...cardata, date: currentDate };
-		tempramam.unitid = props.unitid;
-		tempramam.userid = user._id;
-		let result = await axios.post(
-			`http://localhost:8000/api/archivedata`,
-			tempramam
-		);
-		// toast.success(`איש מילואים נוסף בהצלחה`);
+		let checKEqual = false;
+		delete tempramam._id;
+
+		
+		console.log("newDate");
+		console.log(newDate);
+
+		// tempramam.unitid = props.unitid;
+		// tempramam.userid = user._id;
+		for(let i=0;i<archiveDate.length;i++){
+			if(archiveDate[i] === currentDate.toJSON().split("T")[0]){
+				console.log(currentDate.toJSON().split("T")[0]);
+				console.log(archiveDate[i]);
+				checKEqual = true;
+			}
+		}
+		if(checKEqual === false){
+			let result = await axios.post(
+				`http://localhost:8000/api/archivedata`,
+					tempramam
+				);
+			toast.success(`איש מילואים עודכן בארכיון התייצבות`);
+		}else{
+			toast.warning(`איש מילואים עודכן כבר בארכיון התייצבות`)
+		}
+		
+		// toast.success(`איש מילואים עודכן בהצלחה`);
 		props.ToggleForModal();
 	}
 
@@ -601,15 +700,68 @@ const CarDataFormModal = (props) => {
 								</button>
 							</div> 
 								}
-								{props.cardataid != undefined ?
-								 <div style={{ textAlign: "center", paddingTop: "20px" }}>
-									{/* <button className="btn" onClick={viewArchive}>
-										צפייה בהיסטוריית דיווחים
-									</button> */}
-									<Link to={`/MiluimArchivepage/${cardata.personal_number}`}>צפייה בהיסטוריית דיווחים</Link>
+								{props.cardataid != undefined && archiveDate.length > 0  ?
+								 <div style={{ textAlign: "center", paddingTop: "10px" }}>
+									<CardTitle
+									tag="h4"
+									style={{
+										direction: "rtl",
+										textAlign: "center",
+										fontWeight: "bold",
+									}}
+								>
+									תאריכי ארכיון התייצבות
+								</CardTitle>
+								{archiveDate.length > 0 ? archiveDate.map((archDate) => (
+									<div style={{ textAlign: "center", paddingRight: "20px" }}>{archDate}</div>
+								)): null}
+									<DtPicker
+										headerClass="custom-header"
+										daysClass="custom-days"
+										inputClass="custom-input"
+										clearBtnClass="custom-clearBtnClass"
+										onChange={setDate}
+										maxDate={dateFormat}
+										disabledDates={newDateFormat}
+										type='multi'
+										yearListStyle='list'
+										clearBtn
+      									todayBtn
+									/>
+									<div style={{ textAlign: "center", paddingTop: "20px" }}>
+										<Link to={`/MiluimArchivepage/${cardata.personal_number}`}>צפייה בהיסטוריית דיווחים</Link>
+									</div>
 								</div> : null
 								}
 								
+								<Row>
+									{/* {newDate.map((newDateData, index) => (
+										<Col
+											style={{
+												justifyContent: "right",
+												alignContent: "right",
+												textAlign: "right",
+											}}
+										>
+											<h6 style={{}}>תאריך {index+1}:</h6>
+											<Input
+												type="date"
+												name={index}
+												onChange={handleChangeDates}
+											/>
+												<button style={{ color: "red" }} onClick={() => {
+                                					if (index > -1) {
+                                  						setNewDate((currentProp) =>
+								  							newDate.filter((oneProp, onedndex) => onedndex !== index)
+                                  						);
+                                					}
+                              					}}>
+													מחק
+												</button>
+										</Col>
+									))} */}
+								
+								</Row>
 							</Container>
 						</CardBody>
 					</Card>
