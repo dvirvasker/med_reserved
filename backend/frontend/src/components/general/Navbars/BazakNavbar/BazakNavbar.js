@@ -26,7 +26,7 @@ import {
 } from "reactstrap";
 
 import { ThemeContext, themes } from "contexts/ThemeContext";
-
+import axios from "axios";
 import UserProfileCircle from "../UserProfileCircle/UserProfileCircle";
 import BazakNavbarTitle from "./BazakNavbarTitle/BazakNavbarTitle";
 import ToggleDarkModeButton from "./ToggleDarkModeButton/ToggleDarkModeButton";
@@ -34,7 +34,23 @@ import ToggleDarkModeButton from "./ToggleDarkModeButton/ToggleDarkModeButton";
 function BazakNavbar(props) {
 	const [colorhr, setcolorhr] = useState("lightGray");
 	const [color, setcolor] = useState("white");
+	const [unit, setUnit] = useState([]);
 	const { user } = isAuthenticated();
+
+	const getUnit = async () => {
+		await axios
+			.get(`http://localhost:8000/api/units/${user.unit}`)
+			.then((response) => {
+				setUnit(response.data[0].name);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	useEffect(() => {
+		getUnit();
+	  }, [])
 
 	return (
 		<>
@@ -81,7 +97,7 @@ function BazakNavbar(props) {
 											}}
 										>
 											{" "}
-											שלום
+											{unit} ,{user.personalnumber}
 										</h3>
 									) : (
 										<h3
@@ -92,7 +108,7 @@ function BazakNavbar(props) {
 											}}
 										>
 											{" "}
-											שלום
+											{unit} ,{user.personalnumber}
 										</h3>
 									)}
 								</Col>

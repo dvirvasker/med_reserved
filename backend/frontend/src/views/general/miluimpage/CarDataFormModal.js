@@ -63,8 +63,6 @@ const CarDataFormModal = (props) => {
   		"day": currDate.getDate(),
 	}
 	const loadcardata = async () => {
-		console.log("props");
-		console.log(props);
 		await axios
 			.get(`http://localhost:8000/api/reservevisits/${props.cardataid}`)
 			.then(async (response) => {
@@ -97,9 +95,9 @@ const CarDataFormModal = (props) => {
 						}));
 						setNewDateFormat(res.data.map(archObj => { 
 							return {
-								year: archObj.date.split("T")[0].split("-")[0],
-		  						month: archObj.date.split("T")[0].split("-")[1],
-		  						day: archObj.date.split("T")[0].split("-")[2],
+								year: Number(archObj.date.split("T")[0].split("-")[0]),
+		  						month: Number(archObj.date.split("T")[0].split("-")[1]),
+		  						day: Number(archObj.date.split("T")[0].split("-")[2]),
 							}
 						}));
 					})
@@ -112,33 +110,11 @@ const CarDataFormModal = (props) => {
 				});
 	
 	};
-
-	// const disabledDatesList = archiveDate.map((archDateId) =>[
-	// 	{
-	// 	  	year: archDateId.split("-")[0],
-	// 	  	month: archDateId.split("-")[1],
-	// 	  	day: archDateId.split("-")[2],
-	// 	},
-	//   ]
-	// ) 
 	
 	function handleChange(evt) {
 		const value = evt.target.value;
 		setCarData({ ...cardata, [evt.target.name]: value });
 	}
-
-	// function handleChangeDates(evt) {
-	// 	const newDate = evt.target.value;
-	// 	// console.log(archiveDate)
-	// 	for(let i=0;i<archiveDate.length;i++){
-	// 		if(archiveDate[i] === newDate){
-	// 			console.log("equal")
-	// 		}else{
-	// 			setCarData({ ...cardata, [evt.target.name]: newDate });
-	// 		}
-	// 	}
-	// 	// setCarData({ ...cardata, [evt.target.name]: newDate });
-	// }
 
 	function getUnits() {
 		let userUnit = "";
@@ -215,23 +191,6 @@ const CarDataFormModal = (props) => {
 	const viewArchive = () => {
 		return <Redirect to="/MiluimArchivepage" />;
 	};
-
-	const setDateFormat = async () => {
-		console.log("date");
-		console.log(date);
-		console.log(date === undefined);
-		if(date === undefined){
-			console.log("qwe");
-		} else if(date !== undefined){
-			for(let i=0;i<date.length;i++){
-				setNewDate(new Date(date[i].year, date[i].month, date[i].day).toJSON())
-				console.log(date[i]);
-			}
-			// setNewDate(date.map(formatdate => {
-			// 	return new Date(formatdate.year, formatdate.month, formatdate.day).toJSON()
-			// }))
-		}
-	}
 
 	const CheckFormData = () => {
 		//check for stuff isnt empty
@@ -315,17 +274,25 @@ const CarDataFormModal = (props) => {
 			setCarData({ ...cardata, shamapOpen: cardata.shamapOpen });
 		}
 		
-		setDateFormat();
 
 		if (flag == true) {
 			if (props.cardataid != undefined) {
 				if (isChecked2) {
-					Createarchive();
+					if(date === undefined){
+						Createarchive();
+					} else if(date !== undefined){
+						addArrayArchive();
+					}
 				}
 				Update();
 			} else {
 				if (isChecked2) {
-					Createarchive();
+					// Createarchive();
+					if(date === undefined){
+						Createarchive();
+					} else if(date !== undefined){
+						addArrayArchive();
+					}
 				}
 				Create();
 			}
@@ -333,12 +300,6 @@ const CarDataFormModal = (props) => {
 			toast.error(ErrorReason);
 		}
 	};
-
-	// const addNewDates = () => {
-	// 	const newfield = "";
-	// 	setNewDate([...newDate, newfield]);
-	// 	console.log(newDate);
-	//   };
 
 	async function Create() {
 		let tempramam = { ...cardata };
@@ -367,20 +328,14 @@ const CarDataFormModal = (props) => {
 	async function Createarchive() {
 		//update ramam
 		const currentDate = new Date();
-		let tempramam = { ...cardata, date: currentDate };
+		let tempramam = { ...cardata, date: `${currentDate.toLocaleDateString('he-IL', 
+		{timeZone:'Asia/Jerusalem'}).split(".").reverse().join("-")}T${currentDate.toTimeString().split(" ")[0]}.000Z` };
 		let checKEqual = false;
 		delete tempramam._id;
-
 		
-		console.log("newDate");
-		console.log(newDate);
-
-		// tempramam.unitid = props.unitid;
-		// tempramam.userid = user._id;
 		for(let i=0;i<archiveDate.length;i++){
-			if(archiveDate[i] === currentDate.toJSON().split("T")[0]){
-				console.log(currentDate.toJSON().split("T")[0]);
-				console.log(archiveDate[i]);
+			if(archiveDate[i] === currentDate.toLocaleDateString('he-IL', 
+			{timeZone:'Asia/Jerusalem'}).split(".").reverse().join("-")){
 				checKEqual = true;
 			}
 		}
@@ -394,8 +349,32 @@ const CarDataFormModal = (props) => {
 			toast.warning(`איש מילואים עודכן כבר בארכיון התייצבות`)
 		}
 		
-		// toast.success(`איש מילואים עודכן בהצלחה`);
 		props.ToggleForModal();
+	}
+
+	async function addArrayArchive() {
+		const arraydate =[];
+		let checkdate="";
+		date.map((dateid, index) => {
+			archiveDate.map((dateFormatid, index1) =>{
+				checkdate = new Date(dateid.year, dateid.month-1, dateid.day+1).toJSON().split("T")[0];
+				if(checkdate !== dateFormatid){
+					if(currDate.toJSON().split("T")[0] < checkdate){
+						delete date[index];
+					}
+				}else{
+					delete date[index];
+				}
+			})
+		})
+		arraydate.push(date.filter((_, index) => date.hasOwnProperty(index)));
+		let tempramam = { ...cardata, date: arraydate[0]};
+		let result = await axios.post(
+			`http://localhost:8000/api/addArrayArchive`,
+				tempramam
+			);
+		
+		toast.success(`איש מילואים עודכן בארכיון התייצבות`);
 	}
 
 	function init() {
@@ -688,6 +667,23 @@ const CarDataFormModal = (props) => {
 										/>
 									</Col>
 								</Row>
+								{props.cardataid != undefined && archiveDate.length > 0  ?
+								 <div style={{ textAlign: "center", paddingTop: "20px", marginLeft: "25%",marginRight: "25%" }}>
+									<h6 style={{}}>דיווח תאריכי התייצבות</h6>
+									<DtPicker
+										headerClass="custom-header"
+										daysClass="custom-days"
+										inputClass="custom-input"
+										clearBtnClass="custom-clearBtnClass"
+										onChange={setDate}
+										maxDate={dateFormat}
+										disabledDates={newDateFormat}
+										type='multi'
+										yearListStyle='list'
+										clearBtn
+      									todayBtn
+									/>
+								</div> : null}
 								{props.cardataid != undefined ?
 								<div style={{ textAlign: "center", paddingTop: "20px" }}>
 									<button className="btn" onClick={clickSubmit}>
@@ -702,66 +698,11 @@ const CarDataFormModal = (props) => {
 								}
 								{props.cardataid != undefined && archiveDate.length > 0  ?
 								 <div style={{ textAlign: "center", paddingTop: "10px" }}>
-									<CardTitle
-									tag="h4"
-									style={{
-										direction: "rtl",
-										textAlign: "center",
-										fontWeight: "bold",
-									}}
-								>
-									תאריכי ארכיון התייצבות
-								</CardTitle>
-								{archiveDate.length > 0 ? archiveDate.map((archDate) => (
-									<div style={{ textAlign: "center", paddingRight: "20px" }}>{archDate}</div>
-								)): null}
-									<DtPicker
-										headerClass="custom-header"
-										daysClass="custom-days"
-										inputClass="custom-input"
-										clearBtnClass="custom-clearBtnClass"
-										onChange={setDate}
-										maxDate={dateFormat}
-										disabledDates={newDateFormat}
-										type='multi'
-										yearListStyle='list'
-										clearBtn
-      									todayBtn
-									/>
 									<div style={{ textAlign: "center", paddingTop: "20px" }}>
 										<Link to={`/MiluimArchivepage/${cardata.personal_number}`}>צפייה בהיסטוריית דיווחים</Link>
 									</div>
 								</div> : null
 								}
-								
-								<Row>
-									{/* {newDate.map((newDateData, index) => (
-										<Col
-											style={{
-												justifyContent: "right",
-												alignContent: "right",
-												textAlign: "right",
-											}}
-										>
-											<h6 style={{}}>תאריך {index+1}:</h6>
-											<Input
-												type="date"
-												name={index}
-												onChange={handleChangeDates}
-											/>
-												<button style={{ color: "red" }} onClick={() => {
-                                					if (index > -1) {
-                                  						setNewDate((currentProp) =>
-								  							newDate.filter((oneProp, onedndex) => onedndex !== index)
-                                  						);
-                                					}
-                              					}}>
-													מחק
-												</button>
-										</Col>
-									))} */}
-								
-								</Row>
 							</Container>
 						</CardBody>
 					</Card>
