@@ -97,7 +97,7 @@ function BazakNavbar(props) {
 											}}
 										>
 											{" "}
-											{unit} ,{user.personalnumber}
+											{unit}
 										</h3>
 									) : (
 										<h3
@@ -108,7 +108,7 @@ function BazakNavbar(props) {
 											}}
 										>
 											{" "}
-											{unit} ,{user.personalnumber}
+											{unit}
 										</h3>
 									)}
 								</Col>

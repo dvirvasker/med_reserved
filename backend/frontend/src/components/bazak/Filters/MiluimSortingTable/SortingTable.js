@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
 	useTable,
@@ -56,6 +57,12 @@ const SortingTable = (props) => {
 	const [job, setJob] = useState([]);
 	const [subject, setSubject] = useState([]);
 	const [ta, setTa] = useState([]);
+	const [checkData, setcheckData] = useState(
+		{present:"false" ,
+		todayPresent:"false" ,
+		dailSent:"false" , 
+		shamapOpen:"false"}
+	)
 	const [collapseOpen, setcollapseOpen] = React.useState(false);
 
 	async function CalculateDataArr() {
@@ -202,6 +209,22 @@ const SortingTable = (props) => {
 
 	}
 
+	function handleChange5(evt) {
+		console.log(evt.currentTarget)
+		let value = "";
+		if(evt.currentTarget.value === "false"){
+			value ="true";
+		}
+		else{
+			value = "false";
+		}
+		setTyevent({ ...tyevent, [evt.currentTarget.name]: value });
+		setcheckData({[evt.currentTarget.name]: value})
+		
+		console.log(checkData);
+		console.log(tyevent);
+	}
+
 	const filteruse=()=>{
 		console.log("filteruse");
 		let beforfilter=originaldata;
@@ -270,12 +293,75 @@ const SortingTable = (props) => {
 						if(filter3[j].job === tyevent.job[i]){
 							filter4.push(filter3[j]);
 					}
-					}
+					}}
+			  	}
+		}
+		else{
+			filter4=filter3;
+		}
+
+		let filter5=[]; //present filter
+		if(tyevent.present){
+			if(tyevent.present === "false" ){
+				filter5=filter4;
+			  }else{
+					for(let j=0;j<filter4.length;j++){
+						if(filter4[j].present === Boolean(tyevent.present).valueOf()){
+							filter5.push(filter4[j]);
+						}
 				}
 			  }
 		}
 		else{
-			filter4=filter3;
+			filter5=filter4;
+		}
+
+		let filter6=[]; //todayPresent filter
+		if(tyevent.todayPresent){
+			if(tyevent.todayPresent === "false" ){
+				filter6=filter5;
+			  }else{
+					for(let j=0;j<filter5.length;j++){
+						if(filter5[j].todayPresent === Boolean(tyevent.todayPresent).valueOf()){
+							filter6.push(filter5[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter6=filter5;
+		}
+
+		let filter7=[]; //dailSent filter
+		if(tyevent.dailSent){
+			if(tyevent.dailSent === "false" ){
+				filter7=filter6;
+			  }else{
+					for(let j=0;j<filter6.length;j++){
+						if(filter6[j].dailSent === Boolean(tyevent.dailSent).valueOf()){
+							filter7.push(filter6[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter7=filter6;
+		}
+
+		let filter8=[]; //shamapOpen filter
+		if(tyevent.shamapOpen){
+			if(tyevent.shamapOpen === "false" ){
+				filter8=filter7;
+			  }else{
+					for(let j=0;j<filter7.length;j++){
+						if(filter7[j].shamapOpen === Boolean(tyevent.shamapOpen).valueOf()){
+							filter8.push(filter7[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter8=filter7;
 		}
 
 		// let filter2=[]; //ta filter
@@ -292,7 +378,7 @@ const SortingTable = (props) => {
 		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
 		// }
 
-		setData(filter4);
+		setData(filter8);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -541,7 +627,7 @@ const SortingTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent, datajob]);
+			}, [datasubject, ta, dataunit, tyevent, datajob , checkData]);
 
 	return (
 		<>
@@ -571,6 +657,17 @@ const SortingTable = (props) => {
 									md={8}
 									style={{ textAlign: "right" }}
 								>
+                            		<Row style={{ paddingTop: '10px', marginTop: '15px' }}>
+                            		    {/* {props.filter.rolefilter && props.filter.rolefilter.indexOf(check) != -1 ? */}
+                            		    <button className="btn-empty" name={'present'} value={checkData.present } onClick={handleChange5}><h4 style={{ fontWeight: 'unset' }}>התייצב</h4></button>
+										<button className="btn-empty" name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{  fontWeight: 'unset' }}>התייצב היום</h4></button>
+										<button className="btn-empty" name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ fontWeight: 'unset'  }}>נשלח חייגן</h4></button>
+										<button className="btn-empty" name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ fontWeight: 'unset' }}>נשלח שמ"פ</h4></button>
+
+                            		    {/* : <button className="btn-empty" name={'role'} value={check} onClick={props.setfilterfunction}><h6 style={{ fontWeight: 'unset' }}>{check}</h6></button>} */}
+                            		</Row>
+            
+
 									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>יחידה</h6>

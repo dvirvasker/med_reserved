@@ -46,6 +46,7 @@ const CarDataFormModal = (props) => {
 	const [newDateFormat, setNewDateFormat] = useState([]);
 
 	const [date, setDate] = useState([])
+	const [collapseOpen, setcollapseOpen] = React.useState(false);
 
 	// התייצב
 	const [isChecked1, setIsChecked1] = useState(false);
@@ -109,6 +110,10 @@ const CarDataFormModal = (props) => {
 					console.log(error);
 				});
 	
+	};
+
+	const toggleCollapse = () => {
+		setcollapseOpen(!collapseOpen);
 	};
 	
 	function handleChange(evt) {
@@ -435,6 +440,33 @@ const CarDataFormModal = (props) => {
 						</CardHeader>
 						<CardBody style={{ direction: "rtl" }}>
 							<Container>
+							{props.cardataid !== undefined ?
+							<div style={{textAlign: "center"}}>
+							<Button
+								onClick={toggleCollapse}
+								style={{}}
+							>
+								דיווחי עבר
+							</Button>
+							</div> : null}	
+							
+							{props.cardataid != undefined && archiveDate.length > 0 && collapseOpen ?
+								 <div style={{ textAlign: "center", paddingBottom: "20px", marginLeft: "25%",marginRight: "25%" }}>
+									<h6 style={{}}>דיווח תאריכי התייצבות</h6>
+									<DtPicker
+										headerClass="custom-header"
+										daysClass="custom-days"
+										inputClass="custom-input"
+										clearBtnClass="custom-clearBtnClass"
+										onChange={setDate}
+										maxDate={dateFormat}
+										disabledDates={newDateFormat}
+										type='multi'
+										yearListStyle='list'
+										clearBtn
+      									todayBtn
+									/>
+								</div> : null}
 								<Row>
 									<Col
 										style={{
@@ -667,23 +699,6 @@ const CarDataFormModal = (props) => {
 										/>
 									</Col>
 								</Row>
-								{props.cardataid != undefined && archiveDate.length > 0  ?
-								 <div style={{ textAlign: "center", paddingTop: "20px", marginLeft: "25%",marginRight: "25%" }}>
-									<h6 style={{}}>דיווח תאריכי התייצבות</h6>
-									<DtPicker
-										headerClass="custom-header"
-										daysClass="custom-days"
-										inputClass="custom-input"
-										clearBtnClass="custom-clearBtnClass"
-										onChange={setDate}
-										maxDate={dateFormat}
-										disabledDates={newDateFormat}
-										type='multi'
-										yearListStyle='list'
-										clearBtn
-      									todayBtn
-									/>
-								</div> : null}
 								{props.cardataid != undefined ?
 								<div style={{ textAlign: "center", paddingTop: "20px" }}>
 									<button className="btn" onClick={clickSubmit}>
