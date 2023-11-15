@@ -65,7 +65,12 @@ const SortingTable = (props) => {
 	)
 	const [collapseOpen, setcollapseOpen] = React.useState(false);
 
+	const nameButtonFilter = ["התייצב" , "התייצב היום" , "נשלח חייגן" , "נשלח שמ``פ"];
+	const checkDataArray = ["present" , "todayPresent", "dailSent" , "shamapOpen"];
+
 	async function CalculateDataArr() {
+		console.log("checkData")
+		console.log(checkData.present)
 		await axios
 			.get(`http://localhost:8000/api/reservevisits`)
 			.then((response) => {
@@ -170,6 +175,43 @@ const SortingTable = (props) => {
 	function ToggleForModalDelete(evt) {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
+	
+	function btnPresent(){
+		if(checkData.present === "true"){
+			return true;
+		}
+		else if(checkData.present === "false"){
+			return false;
+		}
+	}
+
+	function btntTodayPresent(){
+		if(checkData.todayPresent === "true"){
+			return true;
+		}
+		else if(checkData.todayPresent === "false"){
+			return false;
+		}
+	}
+
+	function btnDailSent(){
+		if(checkData.dailSent === "true"){
+			return true;
+		}
+		else if(checkData.dailSent === "false"){
+			return false;
+		}
+	}
+
+	function btnShamapOpen(){
+		if(checkData.shamapOpen === "true"){
+			return true;
+		}
+		else if(checkData.shamapOpen === "false"){
+			return false;
+		}
+	}
+
 
 	function handleChange1(evt) {
 		let tempvalues = [];
@@ -650,24 +692,42 @@ const SortingTable = (props) => {
 					</Button>
 					<Collapse isOpen={collapseOpen}>
 						<Card style={{ background: 'rgb(228,228,228,0.2)' }}>
-
 							<Row style={{ margin: "0px" }}>
-								<Col
+							<Col
 									xs={12}
 									md={8}
 									style={{ textAlign: "right" }}
 								>
-                            		<Row style={{ paddingTop: '10px', marginTop: '15px' }}>
-                            		    {/* {props.filter.rolefilter && props.filter.rolefilter.indexOf(check) != -1 ? */}
-                            		    <button className="btn-empty" name={'present'} value={checkData.present } onClick={handleChange5}><h4 style={{ fontWeight: 'unset' }}>התייצב</h4></button>
-										<button className="btn-empty" name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{  fontWeight: 'unset' }}>התייצב היום</h4></button>
-										<button className="btn-empty" name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ fontWeight: 'unset'  }}>נשלח חייגן</h4></button>
-										<button className="btn-empty" name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ fontWeight: 'unset' }}>נשלח שמ"פ</h4></button>
-
-                            		    {/* : <button className="btn-empty" name={'role'} value={check} onClick={props.setfilterfunction}><h6 style={{ fontWeight: 'unset' }}>{check}</h6></button>} */}
-                            		</Row>
-            
-
+							<Row style={{ paddingTop: '10px', marginTop: '15px' }}>
+							{btnPresent() ?
+                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'present'} value={checkData.present} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>התייצב</h4></button>
+                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'present'} value={checkData.present} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>התייצב</h4></button>}
+								
+							{btntTodayPresent()?
+                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>התייצב היום</h4></button>
+                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>התייצב היום</h4></button>}
+							
+							{btnDailSent()?
+                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>נשלח חייגן</h4></button>
+                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>נשלח חייגן</h4></button>}
+							
+							{btnShamapOpen()?
+                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>נשלח שמ"פ</h4></button>
+                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>נשלח שמ"פ</h4></button>}
+							{/* { checkDataArray.map((nameBtn, index) => {
+                                {
+                                    return (
+										<>
+											  {!Boolean(checkData[nameBtn.valueOf()]) ?
+                                                <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ color: 'white' , margin:'8px' }}>{nameButtonFilter[index]}</div></button>
+                                                :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ fontWeight: 'unsent' , margin:'8px'}}>{nameButtonFilter[index]}</div></button>}
+										</>
+                                          
+                                        
+                                    )
+                                }
+                            }) } */}
+							</Row>
 									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>יחידה</h6>

@@ -450,7 +450,7 @@ const CarDataFormModal = (props) => {
 							</Button>
 							</div> : null}	
 							
-							{props.cardataid != undefined && archiveDate.length > 0 && collapseOpen ?
+							{props.cardataid != undefined && collapseOpen ?
 								 <div style={{ textAlign: "center", paddingBottom: "20px", marginLeft: "25%",marginRight: "25%" }}>
 									<h6 style={{}}>דיווח תאריכי התייצבות</h6>
 									<DtPicker
