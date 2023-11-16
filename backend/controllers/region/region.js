@@ -1,38 +1,38 @@
-const Region = require("../../models/region/region");
+const region = require("../../models/region/region");
 
 exports.find = (req, res) => {
-	Region.find((err, Region) => {
+	region.find((err, Region) => {
 		if (err) res.send(err);
 		res.json(Region);
-	});
+	}).sort({_id: -1});
 };
 
 exports.findById = (req, res) => {
-	Region.findById(req.params.id, (err, sub) => {
+	region.findById(req.params.id, (err, sub) => {
 		if (err) res.send(err);
 		res.json(sub);
 	});
 };
 
 // exports.findbyunitid = (req, res) => {
-// 	Region.findbyunitid(req.params.id, (err, sub) => {
+// 	region.findbyunitid(req.params.id, (err, sub) => {
 // 		if (err) res.send(err);
 // 		res.json(sub);
 // 	});
 // };
 
 exports.read = async (req, res) => {
-	const region = await Region.findById(req.params.id);
-	if (!region) {
+	const regionData = await region.findById(req.params.id);
+	if (!regionData) {
 		res.status(500).json({ message: 'הרמ"מ לא נמצא' });
 	} else {
-		res.status(200).send([region]);
+		res.status(200).send([regionData]);
 	}
 };
 
 exports.create = (req, res) => {
-	const region = new Region(req.body);
-	Region.save((err, data) => {
+	const regionData = new region(req.body);
+	regionData.save((err, data) => {
 		if (err) {
 			return res.status(400).json({
 				error: err,
@@ -43,13 +43,13 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-	Region.findByIdAndUpdate(req.params.RegionId, req.body)
+	region.findByIdAndUpdate(req.params.RegionId, req.body)
 		.then((sub) => res.json(sub))
 		.catch((err) => res.status(400).json("Error: " + err));
 };
 
 exports.remove = (req, res) => {
-	Region.deleteOne({ _id: req.params.id })
+	region.deleteOne({ _id: req.params.id })
 		.then((sub) => res.json(sub))
 		.catch((err) => res.status(400).json("Error: " + err));
 };

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 
-const RegionSchema = new mongoose.Schema({
+const regionSchema = new mongoose.Schema({
 	name: { type: String },
 });
 
-const Region = mongoose.model("Region", RegionSchema);
+const region = mongoose.model("region", regionSchema);
 
-module.exports = Region;
+module.exports = region;

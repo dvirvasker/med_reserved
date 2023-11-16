@@ -77,7 +77,7 @@ function Sidebar() {
 
             user.role === "1" ? <SidebarGdod theme={color}/> :
 
-              user.role === "2" ? <SidebarHativa theme={color}/> :
+              user.role === "2" ? <SidebarGdod theme={color}/> :
 
                 user.role === "3" ? <SidebarOgda theme={color}/> :
 

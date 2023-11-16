@@ -122,14 +122,18 @@ const CarDataFormModal = (props) => {
 	}
 
 	function getUnits() {
-		let userUnit = "";
+		let typeUser = "";
+		let url = "units"
 		if(user.role == "0"){
-			userUnit = "";
+			typeUser = "";
 		} else if(user.role == "1"){
-			userUnit = user.unit;
+			typeUser = user.unit;
+		} else if(user.role == "2"){
+			url="unitsByRegion";
+			typeUser=user.region;
 		}
 		axios
-			.get(`http://localhost:8000/api/units/${userUnit}`)
+			.get(`http://localhost:8000/api/${url}/${typeUser}`)
 			.then((res) => {
 				setUnits(res.data);
 			})

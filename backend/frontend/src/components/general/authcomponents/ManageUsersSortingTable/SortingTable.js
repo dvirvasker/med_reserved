@@ -57,7 +57,9 @@ const SortingTable = ({ match }) => {
 	}
 
 	function getnameRegion(idnum, arr) {
+		console.log("idnum")
 		console.log(idnum)
+		console.log(region)
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i]._id == idnum) return arr[i].name;
 		}
@@ -198,8 +200,10 @@ const SortingTable = ({ match }) => {
 	};
 	const getRegion = async () => {
 		await axios
-			.get("http://localhost:8000/api/region")
+			.get("http://localhost:8000/api/region/")
 			.then((response) => {
+				console.log("response.data")
+				console.log(response.data)
 				setRegion(response.data);
 			})
 			.catch((error) => {
@@ -353,15 +357,13 @@ const SortingTable = ({ match }) => {
 												);
 											}
 											if (cell.column.id == "role") {
-												console.log("cell");
-												console.log(cell);
 												if (cell.value == "0") return <td>מנהל מערכת</td>;
 												if (cell.value == "1") return <td>משתמש יחידה</td>;
 												if (cell.value == "2") return <td>משתמש מרחב</td>;
 											}
-											if (cell.column.id == "unit") {
-												console.log("cell unit");
-												console.log(cell);
+											console.log("cell");
+											console.log(cell);
+											if (cell.column.id == "unit" || cell.row.values.role !== "") {
 												return (
 													<td>
 														<div
@@ -373,7 +375,7 @@ const SortingTable = ({ match }) => {
 																overflow: "auto",
 															}}
 														>
-															{getname(cell.value,unit)}
+															{cell.value == "" ? getnameRegion(row.original.region, region) : getname(cell.value,unit)}
 														</div>
 													</td>
 												);

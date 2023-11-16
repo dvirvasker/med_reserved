@@ -34,7 +34,22 @@ function DashboardPage({ match, theme }) {
 	//redux
 
 	function getUnits() {
-		axios
+		if(user.role == "2"){
+			axios
+			.get(`http://localhost:8000/api/unitsByRegion/${user.region}`)
+			.then((res) => {
+				let tmp = {};
+				res.data.map((unit) => {
+					tmp[unit._id] = unit.name;
+				});
+				console.log(tmp)
+				setUnits(tmp);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+		} else  {
+			axios
 			.get(`http://localhost:8000/api/units`)
 			.then((res) => {
 				// console.log(res.data);
@@ -47,6 +62,8 @@ function DashboardPage({ match, theme }) {
 			.catch((err) => {
 				console.log(err);
 			});
+		}
+		
 	}
 
 	function getReservevisits() {
@@ -67,7 +84,11 @@ function DashboardPage({ match, theme }) {
 				} else if (user.role == 1) {
 					// console.log(groupedEntries[user.unit]);
 					setReservevisits(groupedEntries[user.unit]);
-				} else {
+				} else if(user.role == "2") {
+					console.log(groupedEntries)
+					setReservevisits(groupedEntries);
+					
+				} else{
 					history.push("/signin");
 				}
 			})
@@ -84,21 +105,28 @@ function DashboardPage({ match, theme }) {
 	}, []);
 
 	useEffect(() => {
-		if (user.role == 0) {
+		if (user.role == "0") {
 			if (Object.keys(reservevisits).length > 0) {
 				setIsdataloaded(true);
 			}
 		} else {
-			if (user.role == 1) {
+			if (user.role == "1") {
 				if (Array.isArray(reservevisits) && reservevisits.length > 0) {
 					setIsdataloaded(true);
 				} else {
 					getReservevisits();
 				}
+			}
+			else if (user.role == "2") {
+				if (Object.keys(reservevisits).length > 0) {
+					setIsdataloaded(true);
+				}
 			} else {
 				history.push("/signin");
 			}
 		}
+		console.log(units)
+
 	}, [reservevisits]);
 
 	return !isdataloaded ? (
@@ -108,12 +136,23 @@ function DashboardPage({ match, theme }) {
 	) : (
 		<>
 			<Row>
-				{user.role == 0 ? (
+				{user.role == "0" ? (
 					Object.keys(reservevisits).map((key) => (
 						<DashboardCard data={reservevisits[key]} unit={units[key]} />
 					))
-				) : user.role == 1 ? (
+				) : user.role == "1" ? (
 					<DashboardCard data={reservevisits} unit={units[user.unit]} />
+				) : user.role == "2" ? (
+					Object.keys(reservevisits).filter((el)=> {
+						let foundIndex = Object.keys(units).indexOf(el);
+						if(foundIndex !== -1){
+							return true;
+						} else{
+							return false;
+						}
+					}).map((key) => (
+						<DashboardCard data={reservevisits[key]} unit={units[key]} />
+					))
 				) : null}
 			</Row>
 		</>

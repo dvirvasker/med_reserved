@@ -39,9 +39,14 @@ export default function SignUpForm() {
 	const [regions, setRegions] = useState([]);
 
 	const options = [
-		{ value: 'בחר', label: 'בחר' },
 		{ value: '1', label: 'משתמש יחידה' },
 		{ value: '2', label: 'משתמש מרחב' }
+	  ]
+
+	  const optionsRegion = [
+		{ value: "1", label: 'מרחב צפון' },
+		{ value: '2', label: 'מרחב מרכז' },
+		{ value: '3', label: 'מרחב דרום' }
 	  ]
 	  
 	function getUnits() {
@@ -285,7 +290,6 @@ export default function SignUpForm() {
 												data={regions}
 												handleChange2={handleChange2}
 												name={"region"}
-												val={data.region ? data.region : undefined}
 											/>
 										</FormGroup>
 									</>:data.role === "1"?
@@ -305,7 +309,6 @@ export default function SignUpForm() {
 												data={units}
 												handleChange2={handleChange2}
 												name={"unit"}
-												val={data.unit ? data.unit : undefined}
 											/>
 										</FormGroup>
 									</>: null}
