@@ -283,23 +283,18 @@ const CarDataFormModal = (props) => {
 		if (flag == true) {
 			if (props.cardataid != undefined) {
 				if (isChecked2) {
-					if(date === undefined){
-						Createarchive();
-					} else if(date !== undefined){
-						addArrayArchive();
-					}
+					Createarchive();
 				}
 				Update();
 			} else {
 				if (isChecked2) {
 					// Createarchive();
-					if(date === undefined){
 						Createarchive();
-					} else if(date !== undefined){
-						addArrayArchive();
-					}
 				}
 				Create();
+			}
+			if(date !== undefined && props.cardataid != undefined){
+				addArrayArchive();
 			}
 		} else {
 			toast.error(ErrorReason);

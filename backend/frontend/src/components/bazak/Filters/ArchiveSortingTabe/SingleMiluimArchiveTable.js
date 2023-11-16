@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
 	useTable,
@@ -57,6 +58,12 @@ const SingleMiluimArchiveTable = (props) => {
 	const [subject, setSubject] = useState([]);
 	const [ta, setTa] = useState([]);
 	const [collapseOpen, setcollapseOpen] = React.useState(false);
+	const [checkData, setcheckData] = useState(
+		{present:"false" ,
+		todayPresent:"false" }
+	)
+	const nameButtonFilter = ["התייצב" , "התייצב היום"];
+	const checkDataArray = ["present" , "todayPresent"];
 
 	async function CalculateDataArr() {
 		let personalnumber = props.match.params.personalnumber;
@@ -202,6 +209,18 @@ const SingleMiluimArchiveTable = (props) => {
 
 	}
 
+	function handleChange5(evt) {
+		let value = "";
+		if(evt.currentTarget.value === "false"){
+			value ="true";
+		}
+		else{
+			value = "false";
+		}
+		setTyevent({ ...tyevent, [evt.currentTarget.name]: value });
+		setcheckData({...checkData , [evt.currentTarget.name]: value})
+	}
+
 	const filteruse=()=>{
 		console.log("filteruse");
 		console.log(tyevent);
@@ -218,7 +237,39 @@ const SingleMiluimArchiveTable = (props) => {
 			filter1=beforfilter;
 		}
 
-		setData(filter1);
+		let filter2=[]; //present filter
+		if(tyevent.present){
+			if(tyevent.present === "false" ){
+				filter2=filter1;
+			  }else{
+					for(let j=0;j<filter1.length;j++){
+						if(filter1[j].present === Boolean(tyevent.present).valueOf()){
+							filter2.push(filter1[j]);
+						}
+				}
+			  }
+		}
+		else{
+			filter2=filter1;
+		}
+
+		let filter3=[]; //todayPresent filter
+		if(tyevent.todayPresent){
+			if(tyevent.todayPresent === "false" ){
+				filter3=filter2;
+			  }else{
+					for(let j=0;j<filter2.length;j++){
+						if(filter2[j].todayPresent === Boolean(tyevent.todayPresent).valueOf()){
+							filter3.push(filter2[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter3=filter2;
+		}
+
+		setData(filter3);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -248,24 +299,6 @@ const SingleMiluimArchiveTable = (props) => {
 		  setFilter(tempfilter);
 		}
 	  }
-	//   const setfilterfunction = (evt) => {
-	// 	if (evt.currentTarget.name == 'role') {
-	// 	  if (filter.rolefilter) {
-	// 		let temprolefilter = [...filter.rolefilter]
-	// 		const index = temprolefilter.indexOf(evt.currentTarget.value);
-	// 		if (index > -1) {
-	// 		  temprolefilter.splice(index, 1);
-	// 		}
-	// 		else {
-	// 		  temprolefilter.push(evt.currentTarget.value)
-	// 		}
-	// 		setFilter({ ...filter, rolefilter: temprolefilter })
-	// 	  }
-	// 	  else {
-	// 		setFilter({ ...filter, rolefilter: [evt.currentTarget.value] })
-	// 	  }
-	// 	}
-	//   }
 
 	const {
 		getTableProps,
@@ -453,7 +486,7 @@ const SingleMiluimArchiveTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent, date]);
+			}, [datasubject, ta, dataunit, tyevent, date , checkData]);
 
 	return (
 		<>
@@ -462,7 +495,8 @@ const SingleMiluimArchiveTable = (props) => {
 					הורד כקובץ אקסל
 				</button>
 			</div>
-			{data.length > 0 ? <Card style={{outline: "#5FD0CA solid 3px" }}>
+			{data.length > 0 ?
+				<Card style={{outline: "#5FD0CA solid 3px" }}>
 							<Row style={{ margin: "0px" }}>
 								<Col
 									xs={12}
@@ -475,7 +509,7 @@ const SingleMiluimArchiveTable = (props) => {
 									<h4 style={{marginBottom: "0.5%"}}>מספר אישי: {data[0].personal_number}</h4>
 								</Col>
 							</Row>
-				</Card> :
+				</Card>:
 				<Card style={{outline: "#5FD0CA solid 3px" }}>
 				<Row style={{ margin: "0px" }}>
 					<Col
@@ -487,6 +521,7 @@ const SingleMiluimArchiveTable = (props) => {
 						</Col>
 				</Row>
 	</Card>
+				
 				}
 				
 			<div style={{ textAlign: "right", marginTop: "1%" }}>
@@ -536,6 +571,19 @@ const SingleMiluimArchiveTable = (props) => {
 											/>
 										</Col>
 									</Row>
+									<Row style={{ paddingTop: '5px', marginTop: '5px' }}>
+							{ checkDataArray.map((nameBtn, index) => {
+                                {
+                                    return (
+										<>
+											  {checkData[nameBtn.valueOf()] === "true" ?
+                                                <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ color: 'white' , margin:'8px' }}>{nameButtonFilter[index]}</div></button>
+                                                :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ fontWeight: 'unsent' , margin:'8px'}}>{nameButtonFilter[index]}</div></button>}
+										</>
+                                    )
+                                }
+                            }) }
+							</Row>
 								</Col>
 							</Row>
 

@@ -175,43 +175,6 @@ const SortingTable = (props) => {
 	function ToggleForModalDelete(evt) {
 		setIscardataformdeleteopen(!iscardataformdeleteopen);
 	}
-	
-	function btnPresent(){
-		if(checkData.present === "true"){
-			return true;
-		}
-		else if(checkData.present === "false"){
-			return false;
-		}
-	}
-
-	function btntTodayPresent(){
-		if(checkData.todayPresent === "true"){
-			return true;
-		}
-		else if(checkData.todayPresent === "false"){
-			return false;
-		}
-	}
-
-	function btnDailSent(){
-		if(checkData.dailSent === "true"){
-			return true;
-		}
-		else if(checkData.dailSent === "false"){
-			return false;
-		}
-	}
-
-	function btnShamapOpen(){
-		if(checkData.shamapOpen === "true"){
-			return true;
-		}
-		else if(checkData.shamapOpen === "false"){
-			return false;
-		}
-	}
-
 
 	function handleChange1(evt) {
 		let tempvalues = [];
@@ -252,7 +215,6 @@ const SortingTable = (props) => {
 	}
 
 	function handleChange5(evt) {
-		console.log(evt.currentTarget)
 		let value = "";
 		if(evt.currentTarget.value === "false"){
 			value ="true";
@@ -261,10 +223,7 @@ const SortingTable = (props) => {
 			value = "false";
 		}
 		setTyevent({ ...tyevent, [evt.currentTarget.name]: value });
-		setcheckData({[evt.currentTarget.name]: value})
-		
-		console.log(checkData);
-		console.log(tyevent);
+		setcheckData({...checkData , [evt.currentTarget.name]: value})
 	}
 
 	const filteruse=()=>{
@@ -691,44 +650,14 @@ const SortingTable = (props) => {
 						סינון
 					</Button>
 					<Collapse isOpen={collapseOpen}>
-						<Card style={{ background: 'rgb(228,228,228,0.2)' }}>
+						<Card style={{ background: 'rgb(228,228,228,0.2)' , width: 'inherit' }}>
 							<Row style={{ margin: "0px" }}>
 							<Col
 									xs={12}
 									md={8}
 									style={{ textAlign: "right" }}
 								>
-							<Row style={{ paddingTop: '10px', marginTop: '15px' }}>
-							{btnPresent() ?
-                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'present'} value={checkData.present} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>התייצב</h4></button>
-                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'present'} value={checkData.present} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>התייצב</h4></button>}
-								
-							{btntTodayPresent()?
-                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>התייצב היום</h4></button>
-                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'todayPresent'} value={checkData.todayPresent} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>התייצב היום</h4></button>}
-							
-							{btnDailSent()?
-                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>נשלח חייגן</h4></button>
-                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'dailSent'} value={checkData.dailSent} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>נשלח חייגן</h4></button>}
-							
-							{btnShamapOpen()?
-                             <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ color: 'white' , margin:'8px' }}>נשלח שמ"פ</h4></button>
-                            :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={'shamapOpen'} value={checkData.shamapOpen} onClick={handleChange5}><h4 style={{ fontWeight: 'unsent' , margin:'8px'}}>נשלח שמ"פ</h4></button>}
-							{/* { checkDataArray.map((nameBtn, index) => {
-                                {
-                                    return (
-										<>
-											  {!Boolean(checkData[nameBtn.valueOf()]) ?
-                                                <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ color: 'white' , margin:'8px' }}>{nameButtonFilter[index]}</div></button>
-                                                :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ fontWeight: 'unsent' , margin:'8px'}}>{nameButtonFilter[index]}</div></button>}
-										</>
-                                          
-                                        
-                                    )
-                                }
-                            }) } */}
-							</Row>
-									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
+									<Row style={{ paddingTop: '10px', marginBottom: '10px' }}>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>יחידה</h6>
 									<Select isMulti options={unitDataId} onChange={handleChange1} name={'unit'} />
@@ -745,12 +674,25 @@ const SortingTable = (props) => {
                                             <h6 style={{}}>תא</h6>
 											<Select isMulti options={optionsTa} onChange={handleChange2} name={'ta'} />
                                         </Col>
-									</Row>
-								</Col>
 							</Row>
+							<Row style={{ paddingTop: '8px', marginTop: '8px' }}>
+							{ checkDataArray.map((nameBtn, index) => {
+                                {
+                                    return (
+										<>
+											  {checkData[nameBtn.valueOf()] === "true" ?
+                                                <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ color: 'white' , margin:'8px' }}>{nameButtonFilter[index]}</div></button>
+                                                :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ fontWeight: 'unsent' , margin:'8px'}}>{nameButtonFilter[index]}</div></button>}
+										</>
+                                    )
+                                }
+                            }) }
+							</Row>
+						</Col>
+				</Row>
 
-						</Card>
-					</Collapse>
+		</Card>
+		</Collapse>
 				</div>
 			</Row>
 			{/* <MiluimTableFilter originaldata={originaldata} filter={filter} unittype={'admin'} handleChange8={handleChange8} /> */}

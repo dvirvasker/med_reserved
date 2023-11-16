@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import {
 	useTable,
@@ -58,6 +59,14 @@ const AllMiluimArchiveTable = (props) => {
 	const [subject, setSubject] = useState([]);
 	const [ta, setTa] = useState([]);
 	const [collapseOpen, setcollapseOpen] = React.useState(false);
+	const [checkData, setcheckData] = useState(
+		{present:"false" ,
+		todayPresent:"false" ,
+		dailSent:"false" , 
+		shamapOpen:"false"}
+	)
+	const nameButtonFilter = ["התייצב" , "התייצב היום" , "נשלח חייגן" , "נשלח שמ``פ"];
+	const checkDataArray = ["present" , "todayPresent", "dailSent" , "shamapOpen"];
 
 	async function CalculateDataArr() {
 		let userUnit = user.unit;
@@ -213,6 +222,17 @@ const AllMiluimArchiveTable = (props) => {
 		setDataJob(tempvalues)
 
 	}
+	function handleChange5(evt) {
+		let value = "";
+		if(evt.currentTarget.value === "false"){
+			value ="true";
+		}
+		else{
+			value = "false";
+		}
+		setTyevent({ ...tyevent, [evt.currentTarget.name]: value });
+		setcheckData({...checkData , [evt.currentTarget.name]: value})
+	}
 
 	const filteruse=()=>{
 		console.log("filteruse");
@@ -292,17 +312,81 @@ const AllMiluimArchiveTable = (props) => {
 			filter4=filter3;
 		}
 		
+		let filter5=[]; //present filter
+		if(tyevent.present){
+			if(tyevent.present === "false" ){
+				filter5=filter4;
+			  }else{
+					for(let j=0;j<filter4.length;j++){
+						if(filter4[j].present === Boolean(tyevent.present).valueOf()){
+							filter5.push(filter4[j]);
+						}
+				}
+			  }
+		}
+		else{
+			filter5=filter4;
+		}
 
-		let filter5=[]; //date filterwev                                                                                                                                                                               
+		let filter6=[]; //todayPresent filter
+		if(tyevent.todayPresent){
+			if(tyevent.todayPresent === "false" ){
+				filter6=filter5;
+			  }else{
+					for(let j=0;j<filter5.length;j++){
+						if(filter5[j].todayPresent === Boolean(tyevent.todayPresent).valueOf()){
+							filter6.push(filter5[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter6=filter5;
+		}
+
+		let filter7=[]; //dailSent filter
+		if(tyevent.dailSent){
+			if(tyevent.dailSent === "false" ){
+				filter7=filter6;
+			  }else{
+					for(let j=0;j<filter6.length;j++){
+						if(filter6[j].dailSent === Boolean(tyevent.dailSent).valueOf()){
+							filter7.push(filter6[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter7=filter6;
+		}
+
+		let filter8=[]; //shamapOpen filter
+		if(tyevent.shamapOpen){
+			if(tyevent.shamapOpen === "false" ){
+				filter8=filter7;
+			  }else{
+					for(let j=0;j<filter7.length;j++){
+						if(filter7[j].shamapOpen === Boolean(tyevent.shamapOpen).valueOf()){
+							filter8.push(filter7[j]);
+						}
+					}
+			  	}
+		}
+		else{
+			filter8=filter7;
+		}
+
+		let filter9=[]; //date filterwev                                                                                                                                                                               
 		if(date.fromdate && date.todate){
-			console.log(filter4);
-			filter5=filter4.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
+			console.log(filter8);
+			filter9=filter8.filter((el)=> new Date(el.date).setHours(0, 0, 0, 0) >=
 			new Date(date.fromdate).setHours(0, 0, 0, 0) &&
 		    new Date(el.date).setHours(0, 0, 0, 0) <=
 			new Date(date.todate).setHours(0, 0, 0, 0));
 		}else{
-			filter5=filter4;
+			filter9=filter8;
 		}
+
 
 		// let filter2=[]; //ta filter
 		// if(tyevent.ta == "בחר" || tyevent.ta == undefined){
@@ -318,7 +402,7 @@ const AllMiluimArchiveTable = (props) => {
 		// 	filter3=filter2.filter((el)=>el.subject === tyevent.subject);
 		// }
 
-		setData(filter5);
+		setData(filter9);
 		console.log(data);
 	};
 	// ------------- בארמי לבדוק שהשדות בקולקשיין באותו השם כמו בפונקציה הנ"ל!! -----------
@@ -577,7 +661,7 @@ const AllMiluimArchiveTable = (props) => {
 	useEffect(() => {
 		// loadReports();
 		filteruse();
-			}, [datasubject, ta, dataunit, tyevent, date, datajob]);
+			}, [datasubject, ta, dataunit, tyevent, date, datajob , checkData]);
 
 	return (
 		<>
@@ -658,7 +742,7 @@ const AllMiluimArchiveTable = (props) => {
 											/>
 										</Col>
 									</Row>
-									<Row style={{ paddingTop: '10px', marginBottom: '15px' }}>
+									<Row style={{ paddingTop: '10px', marginBottom: '10px' }}>
 									<Col style={{ justifyContent: 'right', alignContent: 'right', textAlign: 'right' }}>
 									<h6>יחידה</h6>
 									<Select isMulti options={unitDataId} onChange={handleChange1} name={'unit'} />
@@ -676,6 +760,19 @@ const AllMiluimArchiveTable = (props) => {
 											<Select isMulti options={optionsTa} onChange={handleChange2} name={'ta'} />
                                         </Col>
 									</Row>
+									<Row style={{ paddingTop: '5px', marginTop: '5px' }}>
+							{ checkDataArray.map((nameBtn, index) => {
+                                {
+                                    return (
+										<>
+											  {checkData[nameBtn.valueOf()] === "true" ?
+                                                <button className="btn-empty" style={{ background: '#5FD0CA' , color: 'white' , borderRadius: '5px' , margin:'1%'}} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ color: 'white' , margin:'8px' }}>{nameButtonFilter[index]}</div></button>
+                                                :  <button className="btn-empty" style={{border: '2px solid #5FD0CA' , borderRadius: '7px' , margin:'1%'  }} name={nameBtn.valueOf()} value={checkData[nameBtn.valueOf()]} onClick={handleChange5}><div style={{ fontWeight: 'unsent' , margin:'8px'}}>{nameButtonFilter[index]}</div></button>}
+										</>
+                                    )
+                                }
+                            }) }
+							</Row>
 								</Col>
 							</Row>
 
