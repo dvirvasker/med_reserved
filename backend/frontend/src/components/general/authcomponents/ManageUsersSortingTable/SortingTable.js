@@ -27,6 +27,7 @@ const SortingTable = ({ match }) => {
 	const [pikods, setPikods] = useState([]);
 
 	const [unit, setUnit] = useState([]);
+	const [region, setRegion] = useState([]);
 
 	const loadPikods = async () => {
 		let response = await axios.get("http://localhost:8000/api/pikod");
@@ -49,6 +50,14 @@ const SortingTable = ({ match }) => {
 	};
 
 	function getname(idnum, arr) {
+		console.log(idnum)
+		for (let i = 0; i < arr.length; i++) {
+			if (arr[i]._id == idnum) return arr[i].name;
+		}
+	}
+
+	function getnameRegion(idnum, arr) {
+		console.log(idnum)
 		for (let i = 0; i < arr.length; i++) {
 			if (arr[i]._id == idnum) return arr[i].name;
 		}
@@ -182,7 +191,16 @@ const SortingTable = ({ match }) => {
 			.get("http://localhost:8000/api/units")
 			.then((response) => {
 				setUnit(response.data);
-				console.log(response.data);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+	const getRegion = async () => {
+		await axios
+			.get("http://localhost:8000/api/region")
+			.then((response) => {
+				setRegion(response.data);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -234,6 +252,7 @@ const SortingTable = ({ match }) => {
 
 	useEffect(() => {
 		getUnit();
+		getRegion();
 	}, []);
 
 
@@ -334,10 +353,15 @@ const SortingTable = ({ match }) => {
 												);
 											}
 											if (cell.column.id == "role") {
+												console.log("cell");
+												console.log(cell);
 												if (cell.value == "0") return <td>מנהל מערכת</td>;
 												if (cell.value == "1") return <td>משתמש יחידה</td>;
+												if (cell.value == "2") return <td>משתמש מרחב</td>;
 											}
 											if (cell.column.id == "unit") {
+												console.log("cell unit");
+												console.log(cell);
 												return (
 													<td>
 														<div
