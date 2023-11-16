@@ -61,7 +61,7 @@ const CarDataFormModal = (props) => {
 	const dateFormat = {
 		"year": currDate.getFullYear(),
 		"month": currDate.getMonth()+1,
-  		"day": currDate.getDate(),
+  		"day": currDate.getDate()-1,
 	}
 	const loadcardata = async () => {
 		await axios
@@ -358,14 +358,18 @@ const CarDataFormModal = (props) => {
 		date.map((dateid, index) => {
 			archiveDate.map((dateFormatid, index1) =>{
 				checkdate = new Date(dateid.year, dateid.month-1, dateid.day+1).toJSON().split("T")[0];
+				console.log(checkdate)
 				if(checkdate !== dateFormatid){
-					if(currDate.toJSON().split("T")[0] < checkdate){
+					if(currDate.toJSON().split("T")[0] <= checkdate){
 						delete date[index];
 					}
 				}else{
 					delete date[index];
 				}
 			})
+			if(currDate.toJSON().split("T")[0] <= new Date(dateid.year, dateid.month-1, dateid.day+1).toJSON().split("T")[0]){
+				delete date[index];
+			}
 		})
 		arraydate.push(date.filter((_, index) => date.hasOwnProperty(index)));
 		let tempramam = { ...cardata, date: arraydate[0]};
