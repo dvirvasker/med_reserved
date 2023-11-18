@@ -375,7 +375,7 @@ const SortingTable = ({ match }) => {
 																overflow: "auto",
 															}}
 														>
-															{cell.value == "" ? getnameRegion(row.original.region, region) : getname(cell.value,unit)}
+															{cell.row.values.role !== "0" ? cell.value === "" ? getnameRegion(row.original.region, region) : getname(cell.value,unit): null}
 														</div>
 													</td>
 												);

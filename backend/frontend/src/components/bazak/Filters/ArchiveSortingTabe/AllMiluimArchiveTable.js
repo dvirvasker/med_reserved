@@ -65,7 +65,7 @@ const AllMiluimArchiveTable = (props) => {
 		dailSent:"false" , 
 		shamapOpen:"false"}
 	)
-	const nameButtonFilter = ["התייצב" , "התייצב היום" , "נשלח חייגן" , "נשלח שמ``פ"];
+	const nameButtonFilter = ["התייצב" , "התייצב היום" , "נשלח חייגן" , "נפתח שמ``פ"];
 	const checkDataArray = ["present" , "todayPresent", "dailSent" , "shamapOpen"];
 
 	async function CalculateDataArr() {

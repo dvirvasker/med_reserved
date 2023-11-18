@@ -523,13 +523,17 @@ const SingleMiluimArchiveTable = (props) => {
 
 	return (
 		<>
-			<div style={{ float: "right", paddingBottom: "5px", marginBottom: "1%" }}>
+		<Row>
+		<div style={{ float: "right", paddingBottom: "5px", marginBottom: "1%", marginRight: "1%" }}>
 				<button className="btn-green" onClick={FixDataAndExportToExcel}>
 					הורד כקובץ אקסל
 				</button>
 			</div>
+		</Row>
+			
 			{data.length > 0 ?
-				<Card style={{outline: "#5FD0CA solid 3px" }}>
+			<Row style={{ marginRight: "0.5%" }}>
+				<Card style={{outline: "#5FD0CA solid 3px" , width: '30rem' , marginBottom: "1%" }}>
 							<Row style={{ margin: "0px" }}>
 								<Col
 									xs={12}
@@ -542,8 +546,10 @@ const SingleMiluimArchiveTable = (props) => {
 									<h4 style={{marginBottom: "0.5%"}}>מספר אישי: {data[0].personal_number}</h4>
 								</Col>
 							</Row>
-				</Card>:
-				<Card style={{outline: "#5FD0CA solid 3px" }}>
+				</Card>
+				</Row>:
+			<Row style={{ marginRight: "0.5%" }}>
+				<Card style={{outline: "#5FD0CA solid 3px", width: '30rem' , marginBottom: "1%"}}>
 				<Row style={{ margin: "0px" }}>
 					<Col
 						xs={12}
@@ -553,9 +559,10 @@ const SingleMiluimArchiveTable = (props) => {
 						<h3 style={{marginBottom: "0.5%"}}>אין היסטוריית דיווחים</h3>
 						</Col>
 				</Row>
-	</Card>
+			</Card>	
+		    </Row>
 				
-				}
+}
 				
 			<div style={{ textAlign: "right", marginTop: "1%" }}>
 				<GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />

@@ -435,6 +435,7 @@ const CarDataFormModal = (props) => {
 									direction: "rtl",
 									textAlign: "center",
 									fontWeight: "bold",
+									fontSize: "1.5em",
 								}}
 							>
 								טופס איש מילואים
@@ -478,7 +479,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>שם</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>שם</h5>
 										<Input
 											placeholder="שם"
 											type="string"
@@ -494,7 +495,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>שם משפחה</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>שם משפחה</h5>
 										<Input
 											placeholder="שם משפחה"
 											type="string"
@@ -510,7 +511,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>יחידה</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>יחידה</h5>
 
 										<Select
 											data={units}
@@ -520,7 +521,7 @@ const CarDataFormModal = (props) => {
 										/>
 									</Col>
 								</Row>
-								<Row>
+								<Row style={{marginTop: "1%",}} >
 									<Col
 										style={{
 											justifyContent: "right",
@@ -598,7 +599,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>מקצוע</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>מקצוע</h5>
 										<Select
 											data={subject}
 											handleChange2={handleChange10}
@@ -613,7 +614,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>תפקיד</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>תפקיד</h5>
 
 										<Select
 											data={jobs}
@@ -631,7 +632,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>תא</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>תא</h5>
 										<Input
 											placeholder="שם"
 											type="select"
@@ -658,7 +659,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>הערות</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>הערות</h5>
 										<Input
 											placeholder="הערות"
 											type="string"
@@ -676,7 +677,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>מספר אישי</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>מספר אישי</h5>
 										<Input
 											placeholder="מספר אישי"
 											type="string"
@@ -692,7 +693,7 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-										<h6 style={{}}>תעודת זהות</h6>
+										<h5 style={{ fontWeight: "bold" ,  marginBottom: "1%"}}>תעודת זהות</h5>
 										<Input
 											placeholder="תעודת זהות"
 											type="number"
