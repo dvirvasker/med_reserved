@@ -37,15 +37,32 @@ function BazakNavbar(props) {
 	const [unit, setUnit] = useState([]);
 	const { user } = isAuthenticated();
 
+	let typeUser="";
+
 	const getUnit = async () => {
-		await axios
-			.get(`http://localhost:8000/api/units/${user.unit}`)
-			.then((response) => {
-				setUnit(response.data[0].name);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		if(user.role === "0"){
+			typeUser="מנהל מערכת";
+		} else if(user.role === "1"){
+			await axios
+				.get(`http://localhost:8000/api/units/${user.unit}`)
+				.then((response) => {
+					typeUser=response.data[0].name;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		} else if(user.role === "2"){
+			await axios
+				.get(`http://localhost:8000/api/region/${user.region}`)
+				.then((response) => {
+					typeUser=response.data[0].name;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+		setUnit(typeUser);
+		
 	};
 
 	useEffect(() => {
@@ -96,8 +113,7 @@ function BazakNavbar(props) {
 												color: "rgb(54,78,104)",
 											}}
 										>
-											{" "}
-											שלום
+											{unit}
 										</h3>
 									) : (
 										<h3
@@ -107,8 +123,7 @@ function BazakNavbar(props) {
 												color: "hsla(0,0%,100%,.8)",
 											}}
 										>
-											{" "}
-											שלום
+											{unit}
 										</h3>
 									)}
 								</Col>
