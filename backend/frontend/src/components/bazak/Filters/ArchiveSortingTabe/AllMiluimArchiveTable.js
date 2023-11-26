@@ -125,14 +125,30 @@ const AllMiluimArchiveTable = (props) => {
 	}
 
 	const getUnit = async () => {
-		await axios
-			.get("http://localhost:8000/api/units")
-			.then((response) => {
-				setUnit(response.data);
-				console.log(response.data);
+		let typeUser = "";
+		let url = "units"
+		if(user.role == "0"){
+			typeUser = "";
+		} else if(user.role == "1"){
+			typeUser = user.unit;
+		} else if(user.role == "2"){
+			url="unitsByRegion";
+			typeUser=user.region;
+		}
+		let arrayunit = [];
+		axios
+			.get(`http://localhost:8000/api/${url}/${typeUser}`)
+			.then((res) => {
+				if(user.role == "0" || user.role == "2"){
+					setUnit(res.data);
+				} else if(user.role == "1"){
+					arrayunit.push(res.data);
+					setUnit(arrayunit);
+				}
+				
 			})
-			.catch((error) => {
-				console.log(error);
+			.catch((err) => {
+				console.log(err);
 			});
 	};
 

@@ -3,7 +3,7 @@ import { withRouter, Redirect,Link } from "react-router-dom";
 
 import ManageUsersTable from 'views/authentication/manageusers/ManageUsersTable'
 
-import ManageNotValidatedUsersTable from 'views/authentication/manageusers/ManageNotValidatedUsersTable'
+// import ManageNotValidatedUsersTable from 'views/authentication/manageusers/ManageNotValidatedUsersTable'
 
 const ManageUsers = (props) => {
 
@@ -15,7 +15,7 @@ const ManageUsers = (props) => {
     <>
       <div className="">
           <ManageUsersTable theme={props.theme}/>
-          <ManageNotValidatedUsersTable theme={props.theme}/>
+          {/* <ManageNotValidatedUsersTable theme={props.theme}/> */}
       </div>
     </>
   );

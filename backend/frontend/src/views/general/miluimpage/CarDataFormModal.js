@@ -33,6 +33,8 @@ import Select from "components/general/Select/AnimatedSelect";
 import { DtPicker } from "react-calendar-datetime-picker";
 import "react-calendar-datetime-picker/dist/style.css";
 import "views/general/miluimpage/datePicker.css";
+import Archive from "assets/img/Archive_white.png";
+
 
 const CarDataFormModal = (props) => {
 	const { user } = isAuthenticated();
@@ -64,6 +66,7 @@ const CarDataFormModal = (props) => {
   		"day": currDate.getDate()-1,
 	}
 	const loadcardata = async () => {
+		setcollapseOpen(false);
 		await axios
 			.get(`http://localhost:8000/api/reservevisits/${props.cardataid}`)
 			.then(async (response) => {
@@ -114,6 +117,9 @@ const CarDataFormModal = (props) => {
 
 	const toggleCollapse = () => {
 		setcollapseOpen(!collapseOpen);
+		if(!collapseOpen){
+			toast.dark('כל הפרטים שבטופס ידווחו בתאריכים שבחרתם');
+		}
 	};
 	
 	function handleChange(evt) {
@@ -132,10 +138,17 @@ const CarDataFormModal = (props) => {
 			url="unitsByRegion";
 			typeUser=user.region;
 		}
+		let arrayunit = [];
 		axios
 			.get(`http://localhost:8000/api/${url}/${typeUser}`)
 			.then((res) => {
-				setUnits(res.data);
+				if(user.role == "0" || user.role == "2"){
+					setUnits(res.data);
+				} else if(user.role == "1"){
+					arrayunit.push(res.data);
+					setUnits(arrayunit);
+				}
+				
 			})
 			.catch((err) => {
 				console.log(err);
@@ -450,13 +463,27 @@ const CarDataFormModal = (props) => {
 								onClick={toggleCollapse}
 								style={{}}
 							>
-								דיווחי עבר
+								דיווח תאריכי עבר
 							</Button>
 							</div> : null}	
 							
 							{props.cardataid != undefined && collapseOpen ?
-								 <div style={{ textAlign: "center", paddingBottom: "20px", marginLeft: "25%",marginRight: "25%" }}>
-									<h6 style={{}}>דיווח תאריכי התייצבות</h6>
+								//  <div/ style={{ textAlign: "center", paddingBottom: "20px", marginLeft: "25%",marginRight: "25%" }}>
+									<Row
+									style={{
+										textAlign: "center",
+										paddingRight: "25%",
+										marginBottom: "2%"
+									}}
+									>
+									<Col
+										style={{
+											justifyContent: "center",
+											alignContent: "center",
+											textAlign: "right",
+										}}
+									>
+										<h6 style={{}}>דיווח תאריכי התייצבות</h6>
 									<DtPicker
 										headerClass="custom-header"
 										daysClass="custom-days"
@@ -470,7 +497,23 @@ const CarDataFormModal = (props) => {
 										clearBtn
       									todayBtn
 									/>
-								</div> : null}
+									</Col>
+									<Col
+										style={{
+											justifyContent: "center",
+											alignContent: "center",
+											textAlign: "right",
+										}}
+									>
+									<div style={{ textAlign: "right", paddingTop: "20px" }}>
+										<button className="" style={{ fontWeight: "600", backgroundColor: "limegreen", color:"white", border: "none", padding: "6px 8px", fontsize: "14px", borderRadius: "6px"}} onClick={clickSubmit}>
+										שמור
+											<img src={Archive} style={{ height: "30px", padding:"6%" }}></img>
+										</button>
+									</div>
+									</Col>
+									
+								</Row> : null}
 								<Row>
 									<Col
 										style={{

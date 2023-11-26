@@ -97,7 +97,7 @@ ReactDOM.render(
 							<LoggedinRoute path="/MiluimArchivepage" exact component={AllMiluimArchivepage} />
 							<LoggedinRoute path="/MiluimArchivepage/:personalnumber" exact component={SingleMiluimArchivepage} />
 							{/*///////////////////////////////////////////LoggedIn Routes/////////////////////////////////////////////////*/}
-							<Redirect from="/" to="/signin" />
+							<Redirect from="/" to="/adminsignin" />
 						</Switch>
 					</Router>
 				</BackgroundColorWrapper>

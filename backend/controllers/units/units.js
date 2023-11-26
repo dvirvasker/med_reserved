@@ -8,7 +8,7 @@ exports.find = (req, res) => {
 };
 
 exports.findByUnit = (req, res) => {
-	Unit.find({ _id: req.params.id })
+	Unit.findById(req.params.id)
 		.then((units) => res.json(units))
 		.catch((err) => res.status(400).json("Error: " + err));
 };

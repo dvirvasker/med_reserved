@@ -46,7 +46,7 @@ function BazakNavbar(props) {
 			await axios
 				.get(`http://localhost:8000/api/units/${user.unit}`)
 				.then((response) => {
-					typeUser=response.data[0].name;
+					typeUser=response.data.name;
 				})
 				.catch((error) => {
 					console.log(error);
