@@ -34,36 +34,30 @@ function DashboardPage({ match, theme }) {
 	//redux
 
 	function getUnits() {
-		if(user.role == "2"){
-			axios
-			.get(`http://localhost:8000/api/unitsByRegion/${user.region}`)
-			.then((res) => {
-				let tmp = {};
-				res.data.map((unit) => {
-					tmp[unit._id] = unit.name;
-				});
-				console.log(tmp)
-				setUnits(tmp);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-		} else  {
-			axios
-			.get(`http://localhost:8000/api/units`)
-			.then((res) => {
-				// console.log(res.data);
-				let tmp = {};
-				res.data.map((unit) => {
-					tmp[unit._id] = unit.name;
-				});
-				setUnits(tmp);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		let typeUser = "";
+		let url = "units"
+		if(user.role == "0"){
+			typeUser = "";
+		} else if(user.role == "1"){
+			typeUser = user.unit;
+		} else if(user.role == "2"){
+			url="unitsByRegion";
+			typeUser=user.region;
 		}
-		
+		// let arrayunit = [];
+		axios
+			.get(`http://localhost:8000/api/${url}/${typeUser}`)
+			.then((res) => {
+				let tmp = {};
+				res.data.map((unit) => {
+					tmp[unit._id] = unit.name;
+				});
+				setUnits(tmp);
+				
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	}
 
 	function getReservevisits() {
@@ -137,7 +131,14 @@ function DashboardPage({ match, theme }) {
 		<>
 			<Row>
 				{user.role == "0" ? (
-					Object.keys(reservevisits).map((key) => (
+					Object.keys(reservevisits).filter((el)=> {
+						let foundIndex = Object.keys(units).indexOf(el);
+						if(foundIndex !== -1){
+							return true;
+						} else{
+							return false;
+						}
+					}).map((key) => (
 						<DashboardCard data={reservevisits[key]} unit={units[key]} />
 					))
 				) : user.role == "1" ? (

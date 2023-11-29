@@ -127,49 +127,31 @@ const SortingTable = (props) => {
 	}
 
 	const getUnit = async () => {
-		if(user.role == "2"){
-			axios
-			.get(`http://localhost:8000/api/unitsByRegion/${user.region}`)
+		let typeUser = "";
+		let url = "units"
+		if(user.role == "0"){
+			typeUser = "";
+		} else if(user.role == "1"){
+			typeUser = user.unit;
+		} else if(user.role == "2"){
+			url="unitsByRegion";
+			typeUser=user.region;
+		}
+		// let arrayunit = [];
+		await axios
+			.get(`http://localhost:8000/api/${url}/${typeUser}`)
 			.then((res) => {
-				// let tmp = {};
-				// res.data.map((unit) => {
-				// 	tmp[unit._id] = unit.name;
-				// });
-				// console.log(tmp)
-				setUnit(res.data);
+				// if(user.role == "0" || user.role == "2"){
+					// setUnit(res.data);
+				// } else if(user.role == "1"){
+					// arrayunit.push(res.data);
+					setUnit(res.data);
+				// }
+				
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-		}else{
-			let typeUser = "";
-			let url = "units"
-			if(user.role == "0"){
-				typeUser = "";
-			} else if(user.role == "1"){
-				typeUser = user.unit;
-			} else if(user.role == "2"){
-				url="unitsByRegion";
-				typeUser=user.region;
-			}
-			let arrayunit = [];
-			axios
-				.get(`http://localhost:8000/api/${url}/${typeUser}`)
-				.then((res) => {
-					if(user.role == "0" || user.role == "2"){
-						setUnit(res.data);
-					} else if(user.role == "1"){
-						arrayunit.push(res.data);
-						setUnit(arrayunit);
-					}
-					
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		
-		}
-		
 	};
 
 	const getJob = async () => {

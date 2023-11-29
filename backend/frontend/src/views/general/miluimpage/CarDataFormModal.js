@@ -138,16 +138,16 @@ const CarDataFormModal = (props) => {
 			url="unitsByRegion";
 			typeUser=user.region;
 		}
-		let arrayunit = [];
+		// let arrayunit = [];
 		axios
 			.get(`http://localhost:8000/api/${url}/${typeUser}`)
 			.then((res) => {
-				if(user.role == "0" || user.role == "2"){
+				// if(user.role == "0" || user.role == "2"){
+					// setUnit(res.data);
+				// } else if(user.role == "1"){
+					// arrayunit.push(res.data);
 					setUnits(res.data);
-				} else if(user.role == "1"){
-					arrayunit.push(res.data);
-					setUnits(arrayunit);
-				}
+				// }
 				
 			})
 			.catch((err) => {

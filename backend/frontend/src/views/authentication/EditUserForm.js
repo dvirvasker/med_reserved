@@ -33,6 +33,7 @@ const EditUserForm = ({ match }) => {
 		personalnumber: "",
 		role: "",
 		unit: "",
+		region: "",
 		//
 		errortype: "",
 		error: false,
@@ -43,6 +44,7 @@ const EditUserForm = ({ match }) => {
 		site_permission: "",
 	});
 	const [units, setUnits] = useState([]);
+	const [regions, setRegions] = useState([]);
 
 	function handleChange(evt) {
 		const value = evt.target.value;
@@ -62,6 +64,17 @@ const EditUserForm = ({ match }) => {
 			.get(`http://localhost:8000/api/units`)
 			.then((res) => {
 				setUnits(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}
+
+	function getRegions() {
+		axios
+			.get(`http://localhost:8000/api/region`)
+			.then((res) => {
+				setRegions(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -102,10 +115,8 @@ const EditUserForm = ({ match }) => {
 	const FixUser = (event) => {
 		event.preventDefault();
 		if (data.role === "0") {
-			delete data.gdodid;
-			delete data.hativaid;
-			delete data.ogdaid;
-			delete data.pikodid;
+			data.unit = "";
+			data.region = "";
 		}
 		if (data.role === "5") {
 			data.site_permission = "צפייה";
@@ -115,14 +126,10 @@ const EditUserForm = ({ match }) => {
 			delete data.pikodid;
 		}
 		if (data.role === "1") {
-			delete data.hativaid;
-			delete data.ogdaid;
-			delete data.pikodid;
+			data.region = "";
 		}
 		if (data.role === "2") {
-			delete data.gdodid;
-			delete data.ogdaid;
-			delete data.pikodid;
+			data.unit = "";
 		}
 		if (data.role === "3") {
 			delete data.gdodid;
@@ -142,13 +149,11 @@ const EditUserForm = ({ match }) => {
 		const user = {
 			name: data.name,
 			lastname: data.lastname,
+			unit: data.unit,
+			region: data.region,
 			role: data.role,
 			validated: data.validated,
 			personalnumber: data.personalnumber,
-			gdodid: data.gdodid,
-			hativaid: data.hativaid,
-			ogdaid: data.ogdaid,
-			pikodid: data.pikodid,
 
 			site_permission: data.site_permission,
 		};
@@ -180,6 +185,7 @@ const EditUserForm = ({ match }) => {
 	useEffect(() => {
 		init();
 		getUnits();
+		getRegions();
 	}, []);
 
 	return (
@@ -216,6 +222,7 @@ const EditUserForm = ({ match }) => {
 											<option value="">הרשאה</option>
 											<option value="0">מנהל מערכת</option>
 											<option value="1">הרשאת יחידה</option>
+											<option value="2">הרשאת מרחב</option>
 										</Input>
 									</FormGroup>
 
@@ -223,10 +230,27 @@ const EditUserForm = ({ match }) => {
 										<div style={{ textAlign: "right", paddingTop: "10px" }}>
 											מנהל מערכת
 										</div>
-									) : data.role === "5" ? (
-										<div style={{ textAlign: "right", paddingTop: "10px" }}>
-											משתמש כלל צה"ל
-										</div>
+									) : data.role === "2" ? (
+										<>
+											<div style={{ textAlign: "right", paddingTop: "10px" }}>
+												מרחב
+											</div>
+											<FormGroup
+												dir="rtl"
+												style={{
+													justifyContent: "right",
+													alignContent: "right",
+													textAlign: "right",
+												}}
+											>
+												<Select
+													data={regions}
+													handleChange2={handleChange2}
+													name={"region"}
+													val={data.region ? data.region : undefined}
+												/>
+											</FormGroup>
+										</>
 									) : data.role === "1" ? (
 										<>
 											<div style={{ textAlign: "right", paddingTop: "10px" }}>
