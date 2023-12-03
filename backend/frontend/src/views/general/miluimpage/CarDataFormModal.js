@@ -118,7 +118,7 @@ const CarDataFormModal = (props) => {
 	const toggleCollapse = () => {
 		setcollapseOpen(!collapseOpen);
 		if(!collapseOpen){
-			toast.dark('כל הפרטים שבטופס ידווחו בתאריכים שבחרתם');
+			toast.info('כל הפרטים שבטופס ידווחו בתאריכים שבחרתם');
 		}
 	};
 	
@@ -195,6 +195,7 @@ const CarDataFormModal = (props) => {
 
 	function handleChange3() {
 		setIsChecked1(!isChecked1);
+		console.log(date)
 	}
 	function handleChange4() {
 		setIsChecked2(!isChecked2);
@@ -405,11 +406,20 @@ const CarDataFormModal = (props) => {
 	}
 
 	useEffect(() => {
+		if(date !== undefined){
+			if(date.length === 0){
+				setDate(undefined);
+			}
+		}
+	})
+
+	useEffect(() => {
 		if (props.isOpen == true) {
 			getSubject();
 			getJobs();
 			getUnits();
 			init();
+			// showSaveBtn();
 		} else {
 			setCarData({});
 			setIsChecked1(false);
@@ -417,6 +427,7 @@ const CarDataFormModal = (props) => {
 			setIsChecked3(false);
 			setIsChecked4(false);
 		}
+		
 	}, [props.isOpen]);
 
 	return (
@@ -505,12 +516,15 @@ const CarDataFormModal = (props) => {
 											textAlign: "right",
 										}}
 									>
-									<div style={{ textAlign: "right", paddingTop: "20px" }}>
-										<button className="" style={{ fontWeight: "600", backgroundColor: "limegreen", color:"white", border: "none", padding: "6px 8px", fontsize: "14px", borderRadius: "6px"}} onClick={clickSubmit}>
-										שמור
+										{date !== undefined ? 
+										<div style={{ textAlign: "right", paddingTop: "20px" }}>
+											<button className="" style={{ fontWeight: "600", backgroundColor: "limegreen", color:"white", border: "none", padding: "6px 8px", fontsize: "14px", borderRadius: "6px"}} onClick={clickSubmit}>
+												שמור
 											<img src={Archive} style={{ height: "30px", padding:"6%" }}></img>
-										</button>
-									</div>
+											</button>
+										</div>
+										: null}
+									
 									</Col>
 									
 								</Row> : null}
