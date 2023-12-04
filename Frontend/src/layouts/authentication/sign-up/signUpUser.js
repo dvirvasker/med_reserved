@@ -448,17 +448,6 @@ function SignUpUser() {
           </MDBox>
 
           <>
-            {/* <div style={{ textAlign: "right", paddingTop: "10px", fontSize: "80%" }}>
-              בחר סוג משתמש
-            </div>
-            <MDBox mb={2}>
-              <Select
-                label="בחר סוג משתמש"
-                onChange={handleChange3}
-                name={"role"}
-                options={options}
-              />
-            </MDBox> */}
             <MDBox mb={2}>
               <Col>
                 <FormGroup>
