@@ -17,9 +17,9 @@ const DashboardView = () => {
 			<DashboardNavbar
 				setSearch={value => console.log(value)}
 				depth={[
-					{ id: "magadal6", value: "טנק" },
-					{ id: "magad2", value: "סימן" },
-					{ id: "mkabaz5", value: "מרכבה 4" },
+					{ id: "magadal6", value: "התייצבות" },
+					{ id: "magad2", value: "מרחב" },
+					{ id: "mkabaz5", value: "יחידה" },
 				]}
 			/>
 			<Card
