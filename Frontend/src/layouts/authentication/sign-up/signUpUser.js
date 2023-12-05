@@ -446,34 +446,31 @@ function SignUpUser() {
               fullWidth
             />
           </MDBox>
-
-          <>
-            <MDBox mb={2}>
-              <Col>
-                <FormGroup>
-                  <Label for="role" size="sm">
-                    בחר סוג משתמש
-                  </Label>
-                  <Input
-                    name="role"
-                    id="role"
-                    type="select"
-                    value={signUpData.role}
-                    onChange={handleChange3}
-                  >
-                    <option disabled value="">
-                      בחר
+          <MDBox mb={2}>
+            <Col>
+              <FormGroup>
+                <Label for="role" size="sm">
+                  בחר סוג משתמש
+                </Label>
+                <Input
+                  name="role"
+                  id="role"
+                  type="select"
+                  value={signUpData.role}
+                  onChange={handleChange3}
+                >
+                  <option disabled value="">
+                    בחר
+                  </option>
+                  {options.map((option, index) => (
+                    <option id={index} value={option.value}>
+                      {option.label}
                     </option>
-                    {options.map((option, index) => (
-                      <option id={index} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Input>
-                </FormGroup>
-              </Col>
-            </MDBox>
-          </>
+                  ))}
+                </Input>
+              </FormGroup>
+            </Col>
+          </MDBox>
           {signUpData.role === "2" ? (
             <MDBox mb={2}>
               <Col>

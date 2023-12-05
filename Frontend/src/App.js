@@ -76,6 +76,7 @@ import { signin, authenticate, isAuthenticated, updateRefreshCount } from "auth/
 
 import sidenav from "assets/theme/components/sidenav";
 import Miluimpage from "layouts/tables/miluimpageTable";
+import MiluimArchivepage from "layouts/tables/allMiluimArchiveTable";
 import AboutPage from "views/aboutpage/AboutPage";
 import SignUpUser from "layouts/authentication/sign-up/signUpUser";
 import SignInForm from "layouts/authentication/sign-in/index";
@@ -249,6 +250,7 @@ export default function App() {
                   <Route path="/about-us" element={<AboutPage />} />
                   <Route path="/Error404" element={<Error404 />} />
                   <Route path="/miluimpage" element={<Miluimpage />} />
+                  <Route path="/MiluimArchivepage" element={<MiluimArchivepage />} />
                   <Route path="/RequestForm">
                     <Route path=":formID" element={<FieldReuestFormDB />} />
                   </Route>
@@ -268,8 +270,10 @@ export default function App() {
                 </Routes>
               ) : user.user.role === "1" ? (
                 <Routes>
-                  {getRoutes(routes)}
+                  {getRoutes(userRoutes)}
                   <Route path="/dashboard/" element={<Dashboard />} />
+                  <Route path="/miluimpage" element={<Miluimpage />} />
+                  <Route path="/MiluimArchivepage" element={<MiluimArchivepage />} />
                   {/* <Route path="/about-us" element={<AboutPage />} /> */}
                   <Route path="/Error404" element={<Error404 />} />
                   <Route path="/miluimpage" element={<Miluimpage />} />
@@ -278,7 +282,10 @@ export default function App() {
               ) : (
                 <Routes>
                   {getRoutes(userRoutes)}
-                  <Route path="/" element={<Navigate to="/userRequestsTable" />} />
+                  <Route path="/dashboard/" element={<Dashboard />} />
+                  <Route path="/" element={<Navigate to="/dashboard/" />} />
+                  <Route path="/miluimpage" element={<Miluimpage />} />
+                  <Route path="/MiluimArchivepage" element={<MiluimArchivepage />} />
                   <Route path="/Error404" element={<Error404 />} />
                   <Route path="/toraHeilitrequestForm">
                     <Route path=":formID" element={<ToraHeilitFieldReuestFormDB />} />

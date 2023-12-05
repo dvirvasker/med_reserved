@@ -47,6 +47,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up/signUpUser";
 import Miluimpage from "layouts/tables/miluimpageTable";
+import MiluimArchivepage from "layouts/tables/allMiluimArchiveTable";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -60,7 +61,7 @@ const routes = [
   {
     type: "collapse",
     name: "דף הבית",
-    key: "Dashboard",
+    key: "dashboard/",
     icon: <Icon fontSize="small">home</Icon>,
     route: "/dashboard/",
     component: <Dashboard />,
@@ -79,7 +80,7 @@ const routes = [
     key: "MiluimArchivepage",
     icon: <Icon fontSize="small">archive</Icon>,
     route: "/MiluimArchivepage",
-    // component: <EventDiary />,
+    component: <MiluimArchivepage />,
   },
 ];
 
