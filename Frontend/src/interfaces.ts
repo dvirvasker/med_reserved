@@ -1,4 +1,4 @@
-import { AccessorFn, Cell } from "@tanstack/react-table";
+import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "preact/compat";
 import { RegisterOptions } from "react-hook-form";
 
@@ -90,7 +90,7 @@ export interface iDynamicListField extends iBasicField {
 	fields: iField[];
 }
 
-export interface iFileField extends iBasicField {}
+export interface iFileField extends iBasicField { }
 
 export type iField =
 	| iTextField
@@ -98,17 +98,48 @@ export type iField =
 	| iSelectField
 	| iFileField;
 
-export type ColumnsType<T> = {
-	header: string;
+interface iTableColumn<T> {
+	header?: string;
 	accessorKey?: string;
-	id?: string;
-	type?: "Date" | "String" | "Array";
-	accessorFn?: AccessorFn<T>;
+	id: string;
+	type?: "Date" | "String" | "Custom" | "Meta" | "Function";
 	cell?: (cell: Cell<T, unknown>) => ReactNode;
-	filterFn?: (cellValue: any, valueFromFilter: any) => boolean;
 };
 
-type tFlterField = "TOGGLE" | "MULTISELECT";
+export interface iStringTableColumn<T> extends iTableColumn<T> {
+	filterFn?: (cellValue: any, valueFromFilter: any) => boolean;
+}
+
+export interface iFunctionTableColumn<T> extends iTableColumn<T> {
+	accessorFn: (row: T) => string
+}
+
+export interface iDateTableColumn<T> extends iTableColumn<T> {
+	filterFn?: (cellValue: Date, valueFromFilter: Date) => boolean;
+}
+
+export interface iCustomTableColumn<T> extends iTableColumn<T> {
+	parser: (objects: any[]) => string[], // transfers the object into a readable string for globalFilter
+	cell: (items: string[]) => ReactNode[],
+	filterFn?: (items: string[], valueFromFilter: any) => boolean,
+	sortFn: (items: string[]) => number
+}
+
+// a column to always be hidden, to exist only when searching for values
+export interface iMetaTableColumn<T> extends iTableColumn<T> {
+	accessorFn: (row: T) => string,
+	filterFn: (cellValue: string, valueFromFilter: string) => boolean,
+}
+
+export type ColumnsType<T> = iCustomTableColumn<T> | iDateTableColumn<T> | iStringTableColumn<T> | iMetaTableColumn<T> | iFunctionTableColumn<T>;
+
+type tFlterField = "TOGGLE" | "MULTISELECT" | "DATE";
+
+export interface iDateChangeProps {
+	date: Date;
+	type: "BIGGER_THAN" | "LESS_THAN";
+	includingSelf: boolean
+};
 
 interface iBasicFilter {
 	title: string;
@@ -133,7 +164,11 @@ export interface iMultiSelectFilter extends iBasicFilter {
 	onChange: (newFilterState: { id: string; value: iSelectable[] }) => void;
 }
 
-export type iFilter = iToggleFilter | iMultiSelectFilter;
+export interface iDateFilter extends iBasicFilter {
+	onChange: (selectedDate: Date) => void;
+}
+
+export type iFilter = iToggleFilter | iMultiSelectFilter | iDateFilter;
 
 export type Gdod = {
 	name: string;
@@ -269,17 +304,35 @@ export type System = {
 	_id: string
 };
 
-type tipultype = {
+export type tipultype = {
 	id: string;
-	type: string;
-	tipul?: string;
-	tipul_entry_date?: Date;
+	tipul_key: string,
+	tipul_entry_date: Date;
 	mikum_tipul?: string;
-	harig_tipul?: string;
-	harig_tipul_date?: Date;
-	takala_mizdamenet?: string;
-	takala_mizdamenet_date?: Date;
+	hh_stands?: {
+		amount: number,
+		makatName: string
+	}
 };
+
+export type reservevisits = {
+	_id: string;
+	name?: String;
+	family?: String;
+	personal_number: String;
+	civilian_number?: Number;
+	present: Boolean;
+	todayPresent: Boolean;
+	dailSent: Boolean;
+	shamapOpen: Boolean;
+	subject?: String;
+	details?: String;
+	unit?: String;
+	job?: String;
+	ta: String;
+	__v?: number;
+};
+
 
 export type cardatasType = {
 	_id: string;
@@ -337,6 +390,17 @@ export type CacheHook<T> = {
 	cacheValue: T;
 	updateCache: (value: T) => void;
 	invalidateCache: () => void;
-  };
-  
-  export type FactoryFunction<T> = () => T;
+};
+
+export type FactoryFunction<T> = () => T;
+
+
+export interface iHazana {
+	pikod: string; // Command
+	ogda: string; // Brigade
+	gdod: string;
+	hativa: string; // Division
+	sdirot: string; // Battalion
+	lastUpdateDate: Date; // Last Update Date
+	tkinot: string; // Invalid
+}

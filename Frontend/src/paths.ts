@@ -6,8 +6,9 @@ import RamamView from "./Views/Ramam";
 import SignUpView from "./Views/SignUp";
 import TkinotHazanotView from "./Views/TkinotHazanot";
 import UnitTreeView from "./Views/UnitTree";
-import ZminotView from "./Views/Zminot";
-import MiluimPage from "./Views/miluimPage";
+import ZminotView from "./Views/ZminotView/Zminot";
+import MiluimView from "./Views/MiluimView/Miluim";
+import MiluimPage from "./Views/MiluimPage";
 import ZminotTatYehidotView from "./Views/ZminotTatYehidot";
 
 // };
@@ -36,20 +37,20 @@ const PATHS = {
 	),
 	MILUIM_ARCHIVE_PAGE: new Map<string, React.FC<MyComponentProps>>().set(
 		"MiluimArchivepage",
-		MiluimPage
+		MiluimView
 	),
 	Manage_USERS: new Map<string, React.FC<MyComponentProps>>().set(
 		"manageusers",
 		TkinotHazanotView
 	),
-	// SUB_UNIT_ZMINOT: new Map<string, React.FC<MyComponentProps>>().set(
-	// 	"zminot_sub_unit",
-	// 	ZminotTatYehidotView
-	// ),
-	ZMINOT_TABLE: new Map<string, React.FC<MyComponentProps>>().set(
-		"zminot_table",
-		ZminotView
+	SUB_UNIT_ZMINOT: new Map<string, React.FC<MyComponentProps>>().set(
+		"zminot_sub_unit",
+		ZminotTatYehidotView
 	),
+	// ZMINOT_TABLE: new Map<string, React.FC<MyComponentProps>>().set(
+	// 	"zminot_table",
+	// 	ZminotView
+	// ),
 	UNIT_TREE: new Map<string, React.FC<MyComponentProps>>().set(
 		"unit_tree",
 		UnitTreeView

@@ -2,7 +2,7 @@ import { Box, Grid } from "@mui/material";
 import Card from "../Components/Card";
 import DashboardCard from "../Components/DashboardCard";
 import { DashboardFooter } from "../Components/Footer";
-import { DashboardNavbar } from "../Components/Navbar";
+import { DashboardNavbar, Header } from "../Components/Navbar";
 
 const DashboardView = () => {
 	return (
@@ -14,6 +14,9 @@ const DashboardView = () => {
 				gap: 2,
 			}}
 		>
+			<Header
+				setSearch={value => console.log(value)}
+			/>
 			<DashboardNavbar
 				setSearch={value => console.log(value)}
 				depth={[

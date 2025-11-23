@@ -2,23 +2,23 @@ import { ColumnDef, Table, getCoreRowModel, getFilteredRowModel, getPaginationRo
 import { useMemo } from "preact/hooks";
 import { CacheHook, ColumnsType, iSelectable } from "../../interfaces";
 
-const dateStringToDate = (dateStr: string) : Date => {
+const dateStringToDate = (dateStr: string): Date => {
     const [day, month, year] = dateStr.split('.');
     // Convert to a valid date format (mm/dd/yyyy)
     const formattedDateString = `${month}/${day}/${year}`;
     // Create a Date object
     return new Date(formattedDateString);
-} 
+}
 
 export const setNewDisplayedColumns = (filter: iSelectable[], table: Table<any>, cache: CacheHook<any>) => {
     const columnsToHide = table.getAllColumns().reduce((acc, column) => {
-      const columnId = column.columnDef.id as string;
-      if (filter.some(innerField => innerField.id === columnId)) {
-        return acc;
-      } else {
-        acc[columnId] = false;
-        return acc;
-      }
+        const columnId = column.columnDef.id as string;
+        if (filter.some(innerField => innerField.id === columnId)) {
+            return acc;
+        } else {
+            acc[columnId] = false;
+            return acc;
+        }
     }, {} as Record<string, boolean>);
 
     cache.updateCache(columnsToHide);
@@ -26,23 +26,23 @@ export const setNewDisplayedColumns = (filter: iSelectable[], table: Table<any>,
 };
 
 
-export const onTableMultiSelectFilterChange = (data: {id: string, value: iSelectable[]}, table: Table<any>) => {
+export const onTableMultiSelectFilterChange = (data: { id: string, value: iSelectable[] }, table: Table<any>) => {
     const existingFilters = table.getState().columnFilters;
     const newFilters = existingFilters.filter(filter => filter.id !== data.id);
-    if (data.value.length > 0){
-        newFilters.push({id: data.id, value: data.value.map(value => value.value)})
+    if (data.value.length > 0) {
+        newFilters.push({ id: data.id, value: data.value.map(value => value.value) })
     }
     table.setColumnFilters(newFilters)
 
 }
 
-export const onTableToggleFilterChange = (data: {id: string, value: iSelectable[]}, table: Table<any>) => {
+export const onTableToggleFilterChange = (data: { id: string, value: iSelectable[] }, table: Table<any>) => {
     const existingFilters = table.getState().columnFilters;
     // need to handle what to do with old filters
     const newFilters = existingFilters.filter(filter => filter.id !== data.id);
 
-    if (data.value.length > 0){
-        newFilters.push({id: data.id, value: data.value.map(selectable => selectable.value)})
+    if (data.value.length > 0) {
+        newFilters.push({ id: data.id, value: data.value.map(selectable => selectable.value) })
     }
 
     table.setColumnFilters(newFilters);
@@ -50,7 +50,7 @@ export const onTableToggleFilterChange = (data: {id: string, value: iSelectable[
 
 
 
-const createTanstackTable = <T>(data: T[], columns: ColumnsType<T>[], visibleColumns: {[key: string]: boolean}, defaultRows?: number, debug: boolean = false) => {
+const createTanstackTable = <T>(data: T[], columns: ColumnsType<T>[], visibleColumns: { [key: string]: boolean }, defaultRows?: number, debug: boolean = false) => {
     const onColumn = (column: ColumnsType<T>) => {
         if (column.type === "Date") {
             return {
@@ -69,7 +69,7 @@ const createTanstackTable = <T>(data: T[], columns: ColumnsType<T>[], visibleCol
                     const dateA = dateStringToDate(rowA.getValue(columnId));
                     const dateB = dateStringToDate(rowB.getValue(columnId));
                     return dateA > dateB ? 1 : -1;
-                    
+
                 },
             } as ColumnDef<T>;
         }
@@ -98,7 +98,7 @@ const createTanstackTable = <T>(data: T[], columns: ColumnsType<T>[], visibleCol
         initialState: {
             pagination: {
                 pageIndex: 0,
-                pageSize: defaultRows ? defaultRows : 20,
+                pageSize: defaultRows ? defaultRows : 10,
             },
             columnVisibility: visibleColumns
         },

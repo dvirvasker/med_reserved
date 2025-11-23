@@ -1,5 +1,7 @@
-import { System, cardatasType } from "../../../interfaces";
+import { System, reservevisits } from "../../../interfaces";
+import React, { useState, } from "react";
 import axios from "axios";
+// import { getData } from "./getData";
 
 // Define static values as arrays of objects
 export const pikodValues = [
@@ -46,6 +48,13 @@ export const magadalValues = [
   { id: 'Magadal113', value: 'שם מאגד על 5' },
   { id: 'Magadal114', value: 'שם מאגד על 6' },
 ];
+
+export const dailyOptions = [
+  { id: 'present', value: 'התייצב' },
+  { id: 'todayPresent', value: 'התייצב היום' },
+  { id: 'dailSent', value: 'נשלח חייגן' },
+  { id: 'shamapOpen', value: 'נפתח שמ``פ' },
+]
 
 export const magadValues = [
   { id: 'Magad987', value: 'שם מאגד' },
@@ -110,57 +119,60 @@ function generateRandomSystems(count: number): System[] {
 }
 
 type Miluim = {
-  name: String,
-  family: String,
-  personal_number: String,
-  civilian_number: Number,
-  present: Boolean,
-  todayPresent: Boolean,
-  dailSent: Boolean,
-  shamapOpen: Boolean,
-  subject: String,
-  details: String,
-  unit: String,
-  job: String,
-  ta: String,
+  _id: string;
+  name?: String;
+  family?: String;
+  personal_number: String;
+  civilian_number?: Number;
+  present: Boolean;
+  todayPresent: Boolean;
+  dailSent: Boolean;
+  shamapOpen: Boolean;
+  subject?: String;
+  details?: String;
+  unit?: String;
+  job?: String;
+  ta: String;
+  __v?: number;
+  createdAt: Date,
+  updatedAt: Date,
 };
 
-type GetDataResponse = {
+export type GetDataResponse = {
   data: Miluim[];
 };
-async function getData() {
-  try {
-    // 👇️ const data: GetUsersResponse
-    const { data, status } = await axios.get<GetDataResponse>(
-      `http://localhost:8000/api/reservevisits`,
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    );
-
-    console.log(data);
-
-    // 👇️ "response status is: 200"
-    console.log('response status is: ', status);
-
-    return data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.log('error message: ', error.message);
-      return error.message;
-    } else {
-      console.log('unexpected error: ', error);
-      return 'An unexpected error occurred';
-    }
-  }
-}
 // Function to generate random cardatas
-export const generateRandomCardatasList = (count: number): cardatasType[] => {
-  const randomCardatasList: cardatasType[] = [];
+export const generateRandomCardatasList = (count: number): reservevisits[] => {
+  const randomCardatasList: reservevisits[] = [];
 
-  getData();
+  // try {
+  // 👇️ const data: GetUsersResponse
+  axios
+    .get(`http://localhost:8000/api/reservevisits`)
+    .then((response) => {
+      // if(user.role == 0){
+      console.log(response.data.map((objreservevisits: reservevisits) => console.log(objreservevisits)));
+      // setData(response.data)
+      console.log(response.data);
+    }).catch((error) => {
+      console.log(error);
+    });
+
+
+  // 👇️ "response status is: 200"
+  // console.log('response status is: ', status);
+
+  // return data;
+  // } catch (error) {
+  //   if (axios.isAxiosError(error)) {
+  //     console.log('error message: ', error.message);
+  //     return error.message;
+  //   } else {
+  //     console.log('unexpected error: ', error);
+  //     return 'An unexpected error occurred';
+  //   }
+  // }
+  // console.log(getData());
 
   for (let i = 0; i < count; i++) {
     const randomPikod = getRandomElement(pikodValues);
@@ -175,40 +187,23 @@ export const generateRandomCardatasList = (count: number): cardatasType[] => {
     const randomKshirot = getRandomElement(kshirotOptions);
     const systems: System[] = generateRandomSystems(20)
 
-    const randomCardatas: cardatasType = {
-      _id: Math.random().toString(36).substring(7),
-      carnumber: Math.random().toString(36).substring(7),
-      makat: randomMakat.id,
-      gdod: randomGdod.id,
-      stand: Math.random().toString(36).substring(7),
-      updatedBy: Math.random().toString(36).substring(7),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      expected_repair: Math.random().toString(36).substring(7),
-      status: Math.random().toString(36).substring(7),
-      takala_info: Math.random().toString(36).substring(7),
-      zminot: randomZminot.value,
-      kshirot: randomKshirot.value,
-      mikum: Math.random().toString(36).substring(7),
-      // ... other fields set to undefined
-      systems: systems,
-
-      // Set static values along with their names
-      pikod: randomPikod.id,
-      ogda: randomOgda.id,
-      hativa: randomHativa.id,
-      gdodName: randomGdod.value,
-      magadal: randomMagadal.id,
-      magad: randomMagad.id,
-      mkabaz: randomMkabaz.id,
-      pikodName: randomPikod.value,
-      ogdaName: randomOgda.value,
-      hativaName: randomHativa.value,
-      magadalName: randomMagadal.value,
-      magadName: randomMagad.value,
-      mkabazName: randomMkabaz.value,
-      makatName: randomMakat.value,
-      // ... other static values
+    const randomCardatas: reservevisits = {
+      // _id: Math.random().toString(36).substring(7),
+      // carnumber: Math.random().toString(36).substring(7),
+      name: "d",
+      family: randomMakat.id,
+      civilian_number: 3466355,
+      personal_number: "s3433333",
+      present: true,
+      todayPresent: true,
+      dailSent: false,
+      shamapOpen: true,
+      subject: Math.random().toString(36).substring(7),
+      job: Math.random().toString(36).substring(7),
+      unit: randomZminot.value,
+      ta: randomKshirot.value,
+      details: "הערות....",
+      _id: "",
     };
 
     randomCardatasList.push(randomCardatas);

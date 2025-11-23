@@ -15,6 +15,7 @@ type initState = {
 	magadBank: MagadalBank | {};
 	user: User | {};
 	isCachingSupported: boolean;
+	isInDarkMode: boolean,
 };
 
 let initialState: initState = {
@@ -22,7 +23,9 @@ let initialState: initState = {
 	unitBank: {},
 	magadBank: {},
 	user: {},
+	isInDarkMode: localStorage.getItem("isInDarkMode") === "1" ? true : false,
 	isCachingSupported: "caches" in window,
+
 };
 
 interface act {
@@ -80,6 +83,12 @@ const reducer = (
 				user: action.value,
 			};
 		}
+		case "TOGGLE_DARK_MODE": {
+			return {
+				...state,
+				isInDarkMode: !state.isInDarkMode
+			};
+		}
 	}
 };
 
@@ -119,17 +128,17 @@ function convertRoleToName(user: User) {
 	return tmp;
 }
 
-export const CardataContext = createContext({
+export const SiteContext = createContext({
 	...initialState,
+	toggleDarkmode: async () => { },
 	fetchCardatas: async (user: User) => [],
 	getAll: () => [],
+	toggleDarkMode: () => undefined,
 });
 
-const CardataContextProvider = ({ children }: any) => {
-	const [state, dispatch] = useReducer(reducer, {
-		...initialState,
-		isCachingSupported: "caches" in window,
-	});
+const SiteContextProvider = ({ children }: any) => {
+	const [state, dispatch] = useReducer(reducer, initialState);
+
 	const fetchCardatas = async () => {
 		const start = performance.now();
 		// let unittype;
@@ -284,18 +293,23 @@ const CardataContextProvider = ({ children }: any) => {
 		[state.cardata, state.unitBank, state.magadBank]
 	);
 
-
+	const toggleDarkMode = () => {
+		// !state.isInDarkMode because we want to change the value
+		localStorage.setItem("isInDarkMode", !state.isInDarkMode ? '1' : '0');
+		dispatch({ type: "TOGGLE_DARK_MODE", value: {} });
+	};
 	return (
-		<CardataContext.Provider
+		<SiteContext.Provider
 			value={{
 				...state,
 				fetchCardatas,
 				getAll,
+				toggleDarkMode
 			}}
 		>
 			{children}
-		</CardataContext.Provider>
+		</SiteContext.Provider>
 	);
 };
 
-export default CardataContextProvider;
+export default SiteContextProvider;

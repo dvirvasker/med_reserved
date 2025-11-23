@@ -4,7 +4,8 @@ import { prefixer } from 'stylis';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { CssBaseline } from '@mui/material';
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
+import { SiteContext } from './context/SiteContext';
 const cacheRtl = createCache({
   key: 'muirtl',
   stylisPlugins: [prefixer, rtlPlugin],
@@ -15,7 +16,7 @@ const lightTheme: PaletteOptions = {
   mode: 'light',
   primary: {
     main: "#5FD0CA",
-    dark: "#5FD0CA",
+    dark: "#469c94",
     light: "#91e3df"
   },
   secondary: {
@@ -72,22 +73,19 @@ const darkTheme: PaletteOptions = {
     paper: "#191E24"
   },
 };
-
-const theme = createTheme({
-  direction: 'rtl',
-  typography: {
-    fontFamily: 'Rubik'
-  },
-  palette: lightTheme
-  // palette: Math.random() > 0.5 ? darkTheme : lightTheme
-},
-
-);
 interface MainThemeProps {
   children: ReactNode;
 }
-
 const ThemeWrapper: React.FC<MainThemeProps> = (props) => {
+  const ctx = useContext(SiteContext);
+  const theme = createTheme({
+    direction: 'rtl',
+    typography: {
+      fontFamily: 'Rubik'
+    },
+    palette: ctx.isInDarkMode ? darkTheme : lightTheme
+  });
+
   return (
     <CacheProvider value={cacheRtl}>
       <ThemeProvider theme={theme}>
@@ -96,6 +94,6 @@ const ThemeWrapper: React.FC<MainThemeProps> = (props) => {
       </ThemeProvider>
     </CacheProvider>
   );
-};
+}
 
 export default ThemeWrapper;

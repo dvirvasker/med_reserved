@@ -4,12 +4,12 @@
 <defs>
 <linearGradient id="paint0_linear_1011_4196" x1="12" y1="3.5" x2="12" y2="20.5" gradientUnits="userSpaceOnUse">
 <stop stop-color="#000000"/>
-<stop offset="0.630208" stop-color="#679997"/>
+<stop offset="0.630208" stop-color="#ef1021"/>
 <stop offset="1" stop-color="#000000"/>
 </linearGradient>
 <linearGradient id="paint1_linear_1011_4196" x1="12" y1="3.5" x2="12" y2="20.5" gradientUnits="userSpaceOnUse">
 <stop stop-color="#000000"/>
-<stop offset="0.630208" stop-color="#679997"/>
+<stop offset="0.630208" stop-color="#ef1021"/>
 <stop offset="1" stop-color="#000000"/>
 </linearGradient>
 </defs>

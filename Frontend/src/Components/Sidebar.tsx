@@ -17,13 +17,13 @@ const Sidebar: React.FC<iSidebar> = ({ navSections }) => {
   const SidebarFooter = () => (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mt: "auto", textAlign: "center" }}>
       <Button variant="contained">
-        <AddUserIcon fill={theme.palette.background.default} />
+        <AddUserIcon fill={theme.palette.text.primary} />
         <Typography sx={{ mr: "auto", ml: "auto" }}>רשום משתמש</Typography>
       </Button>
 
-      <Button variant="outlined">
+      <Button variant="outlined" style={{ borderBlockColor: theme.palette.warning.dark, borderInlineColor: theme.palette.warning.dark }}>
         <ToTeneTableIcon fill={theme.palette.background.default} />
-        <Typography sx={{ mr: "auto", ml: "auto" }}>חזרה לשולחן טנא</Typography>
+        <Typography color={theme.palette.text.secondary} sx={{ mr: "auto", ml: "auto" }}>חזרה לשולחן טנא</Typography>
       </Button>
     </Box>
   )

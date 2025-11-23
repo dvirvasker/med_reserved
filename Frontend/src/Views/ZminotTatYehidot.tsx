@@ -1,9 +1,9 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import Card from "../Components/Card";
 import PrecentageTable from "../Components/PrecentageTable";
 import { iMagadData } from "../interfaces";
-import { downloadPrecentageTable } from "../assets/Functions/downloadTable";
 import { DefaultNavbar } from "../Components/Navbar";
+import { PrecentageTableFooter } from "../Components/Footer";
 
 const ZminotTatYehidotView = () => {
 
@@ -124,7 +124,7 @@ const ZminotTatYehidotView = () => {
                 "gdod 30": { trueCount: 10, falseCount: 20, title: "גדוד 30" },
                 "gdod 31": { trueCount: 22, falseCount: 8, title: "גדוד 31" },
                 "gdod 34": { trueCount: 12, falseCount: 10, title: "גדוד 34" },
-             }
+            }
         },
         trains: {
             title: "רכבות",
@@ -217,21 +217,21 @@ const ZminotTatYehidotView = () => {
             }
         },
     };
-    
+
     return (
         <Box
-        sx={{
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-        }}
+            sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+            }}
         >
-            <DefaultNavbar title="זמינות תת יחידות"/>
-            <Card style={{height: "100%"}}>
-                <PrecentageTable magadData={magadData} onSelect={console.log}/>
-                <Button onClick={() => downloadPrecentageTable(magadData, "זמינות תת יחידות")}>הורד כאקסל</Button>
+            <DefaultNavbar title="זמינות תת יחידות" />
+            <Card style={{ flexGrow: 1, overflowY: "auto", padding: 0 }}>
+                <PrecentageTable magadData={magadData} onSelect={console.log} />
             </Card>
+            <PrecentageTableFooter onToTable={() => console.log("need to go to table view")} magadData={magadData} excelFileName="זמינות תת יחידות" />
         </Box>
     )
 };

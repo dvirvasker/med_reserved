@@ -7,6 +7,7 @@ import createTanstackTable, { onTableMultiSelectFilterChange, onTableToggleFilte
 import DataGridTable from "../Components/DataGridTable";
 import { gdodValues, generateRandomCardatasList, hativaValues, kshirotOptions, magadValues, magadalValues, makatValues, mkabazValues, ogdaValues, pikodValues, zminotOptions } from "../assets/Functions/mock/mockMiluimPage";
 import { DataGridNavbar } from "../Components/Navbar";
+import { DataGridFooter } from "../Components/Footer";
 
 
 const MiluimPageView = () => {
@@ -74,9 +75,9 @@ const MiluimPageView = () => {
             id: "ta"
         },
         {
-            accessorKey: "detail",
+            accessorKey: "details",
             header: "הערות",
-            id: "detail"
+            id: "details"
         },
         {
             accessorKey: "gdodName",
@@ -225,7 +226,7 @@ const MiluimPageView = () => {
             <Card>
                 <DataGridTable table={table} />
             </Card>
-
+            <DataGridFooter table={table} excelFileName="טבלת זמינות כלל צהלית" />
         </Box>
     )
 
